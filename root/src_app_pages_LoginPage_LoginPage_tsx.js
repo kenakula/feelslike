@@ -1,0 +1,1 @@
+"use strict";(this.webpackChunkfeelslike=this.webpackChunkfeelslike||[]).push([["src_app_pages_LoginPage_LoginPage_tsx"],{4948:(e,a,n)=>{n.r(a),n.d(a,{default:()=>i});var t=n(7294),l=n(9323),s=n(98);const i=(0,l.Pi)((function(){return t.createElement(s.default,null,t.createElement("div",{className:"login"},t.createElement("span",null,"Login Page")))}))}}]);

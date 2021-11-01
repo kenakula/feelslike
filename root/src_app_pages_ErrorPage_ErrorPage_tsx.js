@@ -1,0 +1,1 @@
+"use strict";(this.webpackChunkfeelslike=this.webpackChunkfeelslike||[]).push([["src_app_pages_ErrorPage_ErrorPage_tsx"],{6260:(e,r,t)=>{t.r(r),t.d(r,{default:()=>u});var a=t(9323),s=t(7294),l=t(4697),n=t(98);const u=(0,a.Pi)((function(){return s.createElement(n.default,null,s.createElement(l.Z,{header:"Извините",message:"Произошла ошибка"}))}))}}]);

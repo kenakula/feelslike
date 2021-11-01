@@ -1,0 +1,70 @@
+.three-bounce {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  width: 100%;
+
+  &__bounce {
+    border-radius: 100%;
+    animation: bouncedelay 1.4s infinite ease-in-out both;
+
+    &--1 {
+      animation-delay: -0.32s;
+    }
+
+    &--2 {
+      animation-delay: -0.16s;
+    }
+
+    &--primary {
+      background-color: $color-black;
+    }
+
+    &--small {
+      margin-right: 8px;
+      width: 9px;
+      height: 9px;
+    }
+
+    &--medium {
+      margin-right: 12px;
+      width: 18px;
+      height: 18px;
+    }
+
+    &--large {
+      margin-right: 20px;
+      width: 36px;
+      height: 36px;
+    }
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+}
+
+.centered-three-bounce-row {
+  height: 200px;
+}
+
+.centered-three-bounce-cell {
+  display: flex;
+  justify-content: center;
+}
+
+@keyframes bouncedelay {
+  0%,
+  80%,
+  100% {
+    -webkit-transform: scale(0);
+    transform: scale(0);
+  }
+  40% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
+}

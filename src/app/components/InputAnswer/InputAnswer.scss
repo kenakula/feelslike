@@ -1,0 +1,11 @@
+.input-answer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+
+  &__field {
+    flex-grow: 1;
+    margin-right: 15px;
+  }
+}

@@ -1,0 +1,47 @@
+.header {
+  padding: 10px 0;
+
+  &__container {
+    display: flex;
+    align-items: center;
+  }
+
+  &__logo {
+    color: $color-prussian-blue;
+    font-weight: 500;
+
+    span {
+      color: inherit;
+      font-weight: inherit;
+    }
+  }
+
+  &__link {
+    margin-left: auto;
+    padding: 5px;
+    border-radius: 6px;
+
+    &--active {
+      display: none;
+    }
+  }
+
+  &__menu-btn {
+    @include button-reset;
+    border-radius: 50%;
+    transition: box-shadow $default-transition-duration;
+
+    @include min-desktop {
+      &:hover {
+        // opacity: 0.8;
+        box-shadow: 0px 2px 4px -1px rgba($color: $color-black, $alpha: 0.2),
+          0px 4px 5px 0px rgba($color: $color-black, $alpha: 0.14),
+          0px 1px 10px 0px rgba($color: $color-black, $alpha: 0.12);
+      }
+    }
+  }
+
+  &__drawer {
+    padding: 10px 15px;
+  }
+}

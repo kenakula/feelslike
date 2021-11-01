@@ -1,0 +1,1 @@
+"use strict";(this.webpackChunkfeelslike=this.webpackChunkfeelslike||[]).push([["src_app_pages_NotFoundPage_NotFoundPage_tsx"],{3209:(e,t,a)=>{a.r(t),a.d(t,{default:()=>l});var s=a(7294),n=a(4697),u=a(98);const l=function(){return s.createElement(u.default,null,s.createElement(n.Z,{code:404,header:"Извините",message:"Страница не найдена"}))}}}]);
