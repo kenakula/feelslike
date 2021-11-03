@@ -4,9 +4,10 @@ import {
   getDocs,
   getDoc,
   query,
+  where,
   doc,
   setDoc,
-} from "firebase/firestore";
+} from 'firebase/firestore';
 
 export const readDocument = async (doc: any) => {
   const snapShot = await getDoc(doc);
@@ -14,7 +15,7 @@ export const readDocument = async (doc: any) => {
     const data: any = snapShot.data();
     console.log(`my data - ${JSON.stringify(data.milk)}`);
   } else {
-    console.log("no data");
+    console.log('no data');
   }
 };
 
@@ -27,8 +28,8 @@ export const queryForDocs = async (database: any, collectionString: any) => {
 
 export const addData = async (database: any, obj: any) => {
   console.log(obj);
-  setDoc(doc(database, "feels", "secondary"), {
-    name: "secondary",
+  setDoc(doc(database, 'feels', 'secondary'), {
+    name: 'secondary',
     list: [...obj],
   });
   // list.forEach((item: any) => {
@@ -37,4 +38,34 @@ export const addData = async (database: any, obj: any) => {
   //     list: [...item.list],
   //   });
   // });
+};
+
+export const getDocument = async (
+  db: any,
+  collection: string,
+  name: string,
+) => {
+  const docRef = doc(db, collection, name);
+  const docSnap = await getDoc(docRef);
+
+  if (docSnap.exists()) {
+    console.log('Document data:', docSnap.data());
+  } else {
+    console.log('No such document!');
+  }
+};
+
+export const addDocument = async (
+  db: any,
+  collection: string,
+  name: string,
+  data: any,
+) => {
+  await setDoc(doc(db, collection, name), data);
+};
+
+export const searchForUser = (db: any, id: string) => {
+  const usersRef = collection(db, 'usesrs');
+  const q = query(usersRef, where('uid', '==', id));
+  console.log(q);
 };

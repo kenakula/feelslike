@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from "react";
-import TechnicalIssues from "./components/TechnicalIssues/TechnicalIssues";
-import ThreeBounce from "./components/ThreeBounce/ThreeBounce";
-import { BootState } from "./constants/boot-state";
+import React, { useEffect, useState } from 'react';
+import TechnicalIssues from './components/TechnicalIssues/TechnicalIssues';
+import ThreeBounce from './components/ThreeBounce/ThreeBounce';
+import { BootState } from './constants/boot-state';
 import {
   MainPageStore,
   MainPageStoreContext,
-} from "./stores/main-page/mainPageStore";
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "@firebase/analytics";
-import { getFirestore } from "firebase/firestore";
-import { firebaseConfig } from "./constants/firebase-config";
+} from './stores/main-page/mainPageStore';
+import { initializeApp } from 'firebase/app';
+import { getAnalytics } from '@firebase/analytics';
+import { getFirestore } from 'firebase/firestore';
+import { firebaseConfig } from './constants/firebase-config';
 
-const RouterComponent = React.lazy(() => import("./routes/RouterComponent"));
+const RouterComponent = React.lazy(() => import('./routes/RouterComponent'));
 
 const App = () => {
   const [bootState, setBootState] = useState(BootState.Loading);
@@ -37,7 +37,7 @@ const App = () => {
 
   useEffect(() => {
     loadEnvironment();
-  }, []);
+  }, []); // eslint-disable-line
 
   switch (bootState) {
     case BootState.None:

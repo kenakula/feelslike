@@ -63,9 +63,9 @@ textarea {
 }
 
 input:-webkit-autofill {
-  // box-shadow: inset 0 0 0 1000px $color-default-white;
+  box-shadow: inset 0 0 0 1000px $color-white;
 
-  // -webkit-text-fill-color: $color-default-black;
+  -webkit-text-fill-color: $color-black;
 }
 
 // firefox placeholder \ invalid fix + ios bdrs

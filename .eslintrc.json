@@ -16,9 +16,7 @@
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "warn",
     "react/prop-types": "off",
-    "no-non-null-assertion": "off",
-    "no-unused-vars": "off",
-    "no-explicit-any": "off"
+    "no-non-null-assertion": "off"
   },
   "settings": {
     "react": {

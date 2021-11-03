@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { doc, getDoc } from "@firebase/firestore";
-import { BootState } from "app/constants/boot-state";
-import { Question } from "app/constants/types/questions";
-import { SecondaryFeel } from "app/constants/types/secondaryFeel";
-import { queryForDocs } from "app/utils/firebaseHelpers";
-import { makeAutoObservable, runInAction } from "mobx";
-import * as React from "react";
+import { doc, getDoc } from '@firebase/firestore';
+import { BootState } from 'app/constants/boot-state';
+import { Question } from 'app/constants/types/questions';
+import { SecondaryFeel } from 'app/constants/types/secondaryFeel';
+import { queryForDocs } from 'app/utils/firebaseHelpers';
+import { makeAutoObservable, runInAction } from 'mobx';
+import * as React from 'react';
 
 export class MainPageStore {
   bootState: BootState = BootState.Loading;
@@ -26,7 +26,7 @@ export class MainPageStore {
 
   async getQuestions() {
     try {
-      const querySnapShot = await queryForDocs(this.database, "questions");
+      const querySnapShot = await queryForDocs(this.database, 'questions');
       runInAction(() => {
         querySnapShot.forEach((snap: any) => {
           const dataObj = { id: snap.id, text: snap.data().text };
@@ -45,7 +45,7 @@ export class MainPageStore {
 
   async getFeels() {
     try {
-      const primaryFeelsRef = doc(this.database, "feels", "primary");
+      const primaryFeelsRef = doc(this.database, 'feels', 'primary');
       const primaryFeelsSnap = await getDoc(primaryFeelsRef);
 
       if (primaryFeelsSnap.exists()) {
@@ -54,10 +54,10 @@ export class MainPageStore {
           this.primaryFeels = data.list;
         });
       } else {
-        console.log("No such document!");
+        console.log('No such document!');
       }
 
-      const secondaryFeelsRef = doc(this.database, "feels", "secondary");
+      const secondaryFeelsRef = doc(this.database, 'feels', 'secondary');
       const secondaryFeelsSnap = await getDoc(secondaryFeelsRef);
 
       if (secondaryFeelsSnap.exists()) {
@@ -66,7 +66,7 @@ export class MainPageStore {
           this.secondaryFeels = data.list;
         });
       } else {
-        console.log("no such document");
+        console.log('no such document');
       }
     } catch (err) {
       console.log(err);

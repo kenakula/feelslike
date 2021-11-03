@@ -1,22 +1,39 @@
-import React, { useState } from "react";
-import Container from "../Container/Container";
-import "./Header.scss";
-import { NavLink } from "react-router-dom";
+import React, { useState } from 'react';
+import Container from '../Container/Container';
+import './Header.scss';
+import { NavLink } from 'react-router-dom';
 import {
+  Alert,
   Avatar,
   Button,
   Link,
   Stack,
   SwipeableDrawer,
   Typography,
-} from "@mui/material";
-import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
-import { OpenState } from "app/constants/open-state";
-import { observer } from "mobx-react";
-import { Box } from "@mui/system";
+} from '@mui/material';
+import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
+import { OpenState } from 'app/constants/open-state';
+import { observer } from 'mobx-react';
+import { Box } from '@mui/system';
+import { useAuth } from 'app/stores/auth/auth-provider';
+import { useHistory } from 'react-router-dom';
 
 const Header = observer(() => {
   const [showDrawer, setShowDrawer] = useState<OpenState>(OpenState.Closed);
+  const [errorMessage, setErrorMessage] = useState('');
+  const { logout, currentUser } = useAuth();
+  const history = useHistory();
+
+  const signOutHandler = async () => {
+    try {
+      setErrorMessage('');
+      await logout();
+      history.push('/login');
+    } catch (err) {
+      console.log(err);
+      setErrorMessage('Ошибка выхода');
+    }
+  };
 
   const toggleDrawer = () => {
     switch (showDrawer) {
@@ -40,7 +57,7 @@ const Header = observer(() => {
           </Link>
         </NavLink>
         <Stack
-          sx={{ marginLeft: "auto" }}
+          sx={{ marginLeft: 'auto' }}
           direction="row"
           spacing={2}
           alignItems="center"
@@ -55,7 +72,7 @@ const Header = observer(() => {
             </Button>
           </NavLink>
           <button className="header__menu-btn" onClick={toggleDrawer}>
-            <Avatar variant="circular" sx={{ bgcolor: "#1d3557" }}>
+            <Avatar variant="circular" sx={{ bgcolor: '#1d3557' }}>
               <PersonOutlinedIcon />
             </Avatar>
           </button>
@@ -67,7 +84,7 @@ const Header = observer(() => {
           onOpen={toggleDrawer}
         >
           <Box
-            sx={{ minWidth: "200px", padding: "10px" }}
+            sx={{ minWidth: '200px', padding: '10px' }}
             className="header__drawer"
           >
             <Stack
@@ -76,11 +93,19 @@ const Header = observer(() => {
               alignItems="center"
               justifyContent="flex-end"
             >
-              <Typography variant="body1">Username</Typography>
-              <Avatar variant="circular" sx={{ bgcolor: "#1d3557" }}>
+              <Typography variant="body1">{currentUser?.email}</Typography>
+              <Avatar variant="circular" sx={{ bgcolor: '#1d3557' }}>
                 <PersonOutlinedIcon />
               </Avatar>
             </Stack>
+            <Button variant="outlined" onClick={signOutHandler}>
+              SignOut
+            </Button>
+            {errorMessage ? (
+              <Alert severity="error" sx={{ mt: 2 }}>
+                {errorMessage}
+              </Alert>
+            ) : null}
           </Box>
         </SwipeableDrawer>
       </Container>
