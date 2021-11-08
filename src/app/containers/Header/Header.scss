@@ -42,6 +42,14 @@
   }
 
   &__drawer {
-    padding: 10px 15px;
+    display: flex;
+    flex-direction: column;
+    padding: 10px 15px 40px;
+    min-width: 250px;
+    min-height: 100%;
+  }
+
+  &__username {
+    font-weight: 500;
   }
 }

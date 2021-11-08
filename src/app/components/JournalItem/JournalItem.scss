@@ -1,0 +1,61 @@
+.journal-item {
+  margin-bottom: 20px;
+  padding: 5px 10px;
+  cursor: pointer;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  &__date {
+    color: rgba($color: $color-prussian-blue, $alpha: 0.8);
+  }
+
+  &__body {
+    display: flex;
+    align-items: center;
+    padding: 10px 0;
+  }
+
+  &__time {
+    min-width: 50px;
+    color: $color-prussian-blue;
+  }
+
+  &__info {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    padding-left: 10px;
+    flex-grow: 1;
+    border-left: 1px solid rgba($color: $color-prussian-blue, $alpha: 0.4);
+  }
+
+  &__icon {
+    margin-right: 10px;
+  }
+
+  &__feel {
+    width: calc(100% - 50px);
+
+    @include min-tablet {
+      margin-right: 10px;
+      width: auto;
+    }
+  }
+
+  &__feels-list {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: 10px;
+
+    @include min-tablet {
+      margin-top: 0;
+    }
+  }
+
+  &__secondary-feel {
+    margin: 5px 5px 5px 0;
+  }
+}

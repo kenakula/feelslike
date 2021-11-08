@@ -44,7 +44,7 @@ const SignupPage = observer(() => {
   const [errorMessage, setErrorMessage] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const { signup } = useAuth();
+  const { signup, updateInfo } = useAuth();
   const history = useHistory();
 
   const handleSubmit = async (values: FormValues) => {
@@ -52,6 +52,7 @@ const SignupPage = observer(() => {
       setLoading(true);
       setErrorMessage('');
       await signup(values.email, values.password, values.login);
+      await updateInfo(values.login);
       history.push('/login');
     } catch (err) {
       setErrorMessage('ошибка при регистрации');

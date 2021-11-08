@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { Note } from 'app/constants/types/note';
 import {
   collection,
   getDocs,
@@ -68,4 +69,31 @@ export const searchForUser = (db: any, id: string) => {
   const usersRef = collection(db, 'usesrs');
   const q = query(usersRef, where('uid', '==', id));
   console.log(q);
+};
+
+export const addJournalNote = async (
+  db: any,
+  userName: string | null,
+  data: any,
+  noteTitle: string,
+) => {
+  if (userName) {
+    const docRef = doc(db, 'users', userName, 'journal', noteTitle);
+    await setDoc(docRef, data);
+  }
+};
+
+export const getJournalNotes = async (db: any, userName: string | null) => {
+  const result: Note[] = [];
+
+  if (userName) {
+    const docRef = collection(db, `users/${userName}/journal`);
+    const docsSnapshot = await getDocs(docRef);
+
+    docsSnapshot.forEach((doc: any) => {
+      result.push(doc.data());
+    });
+  }
+
+  return result;
 };

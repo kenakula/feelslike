@@ -10,12 +10,17 @@ import { initializeApp } from 'firebase/app';
 import { getAnalytics } from '@firebase/analytics';
 import { getFirestore } from 'firebase/firestore';
 import { firebaseConfig } from './constants/firebase-config';
+import {
+  JournalStore,
+  JournalStoreContext,
+} from './stores/journal-page/JournalStore';
 
 const RouterComponent = React.lazy(() => import('./routes/RouterComponent'));
 
 const App = () => {
   const [bootState, setBootState] = useState(BootState.Loading);
   const [mainPageStore, setMainPageStore] = useState<MainPageStore>();
+  const [journalPageStore, setJournalPageStore] = useState<JournalStore>();
 
   const loadEnvironment = async () => {
     try {
@@ -24,8 +29,10 @@ const App = () => {
       const firebaseDatabase = getFirestore();
 
       const mainPageStore = new MainPageStore(firebaseDatabase);
+      const journalPageStore = new JournalStore(mainPageStore);
 
       setMainPageStore(mainPageStore);
+      setJournalPageStore(journalPageStore);
       mainPageStore.init();
 
       setBootState(BootState.Success);
@@ -46,9 +53,11 @@ const App = () => {
     case BootState.Success:
       return (
         <MainPageStoreContext.Provider value={mainPageStore}>
-          <React.Suspense fallback={<ThreeBounce />}>
-            <RouterComponent />
-          </React.Suspense>
+          <JournalStoreContext.Provider value={journalPageStore}>
+            <React.Suspense fallback={<ThreeBounce />}>
+              <RouterComponent />
+            </React.Suspense>
+          </JournalStoreContext.Provider>
         </MainPageStoreContext.Provider>
       );
     case BootState.Error:

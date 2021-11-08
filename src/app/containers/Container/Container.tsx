@@ -1,8 +1,8 @@
-import React from "react";
-import "./Container.scss";
+import React from 'react';
+import './Container.scss';
 
 interface Props {
-  children: JSX.Element | JSX.Element[];
+  children: JSX.Element | JSX.Element[] | null;
   className?: string;
 }
 

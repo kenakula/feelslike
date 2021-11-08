@@ -1,63 +1,45 @@
-import { Alert, Button, Snackbar, TextField } from "@mui/material";
-import { Box } from "@mui/system";
-import React, { useState } from "react";
-import SelectFeel from "../SelectFeel/SelectFeel";
-import "./InputAnswer.scss";
+import { TextField } from '@mui/material';
+import { Box } from '@mui/system';
+import { Question } from 'app/constants/types/questions';
+import { MainPageStoreContext } from 'app/stores/main-page/mainPageStore';
+import React, { useContext, useState } from 'react';
+import SelectFeel from '../SelectFeel/SelectFeel';
+import './InputAnswer.scss';
 
 interface InputAnswerProps {
   hasFeels?: boolean;
+  question: Question;
 }
 
 const InputAnswer = (props: InputAnswerProps) => {
-  const [value, setValue] = useState("");
-  const [showSnackBar, setShowSnackBar] = useState(false);
+  const [value, setValue] = useState('');
+
+  const mainPageStore = useContext(MainPageStoreContext);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setValue(event.target.value);
   };
 
-  const handleCloseSnackBar = () => {
-    setShowSnackBar(false);
-  };
-
-  const saveHandle = () => {
-    if (value.length) {
-      setShowSnackBar(true);
-    }
-    setValue("");
+  const handleBlur = (evt: React.FocusEvent<HTMLInputElement>) => {
+    mainPageStore?.pushAnswer({
+      question: props.question.text,
+      answer: evt.target.value,
+    });
   };
 
   return (
     <Box className="input-answer">
-      {props.hasFeels ? (
-        <SelectFeel changeHandler={setValue} fieldValue={value} />
-      ) : null}
+      {props.hasFeels ? <SelectFeel /> : null}
       <TextField
         className="input-answer__field"
         multiline
         maxRows={6}
         value={value}
         onChange={handleChange}
-        label="Введите текст"
+        onBlur={handleBlur}
+        label="Опишите подробнее"
         autoComplete="off"
       />
-      <Button size="small" variant="contained" onClick={saveHandle}>
-        Сохранить
-      </Button>
-      <Snackbar
-        open={showSnackBar}
-        onClose={handleCloseSnackBar}
-        autoHideDuration={2000}
-        message="Запись добавлена"
-      >
-        <Alert
-          onClose={handleCloseSnackBar}
-          severity="success"
-          sx={{ width: "100%" }}
-        >
-          Запись добавлена
-        </Alert>
-      </Snackbar>
     </Box>
   );
 };

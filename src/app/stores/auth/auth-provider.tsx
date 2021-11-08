@@ -10,6 +10,7 @@ import {
   sendPasswordResetEmail,
   updateEmail,
   updatePassword,
+  updateProfile,
 } from 'firebase/auth';
 import { MainPageStoreContext } from '../main-page/mainPageStore';
 
@@ -23,6 +24,7 @@ type ContextProps = {
   resetPassword: any;
   updateUserEmail: any;
   updateUserPassword: any;
+  updateInfo: any;
 };
 
 interface Props {
@@ -58,6 +60,13 @@ export function AuthProvider(props: Props) {
         console.log('errorCode:', errorCode);
         console.log('errorMessage:', errorMessage);
       });
+  }
+
+  function updateInfo(login: string, photoUrl?: string) {
+    return updateProfile(auth.currentUser!, {
+      displayName: login,
+      photoURL: photoUrl,
+    }).then(() => console.log(auth.currentUser));
   }
 
   function login(email: string, password: string) {
@@ -104,6 +113,7 @@ export function AuthProvider(props: Props) {
     print,
     signup,
     logout,
+    updateInfo,
     resetPassword,
     updateUserEmail,
     updateUserPassword,

@@ -1,11 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { doc, getDoc } from '@firebase/firestore';
+import { nanoid } from 'nanoid';
+import { User } from '@firebase/auth';
+import { doc, getDoc, Timestamp } from '@firebase/firestore';
 import { BootState } from 'app/constants/boot-state';
 import { Question } from 'app/constants/types/questions';
 import { SecondaryFeel } from 'app/constants/types/secondaryFeel';
-import { queryForDocs } from 'app/utils/firebaseHelpers';
+import { addJournalNote, queryForDocs } from 'app/utils/firebaseHelpers';
 import { makeAutoObservable, runInAction } from 'mobx';
 import * as React from 'react';
+import { Note } from 'app/constants/types/note';
+import { Answer } from 'app/constants/types/answer';
 
 export class MainPageStore {
   bootState: BootState = BootState.Loading;
@@ -13,11 +17,66 @@ export class MainPageStore {
   questions: Question[] = [];
   primaryFeels: string[] = [];
   secondaryFeels: SecondaryFeel[] = [];
+  selectedPrimaryFeel: string | null;
+  selectedSecondaryFeels: string[] | string | null;
+  saveNoteBootState: BootState;
+  note: Note;
+  answers: Answer[] = [];
 
   constructor(database: any) {
     this.database = database;
 
     makeAutoObservable(this);
+  }
+
+  async saveNoteToDatabase(user: User) {
+    try {
+      await addJournalNote(
+        this.database,
+        user.displayName,
+        this.note,
+        nanoid(),
+      );
+    } catch (err) {
+      console.log('failed to save: ', err);
+    }
+  }
+
+  makeNote(): void {
+    this.note = {
+      primaryFeel: this.selectedPrimaryFeel,
+      secondaryFeels: this.selectedSecondaryFeels,
+      answers: this.answers,
+      date: Timestamp.now(),
+    };
+  }
+
+  pushAnswer(answer: Answer) {
+    this.answers.push(answer);
+  }
+
+  get getPrimaryFeel() {
+    return this.selectedPrimaryFeel;
+  }
+
+  setPrimaryFeel(feel: string) {
+    this.selectedPrimaryFeel = feel;
+  }
+
+  get getSecondaryFeels() {
+    return this.selectedSecondaryFeels;
+  }
+
+  setSecondaryFeels(feels: string[] | string) {
+    this.selectedSecondaryFeels = feels;
+  }
+
+  get getNoteBootState() {
+    return this.saveNoteBootState;
+  }
+
+  setNoteBootState(state: BootState) {
+    this.saveNoteBootState = state;
   }
 
   get getBootState() {

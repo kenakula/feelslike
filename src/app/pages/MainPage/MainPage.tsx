@@ -11,19 +11,22 @@ import {
   AccordionSummary,
   Typography,
   Button,
-  Snackbar,
   Alert,
+  Backdrop,
+  CircularProgress,
 } from '@mui/material';
 import { ExpandMoreRounded } from '@mui/icons-material';
 import InputAnswer from 'app/components/InputAnswer/InputAnswer';
+import { useAuth } from 'app/stores/auth/auth-provider';
 
 const Layout = React.lazy(() => import('app/containers/layout/layout'));
 
 const MainPage = observer((): JSX.Element => {
   const mainPageStore = useContext(MainPageStoreContext);
+  const { currentUser } = useAuth();
 
   const [expanded, setExpanded] = useState<string | false>(false);
-  const [showSnackBar, setShowSnackBar] = useState(false);
+  const [showSaveNote, setShowSaveNote] = useState(false);
 
   const handleChange =
     (panelId: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
@@ -31,11 +34,16 @@ const MainPage = observer((): JSX.Element => {
     };
 
   const handleSaveBtn = () => {
-    setShowSnackBar(true);
+    setShowSaveNote(true);
+    mainPageStore?.makeNote();
+
+    if (currentUser) {
+      mainPageStore?.saveNoteToDatabase(currentUser);
+    }
   };
 
-  const handleCloseSnackBar = () => {
-    setShowSnackBar(false);
+  const handleCloseBackDrop = () => {
+    setShowSaveNote(false);
   };
 
   switch (mainPageStore?.getBootState) {
@@ -59,7 +67,7 @@ const MainPage = observer((): JSX.Element => {
                       <Typography>{question.text}</Typography>
                     </AccordionSummary>
                     <AccordionDetails>
-                      <InputAnswer hasFeels={index === 0} />
+                      <InputAnswer question={question} hasFeels={index === 0} />
                     </AccordionDetails>
                   </Accordion>
                 );
@@ -75,20 +83,15 @@ const MainPage = observer((): JSX.Element => {
               Сохранить
             </Button>
           ) : null}
-          <Snackbar
-            open={showSnackBar}
-            onClose={handleCloseSnackBar}
-            autoHideDuration={2000}
-            message="Запись добавлена"
-          >
-            <Alert
-              onClose={handleCloseSnackBar}
-              severity="success"
-              sx={{ width: '100%' }}
-            >
-              Запись добавлена
-            </Alert>
-          </Snackbar>
+          <Backdrop open={showSaveNote} onClick={handleCloseBackDrop}>
+            {mainPageStore.getNoteBootState === BootState.Loading ? (
+              <CircularProgress color="inherit" />
+            ) : (
+              <Alert severity="success">
+                This is a success alert — check it out!
+              </Alert>
+            )}
+          </Backdrop>
         </Layout>
       );
     default:

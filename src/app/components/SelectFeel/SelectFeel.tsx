@@ -1,43 +1,44 @@
 import {
+  Checkbox,
   FormControl,
   FormHelperText,
   InputLabel,
+  ListItemText,
   MenuItem,
+  OutlinedInput,
   Select,
   SelectChangeEvent,
-} from "@mui/material";
-import { Box } from "@mui/system";
-import { SecondaryFeel } from "app/constants/types/secondaryFeel";
-import { MainPageStoreContext } from "app/stores/main-page/mainPageStore";
-import { observer } from "mobx-react";
-import React, {
-  Dispatch,
-  SetStateAction,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
-import "./SelectFeel.scss";
+} from '@mui/material';
+import { Box } from '@mui/system';
+// import { feelsItems } from 'app/constants/feels';
+import { SecondaryFeel } from 'app/constants/types/secondaryFeel';
+import { MainPageStoreContext } from 'app/stores/main-page/mainPageStore';
+import { observer } from 'mobx-react';
+import React, { useContext, useEffect, useState } from 'react';
+import './SelectFeel.scss';
 
-interface Props {
-  changeHandler: Dispatch<SetStateAction<string>>;
-  fieldValue: string;
-}
-
-const SelectFeel = observer((props: Props) => {
-  const { changeHandler, fieldValue } = props;
-
+const SelectFeel = observer(() => {
   const mainPageStore = useContext(MainPageStoreContext);
 
-  const [primaryFeel, setPrimaryFeel] = useState<string | undefined>("");
+  const [primaryFeel, setPrimaryFeel] = useState<string | undefined>('');
   const [feelsList, setFeelsList] = useState<string[] | undefined>([]);
-  const [secondaryFeel, setSecondaryFeel] = useState<string | undefined>("");
+  const [selectedFeels, setSelectedFeels] = useState<string[]>([]);
+
+  const handleSecondaryChange = (
+    event: SelectChangeEvent<typeof selectedFeels>,
+  ) => {
+    const {
+      target: { value },
+    } = event;
+    setSelectedFeels(typeof value === 'string' ? value.split(',') : value);
+    mainPageStore?.setSecondaryFeels(value);
+  };
 
   useEffect(() => {
     const feelObj = mainPageStore?.secondaryFeels.filter(
       (item: SecondaryFeel) => {
         return item.id === primaryFeel;
-      }
+      },
     );
 
     if (feelObj?.length) {
@@ -45,23 +46,10 @@ const SelectFeel = observer((props: Props) => {
     }
   }, [primaryFeel, mainPageStore]);
 
-  const composeFeelText = (str: string) => {
-    if (!fieldValue.length) {
-      changeHandler(`${primaryFeel}: ${str}`);
-    } else {
-      changeHandler(`${fieldValue}, ${str}`);
-    }
-  };
-
   const handlePrimaryChange = (evt: SelectChangeEvent) => {
     setPrimaryFeel(evt.target.value);
-    setSecondaryFeel("");
-    changeHandler("");
-  };
-
-  const handleSecondaryChange = (evt: SelectChangeEvent) => {
-    setSecondaryFeel(evt.target.value);
-    composeFeelText(evt.target.value);
+    mainPageStore?.setPrimaryFeel(evt.target.value);
+    setSelectedFeels([]);
   };
 
   return (
@@ -97,16 +85,20 @@ const SelectFeel = observer((props: Props) => {
         >
           <InputLabel id="select-secondary-label">Точнее</InputLabel>
           <Select
+            multiple
             labelId="select-secondary-label"
             id="select-secondary"
-            value={secondaryFeel}
+            value={selectedFeels}
             label="Точнее"
+            input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
             onChange={handleSecondaryChange}
+            renderValue={selected => selected.join(', ')}
           >
             {feelsList.map((item: string) => {
               return (
                 <MenuItem key={item} value={item}>
-                  {item}
+                  <Checkbox checked={selectedFeels.indexOf(item) > -1} />
+                  <ListItemText primary={item} />
                 </MenuItem>
               );
             })}

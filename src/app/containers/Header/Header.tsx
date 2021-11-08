@@ -83,22 +83,28 @@ const Header = observer(() => {
           onClose={toggleDrawer}
           onOpen={toggleDrawer}
         >
-          <Box
-            sx={{ minWidth: '200px', padding: '10px' }}
-            className="header__drawer"
-          >
+          <Box className="header__drawer">
             <Stack
               direction="row"
               spacing={2}
               alignItems="center"
-              justifyContent="flex-end"
+              justifyContent="space-between"
+              sx={{ mb: 2, pl: 2 }}
             >
-              <Typography variant="body1">{currentUser?.email}</Typography>
+              <Typography className="header__username" variant="body1">
+                {currentUser?.displayName}
+              </Typography>
               <Avatar variant="circular" sx={{ bgcolor: '#1d3557' }}>
                 <PersonOutlinedIcon />
               </Avatar>
             </Stack>
-            <Button variant="outlined" onClick={signOutHandler}>
+            <Button
+              color="error"
+              fullWidth
+              variant="contained"
+              sx={{ marginTop: 'auto' }}
+              onClick={signOutHandler}
+            >
               SignOut
             </Button>
             {errorMessage ? (
