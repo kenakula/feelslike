@@ -1,13 +1,22 @@
-import { Avatar, Chip, Paper, Typography } from '@mui/material';
+import {
+  Avatar,
+  Chip,
+  IconButton,
+  Paper,
+  Tooltip,
+  Typography,
+} from '@mui/material';
 import { Note } from 'app/constants/types/note';
 import { getDate, getTime } from 'app/utils/timeHelpers';
 import React, { useState } from 'react';
-import AssignmentLateOutlinedIcon from '@mui/icons-material/AssignmentLateOutlined';
+import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
+import Icon, { getIconName } from 'app/components/Emotions';
 import './JournalItem.scss';
 
 interface Props {
   data: Note;
-  modalOpen: () => void;
+  modalDetailsOpen: (data: Note) => void;
+  modalEditOpen: (data: Note) => void;
 }
 
 interface FeelsProps {
@@ -43,6 +52,7 @@ const SecondaryFeels = (props: FeelsProps) => {
 
 const JournalItem = (props: Props) => {
   const { data } = props;
+  const iconName = getIconName(props.data.primaryFeel);
 
   const [hoverElevation, setHoverElevation] = useState(3);
 
@@ -54,18 +64,32 @@ const JournalItem = (props: Props) => {
     setHoverElevation(3);
   };
 
+  const onEditButtonClick = (evt: React.SyntheticEvent) => {
+    evt.stopPropagation();
+    props.modalEditOpen(data);
+  };
+
   return (
     <Paper
       elevation={hoverElevation}
       className="journal-item"
       onMouseOver={onItemMouseOver}
       onMouseOut={onItemMouseOut}
-      onClick={props.modalOpen}
+      onClick={() => props.modalDetailsOpen(data)}
     >
       <div className="journal-item__top">
         <Typography className="journal-item__date">
           {getDate(data.date)}
         </Typography>
+        <Tooltip
+          title="дополнить ответ"
+          placement="left-start"
+          disableTouchListener
+        >
+          <IconButton aria-label="дополнить" onClick={onEditButtonClick}>
+            <ModeEditOutlineOutlinedIcon />
+          </IconButton>
+        </Tooltip>
       </div>
       <div className="journal-item__body">
         <div className="journal-item__time">
@@ -75,7 +99,7 @@ const JournalItem = (props: Props) => {
         </div>
         <div className="journal-item__info">
           <Avatar className="journal-item__icon">
-            <AssignmentLateOutlinedIcon />
+            <Icon size="medium" name={iconName} />
           </Avatar>
           <Typography
             className="journal-item__feel"

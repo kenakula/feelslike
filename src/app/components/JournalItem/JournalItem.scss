@@ -7,6 +7,12 @@
     margin-bottom: 0;
   }
 
+  &__top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
   &__date {
     color: rgba($color: $color-prussian-blue, $alpha: 0.8);
   }
@@ -33,6 +39,7 @@
 
   &__icon {
     margin-right: 10px;
+    background-color: transparent;
   }
 
   &__feel {

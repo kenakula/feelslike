@@ -12,6 +12,7 @@ import { Note } from 'app/constants/types/note';
 // TODO опустошать поля ввода после сохранения
 // TODO иконки эмоций
 // TODO валидация формы
+// TODO аутентификация гугл и фейсбук
 
 export class JournalStore {
   mainPageStore: MainPageStore;

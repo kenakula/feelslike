@@ -8,6 +8,7 @@ import { nanoid } from 'nanoid';
 import JournalItem from 'app/components/JournalItem/JournalItem';
 import ThreeBounce from 'app/components/ThreeBounce/ThreeBounce';
 import { Note } from 'app/constants/types/note';
+import { runInAction } from 'mobx';
 
 const Layout = React.lazy(() => import('../../containers/layout/layout'));
 
@@ -15,14 +16,29 @@ const JournalPage = observer(() => {
   const journalStore = useContext(JournalStoreContext);
   const { currentUser } = useAuth();
 
-  const [showModal, setShowModal] = useState(false);
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
+  const [modalDetailsData, setModalDetailsData] = useState<Note | null>();
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [modalEditData, setModalEditData] = useState<Note | null>();
 
-  const handleModalClose = () => {
-    setShowModal(false);
+  const [sortedList, setSortedList] = useState<Note[]>([]);
+
+  const handleModalDetailsClose = () => {
+    setShowDetailsModal(false);
   };
 
-  const handleModalOpen = () => {
-    setShowModal(true);
+  const handleModalDetailsOpen = (data: Note) => {
+    setShowDetailsModal(true);
+    setModalDetailsData(data);
+  };
+
+  const handleModalEditOpen = (data: Note) => {
+    setShowEditModal(true);
+    setModalEditData(data);
+  };
+
+  const handleModalEditClose = () => {
+    setShowEditModal(false);
   };
 
   useEffect(() => {
@@ -30,18 +46,31 @@ const JournalPage = observer(() => {
     journalStore?.fetchNotes(currentUser);
   }, [journalStore, currentUser]);
 
+  useEffect(() => {
+    if (journalStore?.notesList.length) {
+      runInAction(() => {
+        const sorted = journalStore.notesList;
+        sorted.sort((a: Note, b: Note) => {
+          return a.date.seconds - b.date.seconds;
+        });
+        setSortedList(sorted);
+      });
+    }
+  }, [journalStore?.notesList]);
+
   return (
     <Layout>
       {journalStore?.isInited ? (
         <Container>
           {journalStore?.notesList.length ? (
             <List>
-              {journalStore.notesList.map((note: Note) => {
+              {sortedList.map((note: Note) => {
                 return (
                   <JournalItem
                     key={nanoid()}
                     data={note}
-                    modalOpen={handleModalOpen}
+                    modalDetailsOpen={handleModalDetailsOpen}
+                    modalEditOpen={handleModalEditOpen}
                   />
                 );
               })}
@@ -51,14 +80,26 @@ const JournalPage = observer(() => {
       ) : (
         <ThreeBounce />
       )}
-      <Dialog
-        maxWidth="sm"
-        fullWidth
-        open={showModal}
-        onClose={handleModalClose}
-      >
-        <DialogTitle>Note Details</DialogTitle>
-      </Dialog>
+      {modalDetailsData && (
+        <Dialog
+          maxWidth="sm"
+          fullWidth
+          open={showDetailsModal}
+          onClose={handleModalDetailsClose}
+        >
+          <DialogTitle>{modalDetailsData.id}</DialogTitle>
+        </Dialog>
+      )}
+      {modalEditData && (
+        <Dialog
+          maxWidth="sm"
+          fullWidth
+          open={showEditModal}
+          onClose={handleModalEditClose}
+        >
+          <DialogTitle>{modalEditData.primaryFeel}</DialogTitle>
+        </Dialog>
+      )}
     </Layout>
   );
 });

@@ -35,7 +35,7 @@ export class MainPageStore {
         this.database,
         user.displayName,
         this.note,
-        nanoid(),
+        this.note.id,
       );
     } catch (err) {
       console.log('failed to save: ', err);
@@ -48,6 +48,7 @@ export class MainPageStore {
       secondaryFeels: this.selectedSecondaryFeels,
       answers: this.answers,
       date: Timestamp.now(),
+      id: nanoid(),
     };
   }
 
