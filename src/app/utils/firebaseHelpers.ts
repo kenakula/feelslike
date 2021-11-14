@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Note } from 'app/constants/types/note';
+import { AddedNote, Note } from 'app/constants/types/note';
 import {
   collection,
   getDocs,
@@ -8,6 +8,7 @@ import {
   where,
   doc,
   setDoc,
+  orderBy,
 } from 'firebase/firestore';
 
 export const readDocument = async (doc: any) => {
@@ -33,12 +34,6 @@ export const addData = async (database: any, obj: any) => {
     name: 'secondary',
     list: [...obj],
   });
-  // list.forEach((item: any) => {
-  //   setDoc(doc(database, "feels", item.id), {
-  //     name: item.name,
-  //     list: [...item.list],
-  //   });
-  // });
 };
 
 export const getDocument = async (
@@ -73,27 +68,72 @@ export const searchForUser = (db: any, id: string) => {
 
 export const addJournalNote = async (
   db: any,
-  userName: string | null,
+  userId: string | null,
   data: any,
   noteTitle: string,
 ) => {
-  if (userName) {
-    const docRef = doc(db, 'users', userName, 'journal', noteTitle);
+  if (userId) {
+    const docRef = doc(db, 'users', userId, 'journal', noteTitle);
     await setDoc(docRef, data);
   }
 };
 
-export const getJournalNotes = async (db: any, userName: string | null) => {
+export const getJournalNotes = async (
+  db: any,
+  userId: string | null,
+  limitAmount: number,
+) => {
   const result: Note[] = [];
+  console.log('limit notes: ', limitAmount);
 
-  if (userName) {
-    const docRef = collection(db, `users/${userName}/journal`);
-    const docsSnapshot = await getDocs(docRef);
-
-    docsSnapshot.forEach((doc: any) => {
+  if (userId) {
+    const ref = collection(db, `users/${userId}/journal`);
+    const q = query(ref, orderBy('date'));
+    const snap = await getDocs(q);
+    snap.forEach((doc: any) => {
       result.push(doc.data());
     });
   }
 
   return result;
+};
+
+export const addJournalNoteAditionalNote = async (
+  db: any,
+  userId: string | null,
+  data: AddedNote,
+  noteId: string,
+  addedNoteId: string,
+) => {
+  if (userId) {
+    const docRef = doc(
+      db,
+      'users',
+      userId,
+      'journal',
+      noteId,
+      'notes',
+      addedNoteId,
+    );
+    await setDoc(docRef, data);
+  }
+};
+
+export const getAddedNotes = async (
+  db: any,
+  userId: string | null,
+  noteId: string,
+) => {
+  const result: AddedNote[] = [];
+
+  if (userId) {
+    const docRef = collection(db, `users/${userId}/journal/${noteId}/notes`);
+    const docsSnap = await getDocs(docRef);
+
+    docsSnap.forEach((doc: any) => {
+      result.push(doc.data());
+    });
+
+    return result;
+  }
 };

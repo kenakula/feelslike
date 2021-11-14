@@ -11,6 +11,8 @@ import {
   updateEmail,
   updatePassword,
   updateProfile,
+  GoogleAuthProvider,
+  signInWithPopup,
 } from 'firebase/auth';
 import { MainPageStoreContext } from '../main-page/mainPageStore';
 
@@ -25,6 +27,7 @@ type ContextProps = {
   updateUserEmail: any;
   updateUserPassword: any;
   updateInfo: any;
+  loginWithGoogle: any;
 };
 
 interface Props {
@@ -37,17 +40,21 @@ export function AuthProvider(props: Props) {
   const { children } = props;
 
   const [currentUser, setCurrentUser] = useState<User>();
+  const [googleToken, setGoogleToken] = useState<string | undefined>('');
   const [loading, setLoading] = useState(true);
   const mainPageStore = useContext(MainPageStoreContext);
 
   const auth = getAuth();
+  auth.languageCode = 'ru';
+  const googleProvider = new GoogleAuthProvider();
+
   const database = mainPageStore?.database;
 
   function signup(email: string, password: string, login: string) {
     return createUserWithEmailAndPassword(auth, email, password)
       .then(userCredential => {
         const user = userCredential.user;
-        addDocument(database, 'users', login, {
+        addDocument(database, 'users', user.uid, {
           uid: user.uid,
           name: login,
           authProvider: 'local',
@@ -71,6 +78,37 @@ export function AuthProvider(props: Props) {
 
   function login(email: string, password: string) {
     return signInWithEmailAndPassword(auth, email, password);
+  }
+
+  function loginWithGoogle(callback: () => void) {
+    signInWithPopup(auth, googleProvider)
+      .then((result: any) => {
+        const credentials = GoogleAuthProvider.credentialFromResult(result);
+        const token = credentials?.accessToken;
+        setGoogleToken(token);
+        const user: User = result.user;
+        callback();
+        console.log(googleToken);
+        addDocument(database, 'users', user.uid, {
+          uid: user.uid,
+          name: user.displayName,
+          authProvider: credentials?.providerId,
+          email: user.email,
+        });
+      })
+      .catch((err: any) => {
+        const errorCode = err.code;
+        const errorMesage = err.mesage;
+        const credential = GoogleAuthProvider.credentialFromError(err);
+        console.log(
+          'credential:',
+          credential,
+          'message: ',
+          errorMesage,
+          'code: ',
+          errorCode,
+        );
+      });
   }
 
   function print(values: any) {
@@ -116,6 +154,7 @@ export function AuthProvider(props: Props) {
     updateInfo,
     resetPassword,
     updateUserEmail,
+    loginWithGoogle,
     updateUserPassword,
   };
 

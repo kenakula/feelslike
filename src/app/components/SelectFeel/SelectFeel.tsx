@@ -56,7 +56,11 @@ const SelectFeel = observer(() => {
     <Box className="select-feel">
       {mainPageStore?.primaryFeels && mainPageStore?.secondaryFeels ? (
         <>
-          <FormControl className="select-feel__primary" fullWidth>
+          <FormControl
+            className="select-feel__primary"
+            fullWidth
+            error={mainPageStore.primaryFeelError}
+          >
             <InputLabel id="select-primary-label">Чувство</InputLabel>
             <Select
               labelId="select-primary-label"
@@ -82,6 +86,7 @@ const SelectFeel = observer(() => {
           className="select-feel__secondary"
           disabled={primaryFeel?.length ? false : true}
           fullWidth
+          error={mainPageStore?.secondaryFeelError}
         >
           <InputLabel id="select-secondary-label">Точнее</InputLabel>
           <Select

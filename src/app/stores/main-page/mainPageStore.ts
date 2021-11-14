@@ -20,6 +20,8 @@ export class MainPageStore {
   selectedPrimaryFeel: string | null;
   selectedSecondaryFeels: string[] | string | null;
   saveNoteBootState: BootState;
+  primaryFeelError: boolean;
+  secondaryFeelError: boolean;
   note: Note;
   answers: Answer[] = [];
 
@@ -29,20 +31,26 @@ export class MainPageStore {
     makeAutoObservable(this);
   }
 
-  async saveNoteToDatabase(user: User) {
+  async saveNoteToDatabase(user: User, callback: any) {
     try {
-      await addJournalNote(
-        this.database,
-        user.displayName,
-        this.note,
-        this.note.id,
-      );
+      await addJournalNote(this.database, user.uid, this.note, this.note.id);
+      callback(true);
     } catch (err) {
       console.log('failed to save: ', err);
     }
   }
 
   makeNote(): void {
+    if (!this.selectedPrimaryFeel) {
+      this.primaryFeelError = true;
+      return;
+    }
+
+    if (!this.selectedSecondaryFeels) {
+      this.secondaryFeelError = true;
+      return;
+    }
+
     this.note = {
       primaryFeel: this.selectedPrimaryFeel,
       secondaryFeels: this.selectedSecondaryFeels,

@@ -20,18 +20,18 @@ import { LoadingButton } from '@mui/lab';
 import SaveIcon from '@mui/icons-material/Save';
 
 const validationSchema = yup.object({
-  login: yup.string().required('Enter your login'),
+  login: yup.string().required('Введи свое имя'),
   email: yup
     .string()
-    .email('Enter a valid email')
-    .required('Email is required'),
+    .email('Введи валидный email адрес')
+    .required('Почта обязательная'),
   password: yup
     .string()
-    .min(8, 'Password should be of minimum 8 characters length')
-    .required('Password is required'),
+    .min(6, 'Пароль должен иметь не менее 6 символов')
+    .required('Пароль обязателен'),
   passwordConfirm: yup
     .string()
-    .oneOf([yup.ref('password'), null], 'Passwords must match'),
+    .oneOf([yup.ref('password'), null], 'Пароли должны совпадать'),
 });
 
 interface FormValues {
@@ -98,7 +98,7 @@ const SignupPage = observer(() => {
           onChange={formik.handleChange}
           error={formik.touched.login && Boolean(formik.errors.login)}
           helperText={formik.touched.login && formik.errors.login}
-          label="введите логин"
+          label="введи симя"
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
@@ -118,7 +118,7 @@ const SignupPage = observer(() => {
           onChange={formik.handleChange}
           error={formik.touched.email && Boolean(formik.errors.email)}
           helperText={formik.touched.email && formik.errors.email}
-          label="введите почту"
+          label="введи почту"
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
@@ -138,7 +138,7 @@ const SignupPage = observer(() => {
           onChange={formik.handleChange}
           error={formik.touched.password && Boolean(formik.errors.password)}
           helperText={formik.touched.password && formik.errors.password}
-          label="введите пароль"
+          label="введи пароль"
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
@@ -163,7 +163,7 @@ const SignupPage = observer(() => {
           helperText={
             formik.touched.passwordConfirm && formik.errors.passwordConfirm
           }
-          label="повторите пароль"
+          label="повтори пароль"
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">

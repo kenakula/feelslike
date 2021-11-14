@@ -34,11 +34,12 @@ const MainPage = observer((): JSX.Element => {
     };
 
   const handleSaveBtn = () => {
-    setShowSaveNote(true);
     mainPageStore?.makeNote();
 
-    if (currentUser) {
-      mainPageStore?.saveNoteToDatabase(currentUser);
+    if (currentUser && mainPageStore?.note) {
+      mainPageStore?.saveNoteToDatabase(currentUser, setShowSaveNote);
+    } else {
+      console.log('error');
     }
   };
 
@@ -87,9 +88,7 @@ const MainPage = observer((): JSX.Element => {
             {mainPageStore.getNoteBootState === BootState.Loading ? (
               <CircularProgress color="inherit" />
             ) : (
-              <Alert severity="success">
-                This is a success alert — check it out!
-              </Alert>
+              <Alert severity="success">Запись успешно сохранена</Alert>
             )}
           </Backdrop>
         </Layout>

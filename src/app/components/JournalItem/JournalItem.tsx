@@ -1,54 +1,17 @@
-import {
-  Avatar,
-  Chip,
-  IconButton,
-  Paper,
-  Tooltip,
-  Typography,
-} from '@mui/material';
+import { Avatar, IconButton, Paper, Tooltip, Typography } from '@mui/material';
 import { Note } from 'app/constants/types/note';
 import { getDate, getTime } from 'app/utils/timeHelpers';
 import React, { useState } from 'react';
 import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
 import Icon, { getIconName } from 'app/components/Emotions';
 import './JournalItem.scss';
+import SecondaryFeelsChips from '../SecondaryFeelsChips/SecondaryFeelsChips';
 
 interface Props {
   data: Note;
   modalDetailsOpen: (data: Note) => void;
   modalEditOpen: (data: Note) => void;
 }
-
-interface FeelsProps {
-  data: string | string[];
-}
-
-const SecondaryFeels = (props: FeelsProps) => {
-  if (Array.isArray(props.data)) {
-    return (
-      <>
-        {props.data.map((feel: string) => {
-          return (
-            <Chip
-              className="journal-item__secondary-feel"
-              key={feel}
-              label={feel}
-              size="small"
-            />
-          );
-        })}
-      </>
-    );
-  } else {
-    return (
-      <Chip
-        className="journal-item__secondary-feel"
-        label={props.data}
-        size="small"
-      />
-    );
-  }
-};
 
 const JournalItem = (props: Props) => {
   const { data } = props;
@@ -108,7 +71,7 @@ const JournalItem = (props: Props) => {
           >{`${data.primaryFeel}:`}</Typography>
           <div className="journal-item__feels-list">
             {data.secondaryFeels && (
-              <SecondaryFeels data={data.secondaryFeels} />
+              <SecondaryFeelsChips data={data.secondaryFeels} />
             )}
           </div>
         </div>

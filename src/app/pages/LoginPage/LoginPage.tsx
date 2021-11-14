@@ -23,12 +23,12 @@ import SaveIcon from '@mui/icons-material/Save';
 const validationSchema = yup.object({
   email: yup
     .string()
-    .email('Enter a valid email')
-    .required('Email is required'),
+    .email('Введи валидный адрес почты')
+    .required('Почта обязательна'),
   password: yup
     .string()
-    .min(8, 'Password should be of minimum 8 characters length')
-    .required('Password is required'),
+    .min(6, 'Пароль должен иметь не менее 6 символов')
+    .required('Пароль обязателен'),
 });
 
 interface FormValues {
@@ -37,18 +37,22 @@ interface FormValues {
 }
 
 const LoginPage = observer((): JSX.Element => {
-  const { login } = useAuth();
+  const { login, loginWithGoogle } = useAuth();
   const history = useHistory();
 
   const [errorMessage, setErrorMessage] = useState('');
   const [loading, setLoading] = useState(false);
+
+  const goToMain = () => {
+    history.push('/');
+  };
 
   const handleSubmit = async (values: FormValues) => {
     try {
       setErrorMessage('');
       setLoading(true);
       await login(values.email, values.password);
-      history.push('/');
+      goToMain();
     } catch (err) {
       console.log(err);
       setErrorMessage('ошибка доступа');
@@ -56,6 +60,18 @@ const LoginPage = observer((): JSX.Element => {
     }
 
     setLoading(false);
+  };
+
+  const handleGoogleSignIn = async () => {
+    try {
+      setErrorMessage('');
+      setLoading(true);
+      await loginWithGoogle(goToMain);
+    } catch (error) {
+      console.log(error);
+      setErrorMessage('ошибка доступа');
+      setLoading(false);
+    }
   };
 
   const formik = useFormik({
@@ -89,7 +105,7 @@ const LoginPage = observer((): JSX.Element => {
           name="email"
           className="login-page__field"
           fullWidth
-          label="введите почту"
+          label="введи почту"
           value={formik.values.email}
           onChange={formik.handleChange}
           error={formik.touched.email && Boolean(formik.errors.email)}
@@ -113,7 +129,7 @@ const LoginPage = observer((): JSX.Element => {
           onChange={formik.handleChange}
           error={formik.touched.password && Boolean(formik.errors.password)}
           helperText={formik.touched.password && formik.errors.password}
-          label="введите пароль"
+          label="введи пароль"
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
@@ -139,6 +155,7 @@ const LoginPage = observer((): JSX.Element => {
           variant="outlined"
           fullWidth
           startIcon={<GoogleIcon />}
+          onClick={handleGoogleSignIn}
         >
           Войти с помощью Google
         </Button>
@@ -147,6 +164,7 @@ const LoginPage = observer((): JSX.Element => {
           variant="outlined"
           fullWidth
           startIcon={<Facebook />}
+          disabled={true}
         >
           Войти с помощью Facebook
         </Button>

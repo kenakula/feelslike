@@ -12,5 +12,4 @@ export interface Note {
   date: Timestamp;
   answers: Answer[];
   id: string;
-  addedNotes?: AddedNote[];
 }
