@@ -36,21 +36,6 @@ export const addData = async (database: any, obj: any) => {
   });
 };
 
-export const getDocument = async (
-  db: any,
-  collection: string,
-  name: string,
-) => {
-  const docRef = doc(db, collection, name);
-  const docSnap = await getDoc(docRef);
-
-  if (docSnap.exists()) {
-    console.log('Document data:', docSnap.data());
-  } else {
-    console.log('No such document!');
-  }
-};
-
 export const addDocument = async (
   db: any,
   collection: string,
@@ -116,6 +101,19 @@ export const addJournalNoteAditionalNote = async (
       addedNoteId,
     );
     await setDoc(docRef, data);
+  }
+};
+
+export const getDocumentData = async (
+  db: any,
+  userId: string | undefined,
+  noteId: string,
+) => {
+  if (userId) {
+    const docRef = doc(db, 'users', userId, 'journal', noteId);
+    const docSnap = getDoc(docRef);
+
+    console.log((await docSnap).data());
   }
 };
 

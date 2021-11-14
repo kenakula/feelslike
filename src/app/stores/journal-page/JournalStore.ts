@@ -75,6 +75,7 @@ export class JournalStore {
     data: AddedNote,
     journalNoteId: string,
     commentId: string,
+    callback: (a: boolean) => void,
   ) {
     if (user) {
       try {
@@ -85,6 +86,8 @@ export class JournalStore {
           journalNoteId,
           commentId,
         );
+
+        callback(true);
       } catch (err) {
         console.log(err);
       }

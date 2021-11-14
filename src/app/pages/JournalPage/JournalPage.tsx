@@ -1,4 +1,6 @@
 import {
+  Alert,
+  Backdrop,
   Button,
   Dialog,
   DialogContent,
@@ -29,7 +31,6 @@ import { getDate } from 'app/utils/timeHelpers';
 import { Answer } from 'app/constants/types/answer';
 import CloseIcon from '@mui/icons-material/Close';
 import { Timestamp } from '@firebase/firestore';
-import { getDocument } from 'app/utils/firebaseHelpers';
 
 const Layout = React.lazy(() => import('../../containers/layout/layout'));
 
@@ -47,6 +48,12 @@ const JournalPage = observer(() => {
 
   const [editFieldValue, setEditFieldValue] = useState('');
 
+  const [showSaveNote, setShowSaveNote] = useState(false);
+
+  const handleCloseSaveNote = () => {
+    setShowSaveNote(false);
+  };
+
   const handleModalDetailsClose = () => {
     setShowDetailsModal(false);
   };
@@ -55,11 +62,7 @@ const JournalPage = observer(() => {
     setShowDetailsModal(true);
     setModalDetailsData(data);
 
-    getDocument(
-      journalStore?.mainPageStore.database,
-      `users/${currentUser}/journal`,
-      data.id,
-    );
+    journalStore?.fetchCommentNotes(currentUser, data.id);
 
     const iconName = getIconName(data.primaryFeel);
     setIconName(iconName);
@@ -79,7 +82,6 @@ const JournalPage = observer(() => {
   };
 
   const handleAddNote = () => {
-    // TODO add alert
     if (modalEditData) {
       const data: AddedNote = {
         date: Timestamp.now(),
@@ -92,6 +94,7 @@ const JournalPage = observer(() => {
         data,
         modalEditData.id,
         data.id,
+        setShowSaveNote,
       );
     }
     setShowEditModal(false);
@@ -248,6 +251,9 @@ const JournalPage = observer(() => {
           </DialogContent>
         </Dialog>
       )}
+      <Backdrop open={showSaveNote} onClick={handleCloseSaveNote}>
+        <Alert severity="success">Запись успешно сохранена</Alert>
+      </Backdrop>
     </Layout>
   );
 });
