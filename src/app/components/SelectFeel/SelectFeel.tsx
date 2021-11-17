@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Checkbox,
   FormControl,
@@ -10,14 +11,20 @@ import {
   SelectChangeEvent,
 } from '@mui/material';
 import { Box } from '@mui/system';
-// import { feelsItems } from 'app/constants/feels';
 import { SecondaryFeel } from 'app/constants/types/secondaryFeel';
 import { MainPageStoreContext } from 'app/stores/main-page/mainPageStore';
 import { observer } from 'mobx-react';
 import React, { useContext, useEffect, useState } from 'react';
 import './SelectFeel.scss';
 
-const SelectFeel = observer(() => {
+interface Props {
+  setDisabled: any;
+  clearState: boolean;
+}
+
+const SelectFeel = observer((props: Props) => {
+  const { setDisabled, clearState } = props;
+
   const mainPageStore = useContext(MainPageStoreContext);
 
   const [primaryFeel, setPrimaryFeel] = useState<string | undefined>('');
@@ -32,6 +39,12 @@ const SelectFeel = observer(() => {
     } = event;
     setSelectedFeels(typeof value === 'string' ? value.split(',') : value);
     mainPageStore?.setSecondaryFeels(value);
+
+    if (value.length) {
+      setDisabled(false);
+    } else {
+      setDisabled(true);
+    }
   };
 
   useEffect(() => {
@@ -45,6 +58,13 @@ const SelectFeel = observer(() => {
       setFeelsList(feelObj[0].list);
     }
   }, [primaryFeel, mainPageStore]);
+
+  useEffect(() => {
+    if (clearState) {
+      setSelectedFeels([]);
+      setPrimaryFeel('');
+    }
+  }, [clearState]);
 
   const handlePrimaryChange = (evt: SelectChangeEvent) => {
     setPrimaryFeel(evt.target.value);

@@ -27,6 +27,8 @@ const MainPage = observer((): JSX.Element => {
 
   const [expanded, setExpanded] = useState<string | false>(false);
   const [showSaveNote, setShowSaveNote] = useState(false);
+  const [saveDisabled, setSaveDisabled] = useState(true);
+  const [clearState, setClearState] = useState(false);
 
   const handleChange =
     (panelId: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
@@ -38,6 +40,13 @@ const MainPage = observer((): JSX.Element => {
 
     if (currentUser && mainPageStore?.note) {
       mainPageStore?.saveNoteToDatabase(currentUser, setShowSaveNote);
+      setClearState(true);
+      mainPageStore.selectedPrimaryFeel = null;
+      mainPageStore.selectedSecondaryFeels = null;
+
+      setTimeout(() => {
+        setClearState(false);
+      }, 500);
     } else {
       console.log('error');
     }
@@ -68,22 +77,26 @@ const MainPage = observer((): JSX.Element => {
                       <Typography>{question.text}</Typography>
                     </AccordionSummary>
                     <AccordionDetails>
-                      <InputAnswer question={question} hasFeels={index === 0} />
+                      <InputAnswer
+                        clearState={clearState}
+                        question={question}
+                        hasFeels={index === 0}
+                        setDisabled={setSaveDisabled}
+                      />
                     </AccordionDetails>
                   </Accordion>
                 );
               },
             )}
           </Container>
-          {mainPageStore.getQuestionsData.length ? (
-            <Button
-              variant="contained"
-              sx={{ margin: '20px auto 0 auto', display: 'block' }}
-              onClick={handleSaveBtn}
-            >
-              Сохранить
-            </Button>
-          ) : null}
+          <Button
+            variant="contained"
+            sx={{ margin: '20px auto 0 auto', display: 'block' }}
+            onClick={handleSaveBtn}
+            disabled={saveDisabled}
+          >
+            Сохранить
+          </Button>
           <Backdrop open={showSaveNote} onClick={handleCloseBackDrop}>
             {mainPageStore.getNoteBootState === BootState.Loading ? (
               <CircularProgress color="inherit" />

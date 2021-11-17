@@ -1,0 +1,13 @@
+.scroll-to-top {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: $color-white;
+  border-radius: 50%;
+
+
+  &__button {
+    box-shadow: 0 5px 10px rgba($color: $color-black, $alpha: 0.5);
+
+  }
+}

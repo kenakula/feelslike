@@ -11,9 +11,6 @@ import { makeAutoObservable } from 'mobx';
 import { User } from '@firebase/auth';
 import { AddedNote, Note } from 'app/constants/types/note';
 
-// TODO опустошать поля ввода после сохранения
-// TODO валидация формы
-// TODO аутентификация гугл и фейсбук
 // TODO добавить пагинацию
 
 export class JournalStore {
@@ -21,6 +18,7 @@ export class JournalStore {
   bootState: BootState = BootState.Loading;
   notesList: Note[] = [];
   commentNotesList: AddedNote[] | undefined = [];
+  notesLengthLimit = 5;
 
   constructor(mainPageStore: MainPageStore) {
     this.mainPageStore = mainPageStore;
@@ -61,7 +59,7 @@ export class JournalStore {
         const notes = await getJournalNotes(
           this.mainPageStore.database,
           user.uid,
-          3,
+          this.notesLengthLimit,
         );
         this.setNotes(notes);
       } catch (err) {

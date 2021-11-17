@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Alert,
   Backdrop,
@@ -23,7 +24,6 @@ import { nanoid } from 'nanoid';
 import JournalItem from 'app/components/JournalItem/JournalItem';
 import ThreeBounce from 'app/components/ThreeBounce/ThreeBounce';
 import { AddedNote, Note } from 'app/constants/types/note';
-import { runInAction } from 'mobx';
 import Icon, { getIconName } from 'app/components/Emotions';
 import { Box } from '@mui/system';
 import SecondaryFeelsChips from 'app/components/SecondaryFeelsChips/SecondaryFeelsChips';
@@ -31,6 +31,7 @@ import { getDate } from 'app/utils/timeHelpers';
 import { Answer } from 'app/constants/types/answer';
 import CloseIcon from '@mui/icons-material/Close';
 import { Timestamp } from '@firebase/firestore';
+import ScrollToTop from 'app/components/ScrollToTop/ScrollToTop';
 
 const Layout = React.lazy(() => import('../../containers/layout/layout'));
 
@@ -42,8 +43,8 @@ const JournalPage = observer(() => {
   const [modalDetailsData, setModalDetailsData] = useState<Note | null>();
   const [showEditModal, setShowEditModal] = useState(false);
   const [modalEditData, setModalEditData] = useState<Note | null>();
+  const [scrollTop, setScrollTop] = useState(0);
 
-  const [sortedList, setSortedList] = useState<Note[]>([]);
   const [iconName, setIconName] = useState<string>('');
 
   const [editFieldValue, setEditFieldValue] = useState('');
@@ -81,6 +82,14 @@ const JournalPage = observer(() => {
     setEditFieldValue(evt.target.value);
   };
 
+  const onPageScroll = () => {
+    setScrollTop(window.scrollY);
+  };
+
+  useEffect(() => {
+    window.addEventListener('scroll', onPageScroll);
+  }, []);
+
   const handleAddNote = () => {
     if (modalEditData) {
       const data: AddedNote = {
@@ -107,18 +116,6 @@ const JournalPage = observer(() => {
   }, [journalStore, currentUser]);
 
   useEffect(() => {
-    if (journalStore?.notesList.length) {
-      runInAction(() => {
-        const sorted = journalStore.notesList;
-        sorted.sort((a: Note, b: Note) => {
-          return a.date.seconds - b.date.seconds;
-        });
-        setSortedList(sorted);
-      });
-    }
-  }, [journalStore?.notesList]);
-
-  useEffect(() => {
     if (modalDetailsData) {
       journalStore?.fetchCommentNotes(currentUser, modalDetailsData.id);
     }
@@ -130,7 +127,7 @@ const JournalPage = observer(() => {
         <Container>
           {journalStore?.notesList.length ? (
             <List>
-              {sortedList.map((note: Note) => {
+              {journalStore.notesList.map((note: Note) => {
                 return (
                   <JournalItem
                     key={nanoid()}
@@ -254,6 +251,7 @@ const JournalPage = observer(() => {
       <Backdrop open={showSaveNote} onClick={handleCloseSaveNote}>
         <Alert severity="success">Запись успешно сохранена</Alert>
       </Backdrop>
+      {scrollTop > 400 ? <ScrollToTop /> : null}
     </Layout>
   );
 });

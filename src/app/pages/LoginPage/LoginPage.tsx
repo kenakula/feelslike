@@ -18,7 +18,8 @@ import * as yup from 'yup';
 import { useFormik } from 'formik';
 import { useAuth } from 'app/stores/auth/auth-provider';
 import LoadingButton from '@mui/lab/LoadingButton';
-import SaveIcon from '@mui/icons-material/Save';
+import LoginIcon from '@mui/icons-material/Login';
+import Container from 'app/containers/Container/Container';
 
 const validationSchema = yup.object({
   email: yup
@@ -37,7 +38,7 @@ interface FormValues {
 }
 
 const LoginPage = observer((): JSX.Element => {
-  const { login, loginWithGoogle } = useAuth();
+  const { login, loginWithGoogle, loginWithFacebook } = useAuth();
   const history = useHistory();
 
   const [errorMessage, setErrorMessage] = useState('');
@@ -74,6 +75,18 @@ const LoginPage = observer((): JSX.Element => {
     }
   };
 
+  const handleFacebookLogin = async () => {
+    try {
+      setErrorMessage('');
+      setLoading(true);
+      await loginWithFacebook(goToMain);
+    } catch (error) {
+      console.log(error);
+      setErrorMessage('ошибка доступа');
+      setLoading(false);
+    }
+  };
+
   const formik = useFormik({
     initialValues: {
       email: '',
@@ -87,95 +100,97 @@ const LoginPage = observer((): JSX.Element => {
 
   return (
     <div className="login-page">
-      <Box
-        component="form"
-        className="login-page__form"
-        onSubmit={formik.handleSubmit}
-      >
-        <Typography className="login-page__title" variant="h4">
-          Войти
-        </Typography>
-        {errorMessage ? (
-          <Alert sx={{ mb: 2 }} severity="error">
-            {errorMessage}
-          </Alert>
-        ) : null}
-        <TextField
-          id="email"
-          name="email"
-          className="login-page__field"
-          fullWidth
-          label="введи почту"
-          value={formik.values.email}
-          onChange={formik.handleChange}
-          error={formik.touched.email && Boolean(formik.errors.email)}
-          helperText={formik.touched.email && formik.errors.email}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <EmailOutlinedIcon />
-              </InputAdornment>
-            ),
-          }}
-          variant="outlined"
-        />
-        <TextField
-          className="login-page__field"
-          fullWidth
-          id="password"
-          name="password"
-          type="password"
-          value={formik.values.password}
-          onChange={formik.handleChange}
-          error={formik.touched.password && Boolean(formik.errors.password)}
-          helperText={formik.touched.password && formik.errors.password}
-          label="введи пароль"
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <LockIcon />
-              </InputAdornment>
-            ),
-          }}
-          variant="outlined"
-        />
-        <LoadingButton
-          variant="contained"
-          type="submit"
-          startIcon={<SaveIcon />}
-          loading={loading}
-          loadingPosition="start"
+      <Container>
+        <Box
+          component="form"
+          className="login-page__form"
+          onSubmit={formik.handleSubmit}
         >
-          Войти
-        </LoadingButton>
-      </Box>
-      <Box className="login-page__socials">
-        <Button
-          className="login-page__login-btn"
-          variant="outlined"
-          fullWidth
-          startIcon={<GoogleIcon />}
-          onClick={handleGoogleSignIn}
-        >
-          Войти с помощью Google
-        </Button>
-        <Button
-          className="login-page__login-btn"
-          variant="outlined"
-          fullWidth
-          startIcon={<Facebook />}
-          disabled={true}
-        >
-          Войти с помощью Facebook
-        </Button>
-      </Box>
-      <Box className="login-page__signup">
-        <NavLink className="login-page__signup-link" to="/signup">
-          <Button component="span" color="info">
-            Зарегистрироваться
+          <Typography className="login-page__title" variant="h4">
+            Войти
+          </Typography>
+          {errorMessage ? (
+            <Alert sx={{ mb: 2 }} severity="error">
+              {errorMessage}
+            </Alert>
+          ) : null}
+          <TextField
+            id="email"
+            name="email"
+            className="login-page__field"
+            fullWidth
+            label="введи почту"
+            value={formik.values.email}
+            onChange={formik.handleChange}
+            error={formik.touched.email && Boolean(formik.errors.email)}
+            helperText={formik.touched.email && formik.errors.email}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <EmailOutlinedIcon />
+                </InputAdornment>
+              ),
+            }}
+            variant="outlined"
+          />
+          <TextField
+            className="login-page__field"
+            fullWidth
+            id="password"
+            name="password"
+            type="password"
+            value={formik.values.password}
+            onChange={formik.handleChange}
+            error={formik.touched.password && Boolean(formik.errors.password)}
+            helperText={formik.touched.password && formik.errors.password}
+            label="введи пароль"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <LockIcon />
+                </InputAdornment>
+              ),
+            }}
+            variant="outlined"
+          />
+          <LoadingButton
+            variant="contained"
+            type="submit"
+            startIcon={<LoginIcon />}
+            loading={loading}
+            loadingPosition="start"
+          >
+            Войти
+          </LoadingButton>
+        </Box>
+        <Box className="login-page__socials">
+          <Button
+            className="login-page__login-btn"
+            variant="outlined"
+            fullWidth
+            startIcon={<GoogleIcon />}
+            onClick={handleGoogleSignIn}
+          >
+            Войти с помощью Google
           </Button>
-        </NavLink>
-      </Box>
+          <Button
+            className="login-page__login-btn"
+            variant="outlined"
+            fullWidth
+            startIcon={<Facebook />}
+            onClick={handleFacebookLogin}
+          >
+            Войти с помощью Facebook
+          </Button>
+        </Box>
+        <Box className="login-page__signup">
+          <NavLink className="login-page__signup-link" to="/signup">
+            <Button component="span" color="info">
+              Зарегистрироваться
+            </Button>
+          </NavLink>
+        </Box>
+      </Container>
     </div>
   );
 });

@@ -69,11 +69,12 @@ export const getJournalNotes = async (
   limitAmount: number,
 ) => {
   const result: Note[] = [];
-  console.log('limit notes: ', limitAmount);
+
+  console.log('limit: ', limitAmount);
 
   if (userId) {
     const ref = collection(db, `users/${userId}/journal`);
-    const q = query(ref, orderBy('date'));
+    const q = query(ref, orderBy('date', 'desc'));
     const snap = await getDocs(q);
     snap.forEach((doc: any) => {
       result.push(doc.data());

@@ -12,6 +12,7 @@ import {
   updatePassword,
   updateProfile,
   GoogleAuthProvider,
+  FacebookAuthProvider,
   signInWithPopup,
 } from 'firebase/auth';
 import { MainPageStoreContext } from '../main-page/mainPageStore';
@@ -28,6 +29,7 @@ type ContextProps = {
   updateUserPassword: any;
   updateInfo: any;
   loginWithGoogle: any;
+  loginWithFacebook: any;
 };
 
 interface Props {
@@ -41,12 +43,14 @@ export function AuthProvider(props: Props) {
 
   const [currentUser, setCurrentUser] = useState<User>();
   const [googleToken, setGoogleToken] = useState<string | undefined>('');
+  const [fbToken, setFbToken] = useState<string | undefined>('');
   const [loading, setLoading] = useState(true);
   const mainPageStore = useContext(MainPageStoreContext);
 
   const auth = getAuth();
   auth.languageCode = 'ru';
   const googleProvider = new GoogleAuthProvider();
+  const facebookProvider = new FacebookAuthProvider();
 
   const database = mainPageStore?.database;
 
@@ -111,6 +115,38 @@ export function AuthProvider(props: Props) {
       });
   }
 
+  function loginWithFacebook(callback: () => void) {
+    signInWithPopup(auth, facebookProvider)
+      .then((result: any) => {
+        const credentials = FacebookAuthProvider.credentialFromResult(result);
+        const token = credentials?.accessToken;
+        setFbToken(token);
+        const user: User = result.user;
+        callback();
+        console.log(fbToken);
+        addDocument(database, 'users', user.uid, {
+          uid: user.uid,
+          name: user.displayName,
+          authProvider: credentials?.providerId,
+          email: user.email,
+        });
+      })
+      .catch((err: any) => {
+        const errorCode = err.code;
+        const errorMesage = err.mesage;
+        const credential = FacebookAuthProvider.credentialFromError(err);
+        console.log(
+          'credential:',
+          credential,
+          'message: ',
+          errorMesage,
+          'code: ',
+          errorCode,
+        );
+        throw new Error('Ошибка доступа');
+      });
+  }
+
   function print(values: any) {
     console.log(values);
   }
@@ -155,6 +191,7 @@ export function AuthProvider(props: Props) {
     resetPassword,
     updateUserEmail,
     loginWithGoogle,
+    loginWithFacebook,
     updateUserPassword,
   };
 
