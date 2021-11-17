@@ -10,10 +10,12 @@ import { makeAutoObservable, runInAction } from 'mobx';
 import * as React from 'react';
 import { Note } from 'app/constants/types/note';
 import { Answer } from 'app/constants/types/answer';
+import { FirebaseStorage } from '@firebase/storage';
 
 export class MainPageStore {
   bootState: BootState = BootState.Loading;
   database;
+  storage: FirebaseStorage;
   questions: Question[] = [];
   primaryFeels: string[] = [];
   secondaryFeels: SecondaryFeel[] = [];
@@ -25,8 +27,9 @@ export class MainPageStore {
   note: Note;
   answers: Answer[] = [];
 
-  constructor(database: any) {
+  constructor(database: any, storage: FirebaseStorage) {
     this.database = database;
+    this.storage = storage;
 
     makeAutoObservable(this);
   }

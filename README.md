@@ -2,3 +2,6 @@
 
 ***
 firebase deploy --only hosting - deploy to firebase
+
+<!-- TODO сделать статистику пользователя -->
+<!-- TODO сделать пагинацию -->

@@ -1,5 +1,5 @@
-import * as React from "react";
-import Header from "../Header/Header";
+import * as React from 'react';
+import Header from '../Header/Header';
 // import Footer from "../Footer/Footer";
 
 interface ILayoutProps {

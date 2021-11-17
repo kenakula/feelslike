@@ -100,7 +100,7 @@ const SignupPage = observer(() => {
             onChange={formik.handleChange}
             error={formik.touched.login && Boolean(formik.errors.login)}
             helperText={formik.touched.login && formik.errors.login}
-            label="введи симя"
+            label="введи имя"
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
