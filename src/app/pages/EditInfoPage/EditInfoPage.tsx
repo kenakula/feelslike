@@ -61,9 +61,10 @@ interface passFormValues {
 
 const EditInfoPage = observer(() => {
   const editPageStore = useContext(EditInfoPageStoreContext);
-  const { currentUser } = useAuth();
+  const { currentUser, updateUserEmail } = useAuth();
 
   const [loginLoading, setLoginLoading] = useState(false);
+  const [emailLoading, setEmailLoading] = useState(false);
 
   useEffect(() => {
     editPageStore?.init();
@@ -98,8 +99,15 @@ const EditInfoPage = observer(() => {
       email: '',
     },
     validationSchema: emailValidationSchema,
-    onSubmit: (values: emailFormValues) => {
-      console.log(values);
+    onSubmit: async (values: emailFormValues) => {
+      try {
+        setEmailLoading(true);
+        updateUserEmail(values.email);
+        setEmailLoading(false);
+      } catch (err) {
+        setEmailLoading(false);
+        console.log(err);
+      }
     },
   });
 
@@ -171,7 +179,15 @@ const EditInfoPage = observer(() => {
               helperText={emailForm.touched.email && emailForm.errors.email}
               fullWidth
             />
-            <Button variant="contained">Изменить</Button>
+            <LoadingButton
+              variant="contained"
+              type="submit"
+              loading={emailLoading}
+              loadingPosition="start"
+              startIcon={<EditOutlinedIcon />}
+            >
+              Изменить
+            </LoadingButton>
           </Box>
           <Divider sx={{ mb: 2 }} />
           <Box

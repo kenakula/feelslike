@@ -96,13 +96,13 @@ const Header = observer(() => {
               sx={{ mb: 2 }}
             >
               <Typography className="header__username" variant="body1">
-                <NavLink to={Routes.EDIT_INFO}>
+                <NavLink to={Routes.DEFAULT}>
                   <Button component="span" color="primary" variant="text">
                     {currentUser?.displayName}
                   </Button>
                 </NavLink>
               </Typography>
-              <NavLink to={Routes.EDIT_INFO}>
+              <NavLink to={Routes.DEFAULT}>
                 {currentUser?.displayName ? (
                   <Avatar variant="circular" sx={{ bgcolor: '#1d3557' }}>
                     {currentUser.displayName[0]}

@@ -159,8 +159,8 @@ export function AuthProvider(props: Props) {
     return sendPasswordResetEmail(auth, email);
   }
 
-  function updateUserEmail(email: string) {
-    return updateEmail(auth.currentUser!, email);
+  async function updateUserEmail(email: string) {
+    await updateEmail(auth.currentUser!, email);
   }
 
   function updateUserPassword(password: string) {

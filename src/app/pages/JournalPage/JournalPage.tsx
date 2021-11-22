@@ -215,6 +215,7 @@ const JournalPage = observer(() => {
         </Dialog>
       )}
       {/* добавление комментария */}
+      {/* TODO запихнуть в компонент эелемента списка */}
       {modalEditData && (
         <Dialog
           maxWidth="sm"
