@@ -4,6 +4,10 @@
   "private": true,
   "dependencies": {
     "@babel/core": "^7.16.0",
+    "@emotion/react": "^11.10.4",
+    "@emotion/styled": "^11.10.4",
+    "@mui/icons-material": "^5.10.3",
+    "@mui/material": "^5.10.3",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.3",
     "@reduxjs/toolkit": "^1.8.5",
     "@svgr/webpack": "^5.5.0",
@@ -51,6 +55,7 @@
     "react-redux": "^8.0.2",
     "react-refresh": "^0.11.0",
     "react-router-dom": "^6.3.0",
+    "react-viewport-height": "^1.2.1",
     "resolve": "^1.20.0",
     "resolve-url-loader": "^4.0.0",
     "sass-loader": "^12.3.0",
@@ -70,7 +75,8 @@
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js",
-    "lint": "eslint \"src/**/*.ts{,x}\""
+    "lint": "eslint \"src/**/*.ts{,x}\"",
+    "lint-fix": "eslint \"src/**/*.ts{,x}\" --fix"
   },
   "eslintConfig": {
     "extends": [
