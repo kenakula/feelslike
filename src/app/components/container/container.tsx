@@ -1,5 +1,5 @@
-import { Box, SxProps, useTheme } from '@mui/material';
 import React from 'react';
+import { Box, SxProps, useTheme } from '@mui/material';
 
 interface Props {
   children: JSX.Element | JSX.Element[] | null;

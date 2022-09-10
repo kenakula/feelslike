@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
-import { Badge, Box, IconButton, Typography } from '@mui/material';
+import Badge from '@mui/material/Badge';
 import Link from '@mui/material/Link';
-import { Container } from '../container/container';
-import { HOME_PAGE_PATH } from 'app/routes';
-import { NavLink } from 'react-router-dom';
+import Box from '@mui/material/Box';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
 import NotificationsIcon from '@mui/icons-material/Notifications';
+import { NavLink } from 'react-router-dom';
+import { Container } from '../container/container';
+import { DASHBOARD_PAGE_PATH } from 'app/routes';
 
 export const Header = (): JSX.Element => {
   const [hasNotifications, setHasNotifications] = useState(0);
@@ -14,7 +17,7 @@ export const Header = (): JSX.Element => {
       <Container sx={{ display: 'flex', alignItems: 'center' }}>
         <Link
           component={NavLink}
-          to={HOME_PAGE_PATH}
+          to={DASHBOARD_PAGE_PATH}
           sx={{ textDecoration: 'none', marginRight: 'auto' }}
         >
           <Typography
