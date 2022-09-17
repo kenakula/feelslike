@@ -1,7 +1,10 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
+import { firebaseSlice } from './firebase';
 
 export const store = configureStore({
-  reducer: {},
+  reducer: {
+    firebase: firebaseSlice.reducer,
+  },
 });
 
 export type AppDispatch = typeof store.dispatch;
