@@ -1,6 +1,5 @@
 import * as React from 'react';
 import Avatar from '@mui/material/Avatar';
-import TextField from '@mui/material/TextField';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
@@ -10,10 +9,10 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import { NavLink } from 'react-router-dom';
-import { Controller, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { SIGNIN_PAGE_PATH, SIGNUP_PAGE_PATH } from 'app/routes';
-import { Copyright } from 'app/components';
+import { Copyright, InputComponent } from 'app/components';
 import { ReactComponent as RecoverImage } from 'assets/img/restore-password.svg';
 import { FormModel, formSchema } from './assets';
 
@@ -89,19 +88,14 @@ export const RecoverPage = (): JSX.Element => {
             noValidate
             sx={{ mt: 1 }}
           >
-            <Controller
-              control={control}
+            <InputComponent<FormModel>
+              formControl={control}
               name="email"
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  error={!!errors.email}
-                  label="Почта"
-                  fullWidth
-                  variant="outlined"
-                  type="text"
-                />
-              )}
+              label="Почта"
+              fullwidth
+              type="email"
+              error={!!errors.email}
+              errorMessage="Введите корректно почту."
             />
             <LoadingButton
               type="submit"

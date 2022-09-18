@@ -1,6 +1,5 @@
 import React from 'react';
 import Avatar from '@mui/material/Avatar';
-import TextField from '@mui/material/TextField';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
@@ -11,10 +10,10 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { SIGNIN_PAGE_PATH } from 'app/routes';
 import { NavLink } from 'react-router-dom';
-import { Controller, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { ReactComponent as WelcomeImage } from 'assets/img/welcome.svg';
-import { Copyright } from 'app/components';
+import { Copyright, InputComponent } from 'app/components';
 import { FormModel, formSchema } from './assets';
 
 export const SignUpPage = (): JSX.Element => {
@@ -77,49 +76,34 @@ export const SignUpPage = (): JSX.Element => {
           noValidate
           sx={{ mt: 1 }}
         >
-          <Controller
-            control={control}
+          <InputComponent<FormModel>
+            formControl={control}
             name="email"
-            render={({ field }) => (
-              <TextField
-                {...field}
-                error={!!errors.email}
-                label="Почта"
-                fullWidth
-                variant="outlined"
-                type="text"
-              />
-            )}
+            label="Почта"
+            fullwidth
+            type="email"
+            error={!!errors.email}
+            errorMessage="Введите корректно почту."
           />
-          <Controller
-            control={control}
+          <InputComponent<FormModel>
+            formControl={control}
             name="password"
-            render={({ field }) => (
-              <TextField
-                {...field}
-                sx={{ mt: 1 }}
-                error={!!errors.password}
-                label="Пароль"
-                fullWidth
-                variant="outlined"
-                type="password"
-              />
-            )}
+            label="Пароль"
+            fullwidth
+            type="password"
+            error={!!errors.password}
+            errorMessage="Введите пароль"
+            styles={{ mt: 1 }}
           />
-          <Controller
-            control={control}
+          <InputComponent<FormModel>
+            formControl={control}
             name="confirmPassword"
-            render={({ field }) => (
-              <TextField
-                {...field}
-                sx={{ my: 1 }}
-                error={!!errors.confirmPassword}
-                label="Повторите пароль"
-                fullWidth
-                variant="outlined"
-                type="confirmPassword"
-              />
-            )}
+            label="Повторите пароль"
+            fullwidth
+            type="password"
+            error={!!errors.confirmPassword}
+            errorMessage="Пароли не совпадают"
+            styles={{ mt: 1 }}
           />
           <LoadingButton
             type="submit"

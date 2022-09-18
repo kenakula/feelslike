@@ -14,7 +14,7 @@ import Container from '@mui/material/Container';
 import { Controller, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { RECOVER_PAGE_PATH, SIGNUP_PAGE_PATH } from 'app/routes';
-import { Copyright } from 'app/components';
+import { Copyright, InputComponent } from 'app/components';
 import { ReactComponent as LoginImage } from 'assets/img/login.svg';
 import { ReactComponent as GoogleIcon } from 'assets/img/icon-google.svg';
 import { FormModel, formSchema } from './assets';
@@ -89,34 +89,24 @@ export const SignInPage = (): JSX.Element => {
             noValidate
             sx={{ mt: 1 }}
           >
-            <Controller
-              control={control}
+            <InputComponent<FormModel>
+              formControl={control}
               name="email"
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  error={!!errors.email}
-                  label="Почта"
-                  fullWidth
-                  variant="outlined"
-                  type="text"
-                />
-              )}
+              label="Почта"
+              fullwidth
+              type="email"
+              error={!!errors.email}
+              errorMessage="Введите корректно почту."
             />
-            <Controller
-              control={control}
+            <InputComponent<FormModel>
+              formControl={control}
               name="password"
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  sx={{ my: 1 }}
-                  error={!!errors.password}
-                  label="Пароль"
-                  fullWidth
-                  variant="outlined"
-                  type="password"
-                />
-              )}
+              label="Пароль"
+              fullwidth
+              type="password"
+              error={!!errors.password}
+              errorMessage="Введите пароль"
+              styles={{ mt: 1 }}
             />
             <LoadingButton
               type="submit"
