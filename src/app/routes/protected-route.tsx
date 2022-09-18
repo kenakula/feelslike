@@ -6,12 +6,12 @@ interface Props {
   children: JSX.Element;
 }
 
-export const PrivateRoute = ({ children }: Props): JSX.Element => {
+export const ProtectedRoute = ({ children }: Props): JSX.Element => {
   const authState = useAppSelector(state => state.user.authState);
 
-  if (authState === 'Authorized') {
+  if (authState === 'NotAuthorized') {
     return children;
   }
 
-  return <Navigate to="/login" />;
+  return <Navigate to="/" />;
 };

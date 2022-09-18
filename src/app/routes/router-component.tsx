@@ -9,6 +9,7 @@ import {
 import { DashboardPage, RecoverPage, SignInPage, SignUpPage } from 'app/pages';
 import { Header } from 'app/components';
 import { PrivateRoute } from './private-route';
+import { ProtectedRoute } from './protected-route';
 
 export const RouterComponent = (): JSX.Element => {
   return (
@@ -23,9 +24,30 @@ export const RouterComponent = (): JSX.Element => {
             </PrivateRoute>
           }
         />
-        <Route path={SIGNIN_PAGE_PATH} element={<SignInPage />} />
-        <Route path={SIGNUP_PAGE_PATH} element={<SignUpPage />} />
-        <Route path={RECOVER_PAGE_PATH} element={<RecoverPage />} />
+        <Route
+          path={SIGNIN_PAGE_PATH}
+          element={
+            <ProtectedRoute>
+              <SignInPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path={SIGNUP_PAGE_PATH}
+          element={
+            <ProtectedRoute>
+              <SignUpPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path={RECOVER_PAGE_PATH}
+          element={
+            <ProtectedRoute>
+              <RecoverPage />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </BrowserRouter>
   );

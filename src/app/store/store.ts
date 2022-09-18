@@ -1,10 +1,22 @@
-import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
-import { firebaseSlice } from './firebase';
+import {
+  configureStore,
+  ThunkAction,
+  Action,
+  getDefaultMiddleware,
+} from '@reduxjs/toolkit';
+import { userSlice } from './userSlice/userSlice';
 
 export const store = configureStore({
   reducer: {
-    firebase: firebaseSlice.reducer,
+    user: userSlice.reducer,
   },
+  middleware: getDefaultMiddleware =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: ['user/setUserData', 'user/signInWithEmail/fulfilled'],
+        ignoredPaths: ['user.user'],
+      },
+    }),
 });
 
 export type AppDispatch = typeof store.dispatch;

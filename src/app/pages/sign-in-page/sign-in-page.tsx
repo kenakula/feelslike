@@ -11,16 +11,20 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import { Controller, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { RECOVER_PAGE_PATH, SIGNUP_PAGE_PATH } from 'app/routes';
 import { Copyright, InputComponent } from 'app/components';
 import { ReactComponent as LoginImage } from 'assets/img/login.svg';
 import { ReactComponent as GoogleIcon } from 'assets/img/icon-google.svg';
 import { FormModel, formSchema } from './assets';
+import { useAppDispatch, useAppSelector } from 'app/store';
+import { logout, signInWithEmail } from 'app/store/userSlice';
 
 export const SignInPage = (): JSX.Element => {
   const handleGoogleSignIn = (): void => {};
+  const dispatch = useAppDispatch();
+  const bootState = useAppSelector(state => state.user.bootState);
 
   const {
     control,
@@ -31,8 +35,8 @@ export const SignInPage = (): JSX.Element => {
     resolver: yupResolver(formSchema),
   });
 
-  const onSubmit = (data: any): void => {
-    console.log(data);
+  const onSubmit = (data: FormModel): void => {
+    dispatch(signInWithEmail(data));
   };
 
   return (
@@ -44,6 +48,7 @@ export const SignInPage = (): JSX.Element => {
         paddingTop: '250px',
       }}
     >
+      <Button onClick={() => dispatch(logout())}>Logout</Button>
       <Box
         sx={{
           position: 'absolute',
@@ -114,7 +119,7 @@ export const SignInPage = (): JSX.Element => {
               variant="contained"
               startIcon={<ExitToAppIcon />}
               loadingPosition="start"
-              loading={false}
+              loading={bootState === 'loading'}
               sx={{ mt: 3, mb: 2 }}
             >
               Войти
