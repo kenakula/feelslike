@@ -5,6 +5,7 @@ import TextField from '@mui/material/TextField';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 import LoadingButton from '@mui/lab/LoadingButton';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
@@ -15,9 +16,12 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { RECOVER_PAGE_PATH, SIGNUP_PAGE_PATH } from 'app/routes';
 import { Copyright } from 'app/components';
 import { ReactComponent as LoginImage } from 'assets/img/login.svg';
+import { ReactComponent as GoogleIcon } from 'assets/img/icon-google.svg';
 import { FormModel, formSchema } from './assets';
 
 export const SignInPage = (): JSX.Element => {
+  const handleGoogleSignIn = (): void => {};
+
   const {
     control,
     handleSubmit,
@@ -125,6 +129,16 @@ export const SignInPage = (): JSX.Element => {
             >
               Войти
             </LoadingButton>
+            <Button
+              size="small"
+              variant="outlined"
+              fullWidth
+              startIcon={<GoogleIcon />}
+              onClick={handleGoogleSignIn}
+              sx={{ mb: 2 }}
+            >
+              Войти с помощью Google
+            </Button>
             <Grid container>
               <Grid item xs={6}>
                 <Link
