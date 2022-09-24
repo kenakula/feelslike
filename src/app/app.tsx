@@ -4,9 +4,10 @@ import { RouterComponent } from './routes';
 import { Box } from '@mui/material';
 import { ThemeStoreProvider } from './utils';
 import { auth, onAuthStateChanged } from './firebase';
-import { useAppDispatch, useAppSelector } from './store';
+import { useAppDispatch } from './store';
 import { setUserData } from './store/userSlice';
 import { BootState } from './types';
+import { Loader, TechnicalIssues } from './components';
 
 export const App = (): JSX.Element => {
   const [bootState, setBootState] = useState<BootState>('none');
@@ -18,28 +19,27 @@ export const App = (): JSX.Element => {
     onAuthStateChanged(auth, userAuth => {
       if (userAuth) {
         dispatch(setUserData(userAuth));
-        setBootState('success');
       }
+      setBootState('success');
     });
   }, []);
 
-  if (bootState === 'none') {
-    return <p>no boot state</p>;
-  }
-
-  if (bootState === 'error') {
-    return <p>Error bitch</p>;
-  }
-
-  if (bootState === 'loading') {
-    return <p>loading</p>;
-  }
+  const renderContent = (): JSX.Element | null => {
+    switch (bootState) {
+      case 'loading':
+        return <Loader size={100} />;
+      case 'error':
+        return <TechnicalIssues />;
+      case 'success':
+        return <RouterComponent />;
+      default:
+        return null;
+    }
+  };
 
   return (
     <ThemeStoreProvider>
-      <Box className="page">
-        <RouterComponent />
-      </Box>
+      <Box className="page">{renderContent()}</Box>
     </ThemeStoreProvider>
   );
 };

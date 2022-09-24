@@ -12,10 +12,7 @@ export const store = configureStore({
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
-      serializableCheck: {
-        ignoredActions: ['user/setUserData', 'user/signInWithEmail/fulfilled'],
-        ignoredPaths: ['user.user'],
-      },
+      serializableCheck: false,
     }),
 });
 

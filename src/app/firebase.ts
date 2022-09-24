@@ -23,6 +23,7 @@ initializeApp(firebaseConfig);
 
 //init services
 const auth = getAuth();
+auth.useDeviceLanguage();
 
 export {
   auth,

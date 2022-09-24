@@ -2,7 +2,14 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { auth } from 'app/firebase';
 import { SignInModel } from 'app/models';
 import { AuthState, BootState } from 'app/types';
-import { signInWithEmailAndPassword, signOut, User } from 'firebase/auth';
+import { CredentialsPayloadAction } from 'app/types/user-credentials-payload';
+import {
+  GoogleAuthProvider,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  signOut,
+  User,
+} from 'firebase/auth';
 
 interface SliceState {
   bootState: BootState;
@@ -12,10 +19,19 @@ interface SliceState {
   user: null | User;
 }
 
+const googleProvider = new GoogleAuthProvider();
+
 export const signInWithEmail = createAsyncThunk(
   'user/signInWithEmail',
-  async ({ email, password }: SignInModel, thunkApi) => {
+  async ({ email, password }: SignInModel) => {
     return signInWithEmailAndPassword(auth, email, password);
+  },
+);
+
+export const signInWithGoogle = createAsyncThunk(
+  'user/signInWithPopup',
+  async () => {
+    return signInWithPopup(auth, googleProvider);
   },
 );
 
@@ -48,14 +64,19 @@ export const userSlice = createSlice({
     },
   },
   extraReducers: builder => {
+    // email and pass
     builder
       .addCase(signInWithEmail.pending, state => {
         state.bootState = 'loading';
       })
-      .addCase(signInWithEmail.fulfilled, (state, action) => {
-        state.bootState = 'success';
-        state.user = action.payload.user;
-      })
+      .addCase(
+        signInWithEmail.fulfilled,
+        (state, action: CredentialsPayloadAction<SignInModel>) => {
+          state.bootState = 'success';
+          state.user = action.payload.user;
+          state.authState = 'Authorized';
+        },
+      )
       .addCase(
         signInWithEmail.rejected,
         (state, { error: { message, code } }) => {
@@ -67,8 +88,34 @@ export const userSlice = createSlice({
           }
         },
       );
+    // google
+    builder
+      .addCase(signInWithGoogle.pending, state => {
+        state.bootState = 'loading';
+      })
+      .addCase(
+        signInWithGoogle.fulfilled,
+        (state, action: CredentialsPayloadAction<void>) => {
+          state.bootState = 'success';
+          state.user = action.payload.user;
+          state.authState = 'Authorized';
+        },
+      )
+      .addCase(
+        signInWithGoogle.rejected,
+        (state, { error: { message, code } }) => {
+          state.bootState = 'error';
+
+          if (message && code) {
+            state.errorCode = code;
+            state.errorMessage = message;
+          }
+        },
+      );
+    // logout
     builder.addCase(logout.fulfilled, state => {
       state.bootState = 'none';
+      state.authState = 'NotAuthorized';
       state.user = null;
     });
   },

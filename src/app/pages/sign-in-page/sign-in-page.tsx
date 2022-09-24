@@ -1,7 +1,5 @@
 import * as React from 'react';
-import { NavLink } from 'react-router-dom';
 import Avatar from '@mui/material/Avatar';
-import TextField from '@mui/material/TextField';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
@@ -19,10 +17,10 @@ import { ReactComponent as LoginImage } from 'assets/img/login.svg';
 import { ReactComponent as GoogleIcon } from 'assets/img/icon-google.svg';
 import { FormModel, formSchema } from './assets';
 import { useAppDispatch, useAppSelector } from 'app/store';
-import { logout, signInWithEmail } from 'app/store/userSlice';
+import { logout, signInWithEmail, signInWithGoogle } from 'app/store/userSlice';
+import { NavLink } from 'react-router-dom';
 
 export const SignInPage = (): JSX.Element => {
-  const handleGoogleSignIn = (): void => {};
   const dispatch = useAppDispatch();
   const bootState = useAppSelector(state => state.user.bootState);
 
@@ -37,6 +35,10 @@ export const SignInPage = (): JSX.Element => {
 
   const onSubmit = (data: FormModel): void => {
     dispatch(signInWithEmail(data));
+  };
+
+  const handleGoogleSignIn = (): void => {
+    dispatch(signInWithGoogle());
   };
 
   return (
