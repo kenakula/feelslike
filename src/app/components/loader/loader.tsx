@@ -1,3 +1,4 @@
+import { Box } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 import React from 'react';
 
@@ -7,14 +8,15 @@ interface Props {
 
 export const Loader = ({ size = 40 }: Props): JSX.Element => {
   return (
-    <CircularProgress
+    <Box
       sx={{
         position: 'absolute',
         left: '50%',
         top: '50%',
         transform: 'translate(-50%, -50%)',
       }}
-      size={size}
-    />
+    >
+      <CircularProgress size={size} />
+    </Box>
   );
 };

@@ -1,8 +1,9 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
+import Alert from '@mui/material/Alert';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import LoadingButton from '@mui/lab/LoadingButton';
@@ -15,8 +16,16 @@ import { SIGNIN_PAGE_PATH, SIGNUP_PAGE_PATH } from 'app/routes';
 import { Copyright, InputComponent } from 'app/components';
 import { ReactComponent as RecoverImage } from 'assets/img/restore-password.svg';
 import { FormModel, formSchema } from './assets';
+import { AuthError } from 'app/components/auth-error/auth-error';
+import { useAppDispatch, useAppSelector } from 'app/store';
+import { resetPasswordEmail } from 'app/store/userSlice';
+import { RecoverPasswordEmailModel } from 'app/models';
 
 export const RecoverPage = (): JSX.Element => {
+  const dispatch = useAppDispatch();
+  const { bootState, errorCode } = useAppSelector(state => state.user);
+  const [successMessage, setSuccessMessage] = useState<string>('');
+
   const {
     control,
     handleSubmit,
@@ -26,8 +35,10 @@ export const RecoverPage = (): JSX.Element => {
     resolver: yupResolver(formSchema),
   });
 
-  const onSubmit = (data: any): void => {
-    console.log(data);
+  const onSubmit = (data: RecoverPasswordEmailModel): void => {
+    dispatch(resetPasswordEmail(data)).then(() =>
+      setSuccessMessage('Письмо отправлено, проверьте почту.'),
+    );
   };
 
   return (
@@ -82,6 +93,12 @@ export const RecoverPage = (): JSX.Element => {
             На указанную почту будет отправлено письмо с инструкцией к сбросу
             пароля
           </Typography>
+          {bootState === 'error' ? <AuthError code={errorCode} /> : null}
+          {successMessage && bootState === 'success' ? (
+            <Alert sx={{ mb: 1 }} severity="success">
+              {successMessage}
+            </Alert>
+          ) : null}
           <Box
             component="form"
             onSubmit={handleSubmit(onSubmit)}
@@ -103,7 +120,7 @@ export const RecoverPage = (): JSX.Element => {
               variant="contained"
               startIcon={<ExitToAppIcon />}
               loadingPosition="start"
-              loading={false}
+              loading={bootState === 'loading'}
               sx={{ mt: 3, mb: 2 }}
             >
               Сбросить

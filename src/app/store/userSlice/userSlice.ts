@@ -1,10 +1,12 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { auth } from 'app/firebase';
-import { SignInModel } from 'app/models';
+import { RecoverPasswordEmailModel, SignInModel } from 'app/models';
 import { AuthState, BootState } from 'app/types';
 import { CredentialsPayloadAction } from 'app/types/user-credentials-payload';
 import {
+  createUserWithEmailAndPassword,
   GoogleAuthProvider,
+  sendPasswordResetEmail,
   signInWithEmailAndPassword,
   signInWithPopup,
   signOut,
@@ -20,6 +22,13 @@ interface SliceState {
 }
 
 const googleProvider = new GoogleAuthProvider();
+
+export const signUpWithEmail = createAsyncThunk(
+  'user/signUpWithEmail',
+  async ({ email, password }: SignInModel) => {
+    return createUserWithEmailAndPassword(auth, email, password);
+  },
+);
 
 export const signInWithEmail = createAsyncThunk(
   'user/signInWithEmail',
@@ -38,6 +47,13 @@ export const signInWithGoogle = createAsyncThunk(
 export const logout = createAsyncThunk('user/logout', async () => {
   await signOut(auth);
 });
+
+export const resetPasswordEmail = createAsyncThunk(
+  'user/resetPasswordEmail',
+  async ({ email }: RecoverPasswordEmailModel) => {
+    return sendPasswordResetEmail(auth, email);
+  },
+);
 
 const initialState: SliceState = {
   bootState: 'none',
@@ -73,8 +89,8 @@ export const userSlice = createSlice({
         signInWithEmail.fulfilled,
         (state, action: CredentialsPayloadAction<SignInModel>) => {
           state.bootState = 'success';
-          state.user = action.payload.user;
           state.authState = 'Authorized';
+          state.user = action.payload.user;
         },
       )
       .addCase(
@@ -97,14 +113,15 @@ export const userSlice = createSlice({
         signInWithGoogle.fulfilled,
         (state, action: CredentialsPayloadAction<void>) => {
           state.bootState = 'success';
-          state.user = action.payload.user;
           state.authState = 'Authorized';
+          state.user = action.payload.user;
         },
       )
       .addCase(
         signInWithGoogle.rejected,
         (state, { error: { message, code } }) => {
           state.bootState = 'error';
+          state.authState = 'NotAuthorized';
 
           if (message && code) {
             state.errorCode = code;
@@ -118,6 +135,48 @@ export const userSlice = createSlice({
       state.authState = 'NotAuthorized';
       state.user = null;
     });
+    // signup
+    builder
+      .addCase(signUpWithEmail.pending, state => {
+        state.bootState = 'loading';
+      })
+      .addCase(
+        signUpWithEmail.fulfilled,
+        (state, action: CredentialsPayloadAction<SignInModel>) => {
+          state.bootState = 'success';
+          state.authState = 'Authorized';
+          state.user = action.payload.user;
+        },
+      )
+      .addCase(
+        signUpWithEmail.rejected,
+        (state, { error: { message, code } }) => {
+          state.bootState = 'error';
+
+          if (message && code) {
+            state.errorCode = code;
+            state.errorMessage = message;
+          }
+        },
+      );
+    builder
+      .addCase(resetPasswordEmail.pending, state => {
+        state.bootState = 'loading';
+      })
+      .addCase(resetPasswordEmail.fulfilled, state => {
+        state.bootState = 'success';
+      })
+      .addCase(
+        resetPasswordEmail.rejected,
+        (state, { error: { message, code } }) => {
+          state.bootState = 'error';
+
+          if (message && code) {
+            state.errorCode = code;
+            state.errorMessage = message;
+          }
+        },
+      );
   },
 });
 

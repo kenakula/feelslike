@@ -8,6 +8,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
+import Button from '@mui/material/Button';
 import { SIGNIN_PAGE_PATH } from 'app/routes';
 import { NavLink } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -15,19 +16,30 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { ReactComponent as WelcomeImage } from 'assets/img/welcome.svg';
 import { Copyright, InputComponent } from 'app/components';
 import { FormModel, formSchema } from './assets';
+import { useAppDispatch, useAppSelector } from 'app/store';
+import { signInWithGoogle, signUpWithEmail } from 'app/store/userSlice';
+import { ReactComponent as GoogleIcon } from 'assets/img/icon-google.svg';
+import { AuthError } from 'app/components/auth-error/auth-error';
 
 export const SignUpPage = (): JSX.Element => {
+  const dispatch = useAppDispatch();
+  const { bootState, errorCode } = useAppSelector(state => state.user);
+
   const {
     control,
     handleSubmit,
     formState: { errors },
   } = useForm<FormModel>({
-    defaultValues: { email: '', password: '' },
+    defaultValues: { email: '', password: '', confirmPassword: '' },
     resolver: yupResolver(formSchema),
   });
 
   const onSubmit = (data: FormModel): void => {
-    console.log(data);
+    dispatch(signUpWithEmail(data));
+  };
+
+  const handleGoogleSignIn = (): void => {
+    dispatch(signInWithGoogle());
   };
 
   return (
@@ -68,8 +80,9 @@ export const SignUpPage = (): JSX.Element => {
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Sign Up
+          Зарегистрироваться
         </Typography>
+        {bootState === 'error' ? <AuthError code={errorCode} /> : null}
         <Box
           component="form"
           onSubmit={handleSubmit(onSubmit)}
@@ -111,11 +124,21 @@ export const SignUpPage = (): JSX.Element => {
             variant="contained"
             startIcon={<ExitToAppIcon />}
             loadingPosition="start"
-            loading={false}
+            loading={bootState === 'loading'}
             sx={{ mt: 3, mb: 2 }}
           >
             Зарегистрироваться
           </LoadingButton>
+          <Button
+            size="small"
+            variant="outlined"
+            fullWidth
+            startIcon={<GoogleIcon />}
+            onClick={handleGoogleSignIn}
+            sx={{ mb: 2 }}
+          >
+            Войти с помощью Google
+          </Button>
           <Grid container justifyContent="center">
             <Grid item>
               <Link variant="body2" component={NavLink} to={SIGNIN_PAGE_PATH}>

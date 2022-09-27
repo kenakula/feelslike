@@ -17,12 +17,13 @@ import { ReactComponent as LoginImage } from 'assets/img/login.svg';
 import { ReactComponent as GoogleIcon } from 'assets/img/icon-google.svg';
 import { FormModel, formSchema } from './assets';
 import { useAppDispatch, useAppSelector } from 'app/store';
-import { logout, signInWithEmail, signInWithGoogle } from 'app/store/userSlice';
+import { signInWithEmail, signInWithGoogle } from 'app/store/userSlice';
 import { NavLink } from 'react-router-dom';
+import { AuthError } from 'app/components/auth-error/auth-error';
 
 export const SignInPage = (): JSX.Element => {
   const dispatch = useAppDispatch();
-  const bootState = useAppSelector(state => state.user.bootState);
+  const { bootState, errorCode } = useAppSelector(state => state.user);
 
   const {
     control,
@@ -47,16 +48,15 @@ export const SignInPage = (): JSX.Element => {
       maxWidth="xs"
       sx={{
         position: 'relative',
-        paddingTop: '250px',
+        paddingTop: '160px',
       }}
     >
-      <Button onClick={() => dispatch(logout())}>Logout</Button>
       <Box
         sx={{
           position: 'absolute',
           left: '50%',
           top: 0,
-          width: '100%',
+          width: '60%',
           maxWidth: '375px',
           margin: '0 auto',
           transform: 'translateX(-50%)',
@@ -90,6 +90,7 @@ export const SignInPage = (): JSX.Element => {
           <Typography component="h1" variant="h5" sx={{ alignSelf: 'center' }}>
             Войти
           </Typography>
+          {bootState === 'error' ? <AuthError code={errorCode} /> : null}
           <Box
             component="form"
             onSubmit={handleSubmit(onSubmit)}
@@ -104,6 +105,7 @@ export const SignInPage = (): JSX.Element => {
               type="email"
               error={!!errors.email}
               errorMessage="Введите корректно почту."
+              styles={{ mb: 1 }}
             />
             <InputComponent<FormModel>
               formControl={control}
