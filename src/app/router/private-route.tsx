@@ -1,5 +1,5 @@
-import { useAppSelector } from 'app/store';
 import React from 'react';
+import { useAppSelector } from 'app/store';
 import { Navigate } from 'react-router-dom';
 
 interface Props {

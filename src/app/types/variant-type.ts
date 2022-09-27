@@ -1,1 +1,1 @@
-export type VariantType = 'outlined' | 'standard' | 'filled';
+export type MuiVariantType = 'outlined' | 'standard' | 'filled';

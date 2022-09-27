@@ -1,17 +1,15 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { auth } from 'app/firebase';
-import { RecoverPasswordEmailModel, SignInModel } from 'app/models';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { SignInModel } from 'app/models';
 import { AuthState, BootState } from 'app/types';
 import { CredentialsPayloadAction } from 'app/types/user-credentials-payload';
+import { User } from 'firebase/auth';
 import {
-  createUserWithEmailAndPassword,
-  GoogleAuthProvider,
-  sendPasswordResetEmail,
-  signInWithEmailAndPassword,
-  signInWithPopup,
-  signOut,
-  User,
-} from 'firebase/auth';
+  logout,
+  resetPasswordEmail,
+  signInWithEmail,
+  signInWithGoogle,
+  signUpWithEmail,
+} from './thunks';
 
 interface SliceState {
   bootState: BootState;
@@ -20,40 +18,6 @@ interface SliceState {
   errorCode: string;
   user: null | User;
 }
-
-const googleProvider = new GoogleAuthProvider();
-
-export const signUpWithEmail = createAsyncThunk(
-  'user/signUpWithEmail',
-  async ({ email, password }: SignInModel) => {
-    return createUserWithEmailAndPassword(auth, email, password);
-  },
-);
-
-export const signInWithEmail = createAsyncThunk(
-  'user/signInWithEmail',
-  async ({ email, password }: SignInModel) => {
-    return signInWithEmailAndPassword(auth, email, password);
-  },
-);
-
-export const signInWithGoogle = createAsyncThunk(
-  'user/signInWithPopup',
-  async () => {
-    return signInWithPopup(auth, googleProvider);
-  },
-);
-
-export const logout = createAsyncThunk('user/logout', async () => {
-  await signOut(auth);
-});
-
-export const resetPasswordEmail = createAsyncThunk(
-  'user/resetPasswordEmail',
-  async ({ email }: RecoverPasswordEmailModel) => {
-    return sendPasswordResetEmail(auth, email);
-  },
-);
 
 const initialState: SliceState = {
   bootState: 'none',
@@ -159,6 +123,7 @@ export const userSlice = createSlice({
           }
         },
       );
+    // recover password email
     builder
       .addCase(resetPasswordEmail.pending, state => {
         state.bootState = 'loading';

@@ -9,6 +9,7 @@ export const Copyright = (): JSX.Element => {
       <Link color="inherit" href="https://feelslike.ru">
         FeelsLike
       </Link>{' '}
+      {/* TODO change when deploy */}
       {new Date().getFullYear()}
     </Typography>
   );

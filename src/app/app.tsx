@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import useVH from 'react-viewport-height';
-import { RouterComponent } from './routes';
+import { RouterComponent } from './router/router-component';
 import { Box } from '@mui/material';
-import { ThemeStoreProvider } from './utils';
+import { ThemeStoreProvider } from './utils/theme-store-provider';
 import { auth, onAuthStateChanged } from './firebase';
 import { useAppDispatch } from './store';
 import { setUserData } from './store/userSlice';

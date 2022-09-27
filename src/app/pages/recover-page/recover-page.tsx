@@ -12,7 +12,7 @@ import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import { NavLink } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { SIGNIN_PAGE_PATH, SIGNUP_PAGE_PATH } from 'app/routes';
+import { SIGNIN_PAGE_PATH, SIGNUP_PAGE_PATH } from 'app/router';
 import { Copyright, InputComponent } from 'app/components';
 import { ReactComponent as RecoverImage } from 'assets/img/restore-password.svg';
 import { FormModel, formSchema } from './assets';
@@ -39,6 +39,22 @@ export const RecoverPage = (): JSX.Element => {
     dispatch(resetPasswordEmail(data)).then(() =>
       setSuccessMessage('Письмо отправлено, проверьте почту.'),
     );
+  };
+
+  const getAlert = (): JSX.Element | null => {
+    if (bootState === 'error') {
+      return <AuthError code={errorCode} />;
+    }
+
+    if (bootState === 'success' && successMessage) {
+      return (
+        <Alert sx={{ mb: 1 }} severity="success">
+          {successMessage}
+        </Alert>
+      );
+    }
+
+    return null;
   };
 
   return (
@@ -93,12 +109,7 @@ export const RecoverPage = (): JSX.Element => {
             На указанную почту будет отправлено письмо с инструкцией к сбросу
             пароля
           </Typography>
-          {bootState === 'error' ? <AuthError code={errorCode} /> : null}
-          {successMessage && bootState === 'success' ? (
-            <Alert sx={{ mb: 1 }} severity="success">
-              {successMessage}
-            </Alert>
-          ) : null}
+          {getAlert()}
           <Box
             component="form"
             onSubmit={handleSubmit(onSubmit)}

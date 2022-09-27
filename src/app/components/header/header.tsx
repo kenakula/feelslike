@@ -7,7 +7,7 @@ import Typography from '@mui/material/Typography';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import { NavLink } from 'react-router-dom';
 import { Container } from '../container/container';
-import { DASHBOARD_PAGE_PATH } from 'app/routes';
+import { HOME_PAGE_PATH } from 'app/router';
 
 export const Header = (): JSX.Element => {
   const [hasNotifications, setHasNotifications] = useState(0);
@@ -17,7 +17,7 @@ export const Header = (): JSX.Element => {
       <Container sx={{ display: 'flex', alignItems: 'center' }}>
         <Link
           component={NavLink}
-          to={DASHBOARD_PAGE_PATH}
+          to={HOME_PAGE_PATH}
           sx={{ textDecoration: 'none', marginRight: 'auto' }}
         >
           <Typography

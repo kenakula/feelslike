@@ -4,4 +4,4 @@ export * from './input-types';
 export * from './variant-type';
 export * from './color-types';
 export * from './boot-states';
-export * from './auth-state';
+export * from './auth-states';

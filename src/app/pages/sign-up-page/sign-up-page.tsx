@@ -9,7 +9,7 @@ import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
-import { SIGNIN_PAGE_PATH } from 'app/routes';
+import { SIGNIN_PAGE_PATH } from 'app/router';
 import { NavLink } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -135,6 +135,7 @@ export const SignUpPage = (): JSX.Element => {
             fullWidth
             startIcon={<GoogleIcon />}
             onClick={handleGoogleSignIn}
+            disabled={bootState === 'loading'}
             sx={{ mb: 2 }}
           >
             Войти с помощью Google

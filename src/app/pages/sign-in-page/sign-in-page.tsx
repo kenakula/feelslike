@@ -11,7 +11,7 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { RECOVER_PAGE_PATH, SIGNUP_PAGE_PATH } from 'app/routes';
+import { RECOVER_PAGE_PATH, SIGNUP_PAGE_PATH } from 'app/router';
 import { Copyright, InputComponent } from 'app/components';
 import { ReactComponent as LoginImage } from 'assets/img/login.svg';
 import { ReactComponent as GoogleIcon } from 'assets/img/icon-google.svg';
@@ -134,6 +134,7 @@ export const SignInPage = (): JSX.Element => {
               fullWidth
               startIcon={<GoogleIcon />}
               onClick={handleGoogleSignIn}
+              disabled={bootState === 'loading'}
               sx={{ mb: 2 }}
             >
               Войти с помощью Google

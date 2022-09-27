@@ -1,5 +1,5 @@
 import { ThemeProvider } from '@emotion/react';
-import { createTheme, CssBaseline, PaletteColorOptions } from '@mui/material';
+import { createTheme, CssBaseline } from '@mui/material';
 import { Theme } from '@mui/system';
 import { ColorMode, LocalStorageKeys } from 'app/types';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
@@ -20,7 +20,7 @@ export function useThemeStore(): Partial<ContextProps> {
   return useContext(ThemeStoreContext);
 }
 
-export function ThemeStoreProvider({ children }: Props): JSX.Element {
+export const ThemeStoreProvider = ({ children }: Props): JSX.Element => {
   const [mode, setMode] = useState<ColorMode>(ColorMode.Light);
 
   useEffect(() => {
@@ -80,4 +80,4 @@ export function ThemeStoreProvider({ children }: Props): JSX.Element {
       </ThemeProvider>
     </ThemeStoreContext.Provider>
   );
-}
+};
