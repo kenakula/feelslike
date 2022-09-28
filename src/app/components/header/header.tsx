@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Badge from '@mui/material/Badge';
 import Link from '@mui/material/Link';
 import Box from '@mui/material/Box';
@@ -8,9 +8,17 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import { NavLink } from 'react-router-dom';
 import { Container } from '../container/container';
 import { HOME_PAGE_PATH } from 'app/router';
+import { Avatar } from '@mui/material';
+import { stringToColor } from 'app/utils';
+import { useAppDispatch, useAppSelector } from 'app/store';
 
 export const Header = (): JSX.Element => {
   const [hasNotifications, setHasNotifications] = useState(0);
+  const {
+    user: { userInfo },
+    auth: { currentUser, authState, bootState: authBootState },
+  } = useAppSelector(state => state);
+  const dispatch = useAppDispatch();
 
   return (
     <Box component="header" sx={{ display: 'flex', minHeight: '70px' }}>
@@ -33,6 +41,21 @@ export const Header = (): JSX.Element => {
             <NotificationsIcon />
           </Badge>
         </IconButton>
+        {authState === 'Authorized' && userInfo ? (
+          <IconButton>
+            <Avatar
+              sx={{
+                width: 30,
+                height: 30,
+                backgroundColor: stringToColor(userInfo.name),
+                fontSize: 18,
+              }}
+              src={userInfo.profileImage}
+            >
+              {userInfo.name[0]}
+            </Avatar>
+          </IconButton>
+        ) : null}
       </Container>
     </Box>
   );

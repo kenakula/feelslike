@@ -5,4 +5,6 @@ export const MapAuthErrorCodes: Record<string, string> = {
   'auth/invalid-password': 'Недопустимый пароль',
   'auth/email-already-exists': 'Такой адрес почты уже существует',
   'auth/email-already-in-use': 'Такой адрес почты уже используется',
+  'auth/network-request-failed': 'Ошибка подключения. Попробуйте позже',
+  'auth/popup-closed-by-user': 'Авторизация прервана. Попробуйте снова',
 };

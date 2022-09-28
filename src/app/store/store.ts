@@ -4,10 +4,12 @@ import {
   Action,
   getDefaultMiddleware,
 } from '@reduxjs/toolkit';
-import { userSlice } from './userSlice/userSlice';
+import { authSlice } from './auth-slice';
+import { userSlice } from './user-slice/user-slice';
 
 export const store = configureStore({
   reducer: {
+    auth: authSlice.reducer,
     user: userSlice.reducer,
   },
   middleware: getDefaultMiddleware =>

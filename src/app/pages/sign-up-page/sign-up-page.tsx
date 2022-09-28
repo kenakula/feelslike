@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
@@ -8,7 +8,6 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import Button from '@mui/material/Button';
 import { SIGNIN_PAGE_PATH } from 'app/router';
 import { NavLink } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -17,13 +16,12 @@ import { ReactComponent as WelcomeImage } from 'assets/img/welcome.svg';
 import { Copyright, InputComponent } from 'app/components';
 import { FormModel, formSchema } from './assets';
 import { useAppDispatch, useAppSelector } from 'app/store';
-import { signInWithGoogle, signUpWithEmail } from 'app/store/userSlice';
-import { ReactComponent as GoogleIcon } from 'assets/img/icon-google.svg';
+import { resetAuthState, signUpWithEmail } from 'app/store/auth-slice';
 import { AuthError } from 'app/components/auth-error/auth-error';
 
 export const SignUpPage = (): JSX.Element => {
   const dispatch = useAppDispatch();
-  const { bootState, errorCode } = useAppSelector(state => state.user);
+  const { bootState, error } = useAppSelector(state => state.auth);
 
   const {
     control,
@@ -34,12 +32,14 @@ export const SignUpPage = (): JSX.Element => {
     resolver: yupResolver(formSchema),
   });
 
-  const onSubmit = (data: FormModel): void => {
-    dispatch(signUpWithEmail(data));
-  };
+  useEffect(() => {
+    if (bootState !== 'none') {
+      dispatch(resetAuthState());
+    }
+  }, []);
 
-  const handleGoogleSignIn = (): void => {
-    dispatch(signInWithGoogle());
+  const onSubmit = async (data: FormModel): Promise<void> => {
+    dispatch(signUpWithEmail(data));
   };
 
   return (
@@ -82,7 +82,7 @@ export const SignUpPage = (): JSX.Element => {
         <Typography component="h1" variant="h5">
           Зарегистрироваться
         </Typography>
-        {bootState === 'error' ? <AuthError code={errorCode} /> : null}
+        {bootState === 'error' && error ? <AuthError code={error} /> : null}
         <Box
           component="form"
           onSubmit={handleSubmit(onSubmit)}
@@ -97,6 +97,7 @@ export const SignUpPage = (): JSX.Element => {
             type="email"
             error={!!errors.email}
             errorMessage="Введите корректно почту."
+            styles={{ mb: 2 }}
           />
           <InputComponent<FormModel>
             formControl={control}
@@ -106,7 +107,7 @@ export const SignUpPage = (): JSX.Element => {
             type="password"
             error={!!errors.password}
             errorMessage="Введите пароль"
-            styles={{ mt: 1 }}
+            styles={{ mb: 2 }}
           />
           <InputComponent<FormModel>
             formControl={control}
@@ -116,7 +117,7 @@ export const SignUpPage = (): JSX.Element => {
             type="password"
             error={!!errors.confirmPassword}
             errorMessage="Пароли не совпадают"
-            styles={{ mt: 1 }}
+            styles={{ mb: 2 }}
           />
           <LoadingButton
             type="submit"
@@ -129,17 +130,6 @@ export const SignUpPage = (): JSX.Element => {
           >
             Зарегистрироваться
           </LoadingButton>
-          <Button
-            size="small"
-            variant="outlined"
-            fullWidth
-            startIcon={<GoogleIcon />}
-            onClick={handleGoogleSignIn}
-            disabled={bootState === 'loading'}
-            sx={{ mb: 2 }}
-          >
-            Войти с помощью Google
-          </Button>
           <Grid container justifyContent="center">
             <Grid item>
               <Link variant="body2" component={NavLink} to={SIGNIN_PAGE_PATH}>

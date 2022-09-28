@@ -1,7 +1,7 @@
 import { Button } from '@mui/material';
 import { Container } from 'app/components';
 import { useAppDispatch } from 'app/store';
-import { logout } from 'app/store/userSlice';
+import { resetUserState } from 'app/store/user-slice';
 import React from 'react';
 
 export const DashboardPage = (): JSX.Element => {
@@ -9,14 +9,7 @@ export const DashboardPage = (): JSX.Element => {
 
   return (
     <Container>
-      <p>Dasboard</p>
-      <Button
-        onClick={() => {
-          dispatch(logout());
-        }}
-      >
-        logout
-      </Button>
+      <Button onClick={() => {}}>logout</Button>
     </Container>
   );
 };

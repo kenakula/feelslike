@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import useVH from 'react-viewport-height';
-import { RouterComponent } from './router/router-component';
+import { RouterComponent } from './router';
 import { Box } from '@mui/material';
-import { ThemeStoreProvider } from './utils/theme-store-provider';
+import { ThemeStoreProvider } from './utils';
 import { auth, onAuthStateChanged } from './firebase';
 import { useAppDispatch } from './store';
-import { setUserData } from './store/userSlice';
 import { BootState } from './types';
 import { Loader, TechnicalIssues } from './components';
+import { setAuthState } from './store/auth-slice';
 
 export const App = (): JSX.Element => {
   const [bootState, setBootState] = useState<BootState>('none');
@@ -16,12 +16,18 @@ export const App = (): JSX.Element => {
 
   useEffect(() => {
     setBootState('loading');
-    onAuthStateChanged(auth, userAuth => {
+    const unsubscribe = onAuthStateChanged(auth, userAuth => {
+      console.log('auth state changed');
       if (userAuth) {
-        dispatch(setUserData(userAuth));
+        console.log('userAuth:', userAuth);
+        dispatch(setAuthState(userAuth));
+      } else {
+        console.log('no user auth');
       }
       setBootState('success');
     });
+
+    return () => unsubscribe();
   }, []);
 
   const renderContent = (): JSX.Element | null => {

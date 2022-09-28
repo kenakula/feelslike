@@ -7,7 +7,7 @@ interface Props {
 }
 
 export const ProtectedRoute = ({ children }: Props): JSX.Element => {
-  const authState = useAppSelector(state => state.user.authState);
+  const authState = useAppSelector(state => state.auth.authState);
 
   if (authState === 'NotAuthorized') {
     return children;

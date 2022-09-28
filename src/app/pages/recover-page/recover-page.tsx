@@ -18,7 +18,6 @@ import { ReactComponent as RecoverImage } from 'assets/img/restore-password.svg'
 import { FormModel, formSchema } from './assets';
 import { AuthError } from 'app/components/auth-error/auth-error';
 import { useAppDispatch, useAppSelector } from 'app/store';
-import { resetPasswordEmail } from 'app/store/userSlice';
 import { RecoverPasswordEmailModel } from 'app/models';
 
 export const RecoverPage = (): JSX.Element => {
@@ -36,9 +35,7 @@ export const RecoverPage = (): JSX.Element => {
   });
 
   const onSubmit = (data: RecoverPasswordEmailModel): void => {
-    dispatch(resetPasswordEmail(data)).then(() =>
-      setSuccessMessage('Письмо отправлено, проверьте почту.'),
-    );
+    console.log(data);
   };
 
   const getAlert = (): JSX.Element | null => {

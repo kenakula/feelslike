@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { Box, SxProps, useTheme } from '@mui/material';
 
 interface Props {
-  children: JSX.Element | JSX.Element[] | null;
+  children: ReactNode;
   sx?: SxProps;
 }
 

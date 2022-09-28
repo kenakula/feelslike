@@ -17,13 +17,19 @@ import { ReactComponent as LoginImage } from 'assets/img/login.svg';
 import { ReactComponent as GoogleIcon } from 'assets/img/icon-google.svg';
 import { FormModel, formSchema } from './assets';
 import { useAppDispatch, useAppSelector } from 'app/store';
-import { signInWithEmail, signInWithGoogle } from 'app/store/userSlice';
+import { resetAuthState } from 'app/store/auth-slice';
 import { NavLink } from 'react-router-dom';
 import { AuthError } from 'app/components/auth-error/auth-error';
 
 export const SignInPage = (): JSX.Element => {
   const dispatch = useAppDispatch();
-  const { bootState, errorCode } = useAppSelector(state => state.user);
+  const { bootState, error } = useAppSelector(state => state.auth);
+
+  React.useEffect(() => {
+    if (bootState !== 'none') {
+      dispatch(resetAuthState);
+    }
+  }, []);
 
   const {
     control,
@@ -35,11 +41,11 @@ export const SignInPage = (): JSX.Element => {
   });
 
   const onSubmit = (data: FormModel): void => {
-    dispatch(signInWithEmail(data));
+    console.log(data);
   };
 
   const handleGoogleSignIn = (): void => {
-    dispatch(signInWithGoogle());
+    console.log('signin');
   };
 
   return (
@@ -90,7 +96,7 @@ export const SignInPage = (): JSX.Element => {
           <Typography component="h1" variant="h5" sx={{ alignSelf: 'center' }}>
             Войти
           </Typography>
-          {bootState === 'error' ? <AuthError code={errorCode} /> : null}
+          {bootState === 'error' && error ? <AuthError code={error} /> : null}
           <Box
             component="form"
             onSubmit={handleSubmit(onSubmit)}

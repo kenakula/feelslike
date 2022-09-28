@@ -8,6 +8,7 @@ import {
   signInWithEmailAndPassword,
   signOut,
 } from 'firebase/auth';
+import { getFirestore } from 'firebase/firestore';
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_API_KEY,
@@ -19,7 +20,8 @@ const firebaseConfig = {
   measurementId: process.env.REACT_APP_MEASURMENT_ID,
 };
 
-initializeApp(firebaseConfig);
+const firebaseApp = initializeApp(firebaseConfig);
+const database = getFirestore(firebaseApp);
 
 //init services
 const auth = getAuth();
@@ -27,6 +29,7 @@ auth.useDeviceLanguage();
 
 export {
   auth,
+  database,
   createUserWithEmailAndPassword,
   updateProfile,
   onAuthStateChanged,
