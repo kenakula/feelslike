@@ -1,4 +1,3 @@
-//src/firebase.js
 import { initializeApp } from 'firebase/app';
 import {
   getAuth,
@@ -8,7 +7,15 @@ import {
   signInWithEmailAndPassword,
   signOut,
 } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
+import {
+  doc,
+  DocumentData,
+  FirestoreError,
+  getDoc,
+  getFirestore,
+  setDoc,
+} from 'firebase/firestore';
+import { DatabaseCollection } from './types/database-collection';
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_API_KEY,
@@ -22,10 +29,29 @@ const firebaseConfig = {
 
 const firebaseApp = initializeApp(firebaseConfig);
 const database = getFirestore(firebaseApp);
-
-//init services
 const auth = getAuth();
 auth.useDeviceLanguage();
+
+const writeDocument = async (
+  collName: DatabaseCollection,
+  data: any,
+  docId: string,
+): Promise<void> => {
+  const ref = doc(database, collName, docId);
+  return setDoc(ref, data).catch((error: FirestoreError) => {
+    console.error(error.message);
+  });
+};
+
+const readDocument = async (
+  collName: DatabaseCollection,
+  docId: string,
+): Promise<void | DocumentData | undefined> => {
+  const reference = doc(database, collName, docId);
+  return getDoc(reference).catch((err: FirestoreError) => {
+    console.error('error when getting document', err);
+  });
+};
 
 export {
   auth,
@@ -35,4 +61,6 @@ export {
   onAuthStateChanged,
   signInWithEmailAndPassword,
   signOut,
+  writeDocument,
+  readDocument,
 };

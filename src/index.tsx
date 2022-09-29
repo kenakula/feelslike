@@ -1,15 +1,17 @@
-import { App } from 'app/app';
-import { store } from 'app/store';
+/* eslint-disable no-prototype-builtins */
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import { Provider } from 'react-redux';
+import { App } from 'app/app';
 import './index.css';
+
+if (
+  !new (class {
+    x: any;
+  })().hasOwnProperty('x')
+)
+  throw new Error('Transpiler is not configured correctly');
 
 const container = document.getElementById('root')!;
 const root = createRoot(container);
 
-root.render(
-  <Provider store={store}>
-    <App />
-  </Provider>,
-);
+root.render(<App />);

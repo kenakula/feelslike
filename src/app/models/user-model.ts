@@ -1,6 +1,7 @@
 export interface UserModel {
   uid: string;
   email: string;
-  name: string;
+  displayName: string;
   profileImage: string;
+  phoneNumber: string;
 }

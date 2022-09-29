@@ -4,12 +4,12 @@ import Box from '@mui/material/Box';
 import { MapAuthErrorCodes } from './assets';
 
 interface Props {
-  code: string;
+  message: string;
 }
 
-export const AuthError = ({ code }: Props): JSX.Element => {
+export const AuthError = ({ message }: Props): JSX.Element => {
   const getMessage = (): string => {
-    return MapAuthErrorCodes[code] ?? `Ошибка, попробуйте позже. ${code}`;
+    return MapAuthErrorCodes[message] ?? `Ошибка, попробуйте позже. ${message}`;
   };
 
   return (

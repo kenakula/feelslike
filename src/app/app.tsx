@@ -1,33 +1,37 @@
+/* eslint-disable import/named */
 import React, { useEffect, useState } from 'react';
 import useVH from 'react-viewport-height';
 import { RouterComponent } from './router';
 import { Box } from '@mui/material';
 import { ThemeStoreProvider } from './utils';
 import { auth, onAuthStateChanged } from './firebase';
-import { useAppDispatch } from './store';
 import { BootState } from './types';
 import { Loader, TechnicalIssues } from './components';
-import { setAuthState } from './store/auth-slice';
+import { useRootStore } from './stores';
 
 export const App = (): JSX.Element => {
   const [bootState, setBootState] = useState<BootState>('none');
-  const dispatch = useAppDispatch();
+  const {
+    authStore: { setCurrentUser, getUserData },
+  } = useRootStore();
   useVH();
 
   useEffect(() => {
     setBootState('loading');
+
     const unsubscribe = onAuthStateChanged(auth, userAuth => {
-      console.log('auth state changed');
       if (userAuth) {
-        console.log('userAuth:', userAuth);
-        dispatch(setAuthState(userAuth));
+        setCurrentUser(userAuth);
+        getUserData(userAuth.uid);
+        setBootState('success');
       } else {
-        console.log('no user auth');
+        setCurrentUser(null);
+        setBootState('success');
       }
-      setBootState('success');
     });
 
     return () => unsubscribe();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const renderContent = (): JSX.Element | null => {

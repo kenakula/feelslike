@@ -1,17 +1,20 @@
+import { useRootStore } from 'app/stores';
+import { observer } from 'mobx-react-lite';
 import React from 'react';
-import { useAppSelector } from 'app/store';
 import { Navigate } from 'react-router-dom';
 
 interface Props {
   children: JSX.Element;
 }
 
-export const ProtectedRoute = ({ children }: Props): JSX.Element => {
-  const authState = useAppSelector(state => state.auth.authState);
+export const ProtectedRoute = observer(({ children }: Props): JSX.Element => {
+  const {
+    authStore: { authState, bootState },
+  } = useRootStore();
 
-  if (authState === 'NotAuthorized') {
+  if (authState === 'NotAuthorized' && bootState !== 'success') {
     return children;
   }
 
   return <Navigate to="/" />;
-};
+});

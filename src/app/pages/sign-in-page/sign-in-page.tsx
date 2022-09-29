@@ -1,14 +1,14 @@
-import * as React from 'react';
+import React, { useEffect } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import LoadingButton from '@mui/lab/LoadingButton';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
+import { LoadingButton } from '@mui/lab';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { RECOVER_PAGE_PATH, SIGNUP_PAGE_PATH } from 'app/router';
@@ -16,19 +16,24 @@ import { Copyright, InputComponent } from 'app/components';
 import { ReactComponent as LoginImage } from 'assets/img/login.svg';
 import { ReactComponent as GoogleIcon } from 'assets/img/icon-google.svg';
 import { FormModel, formSchema } from './assets';
-import { useAppDispatch, useAppSelector } from 'app/store';
-import { resetAuthState } from 'app/store/auth-slice';
 import { NavLink } from 'react-router-dom';
 import { AuthError } from 'app/components/auth-error/auth-error';
+import { observer } from 'mobx-react-lite';
+import { useRootStore } from 'app/stores';
 
-export const SignInPage = (): JSX.Element => {
-  const dispatch = useAppDispatch();
-  const { bootState, error } = useAppSelector(state => state.auth);
+export const SignInPage = observer((): JSX.Element => {
+  const {
+    authStore: {
+      error,
+      bootState,
+      signInWithEmail,
+      signInWithGoogle,
+      resetState,
+    },
+  } = useRootStore();
 
-  React.useEffect(() => {
-    if (bootState !== 'none') {
-      dispatch(resetAuthState);
-    }
+  useEffect(() => {
+    resetState();
   }, []);
 
   const {
@@ -41,11 +46,11 @@ export const SignInPage = (): JSX.Element => {
   });
 
   const onSubmit = (data: FormModel): void => {
-    console.log(data);
+    signInWithEmail(data);
   };
 
   const handleGoogleSignIn = (): void => {
-    console.log('signin');
+    signInWithGoogle();
   };
 
   return (
@@ -96,7 +101,9 @@ export const SignInPage = (): JSX.Element => {
           <Typography component="h1" variant="h5" sx={{ alignSelf: 'center' }}>
             Войти
           </Typography>
-          {bootState === 'error' && error ? <AuthError code={error} /> : null}
+          {bootState === 'error' && error ? (
+            <AuthError message={error} />
+          ) : null}
           <Box
             component="form"
             onSubmit={handleSubmit(onSubmit)}
@@ -167,4 +174,4 @@ export const SignInPage = (): JSX.Element => {
       <Copyright />
     </Container>
   );
-};
+});

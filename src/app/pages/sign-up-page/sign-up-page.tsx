@@ -15,13 +15,18 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { ReactComponent as WelcomeImage } from 'assets/img/welcome.svg';
 import { Copyright, InputComponent } from 'app/components';
 import { FormModel, formSchema } from './assets';
-import { useAppDispatch, useAppSelector } from 'app/store';
-import { resetAuthState, signUpWithEmail } from 'app/store/auth-slice';
 import { AuthError } from 'app/components/auth-error/auth-error';
+import { useRootStore } from 'app/stores';
+import { observer } from 'mobx-react-lite';
 
-export const SignUpPage = (): JSX.Element => {
-  const dispatch = useAppDispatch();
-  const { bootState, error } = useAppSelector(state => state.auth);
+export const SignUpPage = observer((): JSX.Element => {
+  const {
+    authStore: { error, bootState, signUpWithEmail, resetState },
+  } = useRootStore();
+
+  useEffect(() => {
+    resetState();
+  }, []);
 
   const {
     control,
@@ -32,14 +37,8 @@ export const SignUpPage = (): JSX.Element => {
     resolver: yupResolver(formSchema),
   });
 
-  useEffect(() => {
-    if (bootState !== 'none') {
-      dispatch(resetAuthState());
-    }
-  }, []);
-
-  const onSubmit = async (data: FormModel): Promise<void> => {
-    dispatch(signUpWithEmail(data));
+  const onSubmit = (data: FormModel): void => {
+    signUpWithEmail(data);
   };
 
   return (
@@ -82,7 +81,7 @@ export const SignUpPage = (): JSX.Element => {
         <Typography component="h1" variant="h5">
           Зарегистрироваться
         </Typography>
-        {bootState === 'error' && error ? <AuthError code={error} /> : null}
+        {bootState === 'error' && error ? <AuthError message={error} /> : null}
         <Box
           component="form"
           onSubmit={handleSubmit(onSubmit)}
@@ -142,4 +141,4 @@ export const SignUpPage = (): JSX.Element => {
       <Copyright />
     </Container>
   );
-};
+});

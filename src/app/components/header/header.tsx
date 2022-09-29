@@ -10,15 +10,14 @@ import { Container } from '../container/container';
 import { HOME_PAGE_PATH } from 'app/router';
 import { Avatar } from '@mui/material';
 import { stringToColor } from 'app/utils';
-import { useAppDispatch, useAppSelector } from 'app/store';
+import { useRootStore } from 'app/stores';
+import { observer } from 'mobx-react';
 
-export const Header = (): JSX.Element => {
+export const Header = observer((): JSX.Element => {
   const [hasNotifications, setHasNotifications] = useState(0);
   const {
-    user: { userInfo },
-    auth: { currentUser, authState, bootState: authBootState },
-  } = useAppSelector(state => state);
-  const dispatch = useAppDispatch();
+    authStore: { userData, authState },
+  } = useRootStore();
 
   return (
     <Box component="header" sx={{ display: 'flex', minHeight: '70px' }}>
@@ -41,22 +40,20 @@ export const Header = (): JSX.Element => {
             <NotificationsIcon />
           </Badge>
         </IconButton>
-        {authState === 'Authorized' && userInfo ? (
+        {authState === 'Authorized' && userData ? (
           <IconButton>
             <Avatar
               sx={{
                 width: 30,
                 height: 30,
-                backgroundColor: stringToColor(userInfo.name),
+                backgroundColor: stringToColor(userData.displayName),
                 fontSize: 18,
               }}
-              src={userInfo.profileImage}
-            >
-              {userInfo.name[0]}
-            </Avatar>
+              src={userData.profileImage}
+            />
           </IconButton>
         ) : null}
       </Container>
     </Box>
   );
-};
+});

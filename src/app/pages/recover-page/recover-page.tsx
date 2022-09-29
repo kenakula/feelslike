@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
@@ -6,24 +6,27 @@ import Box from '@mui/material/Box';
 import Alert from '@mui/material/Alert';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import LoadingButton from '@mui/lab/LoadingButton';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import { LoadingButton } from '@mui/lab';
 import { NavLink } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { observer } from 'mobx-react-lite';
 import { SIGNIN_PAGE_PATH, SIGNUP_PAGE_PATH } from 'app/router';
 import { Copyright, InputComponent } from 'app/components';
-import { ReactComponent as RecoverImage } from 'assets/img/restore-password.svg';
-import { FormModel, formSchema } from './assets';
 import { AuthError } from 'app/components/auth-error/auth-error';
-import { useAppDispatch, useAppSelector } from 'app/store';
 import { RecoverPasswordEmailModel } from 'app/models';
+import { useRootStore } from 'app/stores';
+import { FormModel, formSchema } from './assets';
+import { ReactComponent as RecoverImage } from 'assets/img/restore-password.svg';
 
-export const RecoverPage = (): JSX.Element => {
-  const dispatch = useAppDispatch();
-  const { bootState, errorCode } = useAppSelector(state => state.user);
+export const RecoverPage = observer((): JSX.Element => {
   const [successMessage, setSuccessMessage] = useState<string>('');
+  const [processing, setProcessing] = useState(false);
+  const {
+    authStore: { bootState, error, resetPassword, resetState },
+  } = useRootStore();
 
   const {
     control,
@@ -34,16 +37,24 @@ export const RecoverPage = (): JSX.Element => {
     resolver: yupResolver(formSchema),
   });
 
+  useEffect(() => {
+    resetState();
+  }, []);
+
   const onSubmit = (data: RecoverPasswordEmailModel): void => {
-    console.log(data);
+    setProcessing(true);
+    resetPassword(data).then(() => {
+      setSuccessMessage('Проверьте почту.');
+      setProcessing(false);
+    });
   };
 
   const getAlert = (): JSX.Element | null => {
-    if (bootState === 'error') {
-      return <AuthError code={errorCode} />;
+    if (bootState === 'error' && error) {
+      return <AuthError message={error} />;
     }
 
-    if (bootState === 'success' && successMessage) {
+    if (successMessage) {
       return (
         <Alert sx={{ mb: 1 }} severity="success">
           {successMessage}
@@ -128,7 +139,7 @@ export const RecoverPage = (): JSX.Element => {
               variant="contained"
               startIcon={<ExitToAppIcon />}
               loadingPosition="start"
-              loading={bootState === 'loading'}
+              loading={processing}
               sx={{ mt: 3, mb: 2 }}
             >
               Сбросить
@@ -151,4 +162,4 @@ export const RecoverPage = (): JSX.Element => {
       <Copyright />
     </Container>
   );
-};
+});
