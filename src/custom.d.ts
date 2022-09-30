@@ -1,8 +1,6 @@
 /// <reference types="node" />
 /// <reference types="react-dom" />
 
-import * as react from 'react';
-
 declare namespace NodeJS {
   interface ProcessEnv {
     readonly NODE_ENV: 'development' | 'production' | 'test';

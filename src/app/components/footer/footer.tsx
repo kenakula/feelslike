@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import HomeIcon from '@mui/icons-material/Home';
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
-import QueryStatsIcon from '@mui/icons-material/QueryStats';
+// import QueryStatsIcon from '@mui/icons-material/QueryStats';
 import AddIcon from '@mui/icons-material/Add';
 import { observer } from 'mobx-react-lite';
 import { LinkComponent } from './link-component';
@@ -15,7 +15,7 @@ import { useTheme } from '@mui/material';
 import {
   HOME_PAGE_PATH,
   JOURNAL_PAGE_PATH,
-  STATISTICS_PAGE_PATH,
+  // STATISTICS_PAGE_PATH,
 } from 'app/router';
 import { useRootStore } from 'app/stores';
 // import { Box, Fab, Menu, MenuItem, Typography, useTheme } from '@mui/material';

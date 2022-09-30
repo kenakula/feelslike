@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import useVH from 'react-viewport-height';
 import { RouterComponent } from './router';
 import { Box } from '@mui/material';
-import { ThemeStoreProvider, useThemeStore } from './utils';
+import { useThemeStore } from './utils';
 import { auth, onAuthStateChanged } from './firebase';
 import { BootState } from './types';
 import { Loader, TechnicalIssues } from './components';
