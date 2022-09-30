@@ -1,12 +1,31 @@
 .page {
   display: flex;
   flex-direction: column;
+  padding-bottom: 90px;
   min-height: calc(var(--vh, 1vh) * 100);
   max-height: calc(var(--vh, 1vh) * 100);
   overflow-y: auto;
   overflow-x: hidden;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.page::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  background: transparent;
 }
 
 main {
   flex-grow: 1;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  clip: rect(0 0 0 0);
+  overflow: hidden;
 }

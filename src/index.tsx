@@ -3,15 +3,13 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { App } from 'app/app';
 import './index.css';
-
-if (
-  !new (class {
-    x: any;
-  })().hasOwnProperty('x')
-)
-  throw new Error('Transpiler is not configured correctly');
+import { ThemeStoreProvider } from 'app/utils';
 
 const container = document.getElementById('root')!;
 const root = createRoot(container);
 
-root.render(<App />);
+root.render(
+  <ThemeStoreProvider>
+    <App />
+  </ThemeStoreProvider>,
+);

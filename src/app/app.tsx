@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import useVH from 'react-viewport-height';
 import { RouterComponent } from './router';
 import { Box } from '@mui/material';
-import { ThemeStoreProvider } from './utils';
+import { ThemeStoreProvider, useThemeStore } from './utils';
 import { auth, onAuthStateChanged } from './firebase';
 import { BootState } from './types';
 import { Loader, TechnicalIssues } from './components';
@@ -11,6 +11,7 @@ import { useRootStore } from './stores';
 
 export const App = (): JSX.Element => {
   const [bootState, setBootState] = useState<BootState>('none');
+  const { theme } = useThemeStore();
   const {
     authStore: { setCurrentUser, getUserData },
   } = useRootStore();
@@ -48,8 +49,11 @@ export const App = (): JSX.Element => {
   };
 
   return (
-    <ThemeStoreProvider>
-      <Box className="page">{renderContent()}</Box>
-    </ThemeStoreProvider>
+    <Box
+      className="page"
+      sx={{ backgroundColor: theme ? theme.palette.background : '#FDFFFC' }}
+    >
+      {renderContent()}
+    </Box>
   );
 };

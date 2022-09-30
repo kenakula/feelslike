@@ -1,10 +1,8 @@
 import React, { useEffect } from 'react';
-import Avatar from '@mui/material/Avatar';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import LoadingButton from '@mui/lab/LoadingButton';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
@@ -26,7 +24,7 @@ export const SignUpPage = observer((): JSX.Element => {
 
   useEffect(() => {
     resetState();
-  }, []);
+  }, [resetState]);
 
   const {
     control,
@@ -47,18 +45,13 @@ export const SignUpPage = observer((): JSX.Element => {
       maxWidth="xs"
       sx={{
         position: 'relative',
-        paddingTop: '180px',
+        paddingTop: '40px',
       }}
     >
       <Box
         sx={{
-          position: 'absolute',
-          left: '50%',
-          top: 0,
-          width: '100%',
           maxWidth: '150px',
-          margin: '0 auto',
-          transform: 'translateX(-50%)',
+          margin: '0 auto 40px',
           svg: {
             maxWidth: '100%',
             height: 'auto',
@@ -69,15 +62,12 @@ export const SignUpPage = observer((): JSX.Element => {
       </Box>
       <Box
         sx={{
-          mb: 2,
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
+          mb: 2,
         }}
       >
-        <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-          <LockOutlinedIcon />
-        </Avatar>
         <Typography component="h1" variant="h5">
           Зарегистрироваться
         </Typography>
