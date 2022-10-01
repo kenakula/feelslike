@@ -9,7 +9,7 @@ import {
   STATISTICS_PAGE_PATH,
 } from './routes';
 import {
-  DashboardPage,
+  HomePage,
   RecoverPage,
   SignInPage,
   SignUpPage,
@@ -31,7 +31,7 @@ export const RouterComponent = (): JSX.Element => {
             path={HOME_PAGE_PATH}
             element={
               <PrivateRoute>
-                <DashboardPage />
+                <HomePage />
               </PrivateRoute>
             }
           />

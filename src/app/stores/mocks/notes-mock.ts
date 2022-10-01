@@ -6,7 +6,7 @@ export const noteMocks: NoteModel[] = [
   {
     id: nanoid(),
     type: 'feel',
-    title: 'Title',
+    title: 'Title1',
     desc: 'Note description about something Note description about something',
     emotions: ['😅', '😃'],
     date: Timestamp.now(),
@@ -14,7 +14,7 @@ export const noteMocks: NoteModel[] = [
   {
     id: nanoid(),
     type: 'feel',
-    title: 'Title',
+    title: 'Title2',
     desc: 'Note description about something Note description about something',
     emotions: ['😅', '😃'],
     date: Timestamp.now(),
@@ -22,7 +22,7 @@ export const noteMocks: NoteModel[] = [
   {
     id: nanoid(),
     type: 'feel',
-    title: 'Title',
+    title: 'Title3',
     desc: 'Note description about something Note description about something',
     emotions: ['😅', '😃'],
     date: Timestamp.now(),
@@ -30,7 +30,7 @@ export const noteMocks: NoteModel[] = [
   {
     id: nanoid(),
     type: 'feel',
-    title: 'Title',
+    title: 'Title4',
     desc: 'Note description about something Note description about something',
     emotions: ['😅', '😃'],
     date: Timestamp.now(),
@@ -38,7 +38,7 @@ export const noteMocks: NoteModel[] = [
   {
     id: nanoid(),
     type: 'feel',
-    title: 'Title',
+    title: 'Title5',
     desc: 'Note description about something Note description about something',
     emotions: ['😅', '😃'],
     date: Timestamp.now(),

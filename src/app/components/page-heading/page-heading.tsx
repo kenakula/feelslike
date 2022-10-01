@@ -1,14 +1,19 @@
 import { useTheme } from '@mui/material';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import React from 'react';
+import React, { ElementType } from 'react';
 
 interface Props {
   children?: JSX.Element | JSX.Element[];
   title: string;
+  component?: ElementType<any>;
 }
 
-export const PageHeading = ({ children, title }: Props): JSX.Element => {
+export const PageHeading = ({
+  children,
+  title,
+  component,
+}: Props): JSX.Element => {
   const theme = useTheme();
 
   return (
@@ -22,7 +27,7 @@ export const PageHeading = ({ children, title }: Props): JSX.Element => {
     >
       <Typography
         variant="h5"
-        component="h1"
+        component={component ?? 'h1'}
         sx={{
           background: theme.palette.primary.main,
           padding: '5px 40px 5px 16px',
