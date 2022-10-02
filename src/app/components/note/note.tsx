@@ -23,9 +23,10 @@ export const Note = ({
           img: { mr: 1, '&:last-child': { mr: 0 } },
         }}
       >
-        {emotions.map(emoji => (
+        {emotions.map((emoji, index) => (
           <Emoji
-            key={emoji}
+            // eslint-disable-next-line react/no-array-index-key
+            key={`${emoji}-${index}`}
             unified={emoji}
             emojiStyle={EmojiStyle.APPLE}
             size={20}

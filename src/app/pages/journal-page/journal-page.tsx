@@ -1,14 +1,16 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Stack from '@mui/material/Stack';
 import IconButton from '@mui/material/IconButton';
 import TuneIcon from '@mui/icons-material/Tune';
-import { Container, Note, PageHeading } from 'app/components';
-import { noteMocks } from 'app/stores/mocks/notes-mock';
 import Popover from '@mui/material/Popover';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
+import Skeleton from '@mui/material/Skeleton';
+import { useRootStore } from 'app/stores';
+import { Container, Note, PageHeading } from 'app/components';
+import { observer } from 'mobx-react-lite';
 
 type FilterType = 'feel' | 'regular' | 'all';
 type SortOrder = 'asc' | 'desc';
@@ -18,13 +20,23 @@ interface FilterParams {
   sortOrder: SortOrder;
 }
 
-export const JournalPage = (): JSX.Element => {
+export const JournalPage = observer((): JSX.Element => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [filterParams, setFilterParams] = useState<FilterParams>({
     type: 'all',
     sortOrder: 'desc',
   });
   const menuOpen = Boolean(anchorEl);
+  const {
+    notesStore: { notes, getNotes, bootState },
+    authStore: { userData },
+  } = useRootStore();
+
+  useEffect(() => {
+    if (userData) {
+      getNotes(userData.uid);
+    }
+  }, [userData, getNotes]);
 
   const handleMenuOpenClick = (event: React.MouseEvent<HTMLElement>): void => {
     setAnchorEl(event.currentTarget);
@@ -55,58 +67,81 @@ export const JournalPage = (): JSX.Element => {
           <TuneIcon />
         </IconButton>
       </PageHeading>
-      <Stack spacing={2}>
-        {noteMocks.map(note => (
-          <Note key={note.id} note={note} />
-        ))}
-      </Stack>
-      <Popover
-        anchorEl={anchorEl}
-        open={menuOpen}
-        onClose={handleMenuClose}
-        sx={{ mt: 2, width: '100%' }}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'right',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
-        }}
-        PaperProps={{
-          sx: {
-            mt: 1.5,
-            width: '100%',
-          },
-        }}
-      >
-        <Box sx={{ p: 2, width: '100%' }}>
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <Typography sx={{ mr: 2 }}>Тип записи:</Typography>
-            <Select
-              value={filterParams.type}
-              onChange={handleTypeChange}
-              size="small"
-              sx={{ mb: 1 }}
-            >
-              <MenuItem value="all">Все</MenuItem>
-              <MenuItem value="feel">Чувства</MenuItem>
-              <MenuItem value="regular">Обычные</MenuItem>
-            </Select>
-          </Box>
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <Typography sx={{ mr: 2 }}>Сначала:</Typography>
-            <Select
-              value={filterParams.sortOrder}
-              onChange={handleOrderChange}
-              size="small"
-            >
-              <MenuItem value="asc">старые</MenuItem>
-              <MenuItem value="desc">свежие</MenuItem>
-            </Select>
-          </Box>
-        </Box>
-      </Popover>
+      {bootState === 'success' ? (
+        <>
+          <Stack spacing={2}>
+            {notes.length ? (
+              notes.map(note => <Note key={note.id} note={note} />)
+            ) : (
+              <Typography textAlign="center" variant="h5" component="p">
+                У вас еще нет записей
+              </Typography>
+            )}
+          </Stack>
+          <Popover
+            anchorEl={anchorEl}
+            open={menuOpen}
+            onClose={handleMenuClose}
+            sx={{ mt: 2, width: '100%' }}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'right',
+            }}
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+            }}
+            PaperProps={{
+              sx: {
+                mt: 1.5,
+                width: '100%',
+              },
+            }}
+          >
+            <Box sx={{ p: 2, width: '100%' }}>
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <Typography sx={{ mr: 2 }}>Тип записи:</Typography>
+                <Select
+                  value={filterParams.type}
+                  onChange={handleTypeChange}
+                  size="small"
+                  sx={{ mb: 1 }}
+                >
+                  <MenuItem value="all">Все</MenuItem>
+                  <MenuItem value="feel">Чувства</MenuItem>
+                  <MenuItem value="regular">Обычные</MenuItem>
+                </Select>
+              </Box>
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <Typography sx={{ mr: 2 }}>Сначала:</Typography>
+                <Select
+                  value={filterParams.sortOrder}
+                  onChange={handleOrderChange}
+                  size="small"
+                >
+                  <MenuItem value="asc">старые</MenuItem>
+                  <MenuItem value="desc">свежие</MenuItem>
+                </Select>
+              </Box>
+            </Box>
+          </Popover>
+        </>
+      ) : (
+        <>
+          <Skeleton
+            variant="rectangular"
+            sx={{ width: '100%', height: '150px', borderRadius: '8px', mb: 2 }}
+          />
+          <Skeleton
+            variant="rectangular"
+            sx={{ width: '100%', height: '150px', borderRadius: '8px', mb: 2 }}
+          />
+          <Skeleton
+            variant="rectangular"
+            sx={{ width: '100%', height: '150px', borderRadius: '8px', mb: 2 }}
+          />
+        </>
+      )}
     </Container>
   );
-};
+});
