@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
-import Badge from '@mui/material/Badge';
 import Link from '@mui/material/Link';
 import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
-import NotificationsIcon from '@mui/icons-material/Notifications';
 import { useTheme } from '@mui/material';
 import { observer } from 'mobx-react';
 import { NavLink } from 'react-router-dom';
@@ -69,11 +67,6 @@ export const Header = observer((): JSX.Element => {
         </Link>
         {authState === 'Authorized' && userData ? (
           <>
-            <IconButton aria-label="notifications" color="primary">
-              <Badge badgeContent={1} variant="dot" color="error">
-                <NotificationsIcon color="inherit" />
-              </Badge>
-            </IconButton>
             <IconButton
               onClick={handleMenuOpenClick}
               aria-controls={menuOpen ? 'account-menu' : undefined}
