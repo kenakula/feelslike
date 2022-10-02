@@ -9,7 +9,7 @@ export const noteMocks: NoteModel[] = [
     title: 'Title1',
     desc: 'Note description about something Note description about something',
     emotions: ['😅', '😃'],
-    date: Timestamp.now(),
+    date: Timestamp.fromDate(new Date('2022-09-21')),
   },
   {
     id: nanoid(),
@@ -17,7 +17,7 @@ export const noteMocks: NoteModel[] = [
     title: 'Title2',
     desc: 'Note description about something Note description about something',
     emotions: ['😅', '😃'],
-    date: Timestamp.now(),
+    date: Timestamp.fromDate(new Date('2022-09-24')),
   },
   {
     id: nanoid(),
@@ -25,7 +25,7 @@ export const noteMocks: NoteModel[] = [
     title: 'Title3',
     desc: 'Note description about something Note description about something',
     emotions: ['😅', '😃'],
-    date: Timestamp.now(),
+    date: Timestamp.fromDate(new Date('2022-09-24')),
   },
   {
     id: nanoid(),
@@ -33,7 +33,7 @@ export const noteMocks: NoteModel[] = [
     title: 'Title4',
     desc: 'Note description about something Note description about something',
     emotions: ['😅', '😃'],
-    date: Timestamp.now(),
+    date: Timestamp.fromDate(new Date('2022-09-26')),
   },
   {
     id: nanoid(),
@@ -41,6 +41,6 @@ export const noteMocks: NoteModel[] = [
     title: 'Title5',
     desc: 'Note description about something Note description about something',
     emotions: ['😅', '😃'],
-    date: Timestamp.now(),
+    date: Timestamp.fromDate(new Date('2022-09-29')),
   },
 ];

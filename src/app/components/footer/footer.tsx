@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import HomeIcon from '@mui/icons-material/Home';
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
-// import QueryStatsIcon from '@mui/icons-material/QueryStats';
 import AddIcon from '@mui/icons-material/Add';
 import { observer } from 'mobx-react-lite';
 import { LinkComponent } from './link-component';
@@ -12,19 +11,17 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material';
-import {
-  HOME_PAGE_PATH,
-  JOURNAL_PAGE_PATH,
-  // STATISTICS_PAGE_PATH,
-} from 'app/router';
+import { HOME_PAGE_PATH, JOURNAL_PAGE_PATH } from 'app/router';
 import { useRootStore } from 'app/stores';
-// import { Box, Fab, Menu, MenuItem, Typography, useTheme } from '@mui/material';
+import { NoteType } from 'app/types/note-types';
+import { DrawerComponent } from './drawer-component';
 
 export const Footer = observer(() => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const theme = useTheme();
   const {
     authStore: { authState },
+    notesStore: { bootState, setModalState, setEditorType },
   } = useRootStore();
   const menuOpen = Boolean(anchorEl);
 
@@ -34,6 +31,11 @@ export const Footer = observer(() => {
 
   const handleMenuClose = (): void => {
     setAnchorEl(null);
+  };
+
+  const handleDrawerOpen = (type: NoteType): void => {
+    setModalState(true);
+    setEditorType(type);
   };
 
   return (
@@ -75,11 +77,6 @@ export const Footer = observer(() => {
               icon={<LibraryBooksIcon />}
               label="Журнал"
             />
-            {/* <LinkComponent
-              path={STATISTICS_PAGE_PATH}
-              icon={<QueryStatsIcon />}
-              label="Статистика"
-            /> */}
             <Fab
               color="primary"
               aria-label="add"
@@ -92,6 +89,7 @@ export const Footer = observer(() => {
                 width: 70,
                 height: 70,
               }}
+              disabled={bootState !== 'success'}
             >
               <AddIcon fontSize="large" />
             </Fab>
@@ -119,15 +117,20 @@ export const Footer = observer(() => {
               horizontal: 'left',
             }}
           >
-            <MenuItem dense color="primary">
+            <MenuItem
+              dense
+              color="primary"
+              onClick={() => handleDrawerOpen('feel')}
+            >
               <Typography variant="body1" noWrap>
                 Чувство
               </Typography>
             </MenuItem>
-            <MenuItem dense>
+            <MenuItem dense onClick={() => handleDrawerOpen('regular')}>
               <Typography variant="body1">Запись</Typography>
             </MenuItem>
           </Menu>
+          <DrawerComponent />
         </Container>
       )}
     </Box>

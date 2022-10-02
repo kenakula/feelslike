@@ -16,7 +16,7 @@ interface Props<T extends FieldValues> {
   small?: boolean;
   color?: ColorTypes;
   styles?: SxProps;
-  multiline?: boolean;
+  multiline?: number;
 }
 
 export const InputComponent = <T extends FieldValues>({
@@ -44,7 +44,8 @@ export const InputComponent = <T extends FieldValues>({
           size={small ? 'small' : undefined}
           label={label}
           fullWidth={fullwidth}
-          multiline={multiline}
+          multiline={!!multiline}
+          rows={multiline}
           variant={variant}
           type={type}
           color={color}

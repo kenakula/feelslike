@@ -1,4 +1,4 @@
-import { initializeApp } from 'firebase/app';
+import { FirebaseError, initializeApp } from 'firebase/app';
 import {
   getAuth,
   createUserWithEmailAndPassword,
@@ -8,11 +8,14 @@ import {
   signOut,
 } from 'firebase/auth';
 import {
+  collection,
   doc,
   DocumentData,
   FirestoreError,
   getDoc,
+  getDocs,
   getFirestore,
+  query,
   setDoc,
 } from 'firebase/firestore';
 import { DatabaseCollection } from './types/database-collection';
@@ -53,14 +56,60 @@ const readDocument = async (
   });
 };
 
+const getDocumentsFormCollection = async <T>(
+  collName: DatabaseCollection,
+): Promise<T[]> => {
+  const result: T[] = [];
+  const q = query(collection(database, collName));
+
+  const snapShot = await getDocs(q);
+
+  snapShot.forEach((document: DocumentData) => {
+    result.push(document.data());
+  });
+
+  return result;
+};
+
+const writeDocToDeepCollection = async (
+  collName: DatabaseCollection,
+  pathSegements: string[],
+  docId: string,
+  data: any,
+): Promise<void> => {
+  const reference = doc(database, collName, ...pathSegements, docId);
+
+  return setDoc(reference, data).catch((err: FirebaseError) => {
+    console.error('error when adding document', err);
+  });
+};
+
+const getDocumentsFromDeepCollection = async <T>(
+  collName: DatabaseCollection,
+  pathSegments: string[],
+): Promise<T[]> => {
+  const result: T[] = [];
+  const collRef = collection(database, collName, ...pathSegments);
+  const snapShot = await getDocs(collRef);
+
+  snapShot.forEach((document: DocumentData) => {
+    result.push(document.data());
+  });
+
+  return result;
+};
+
 export {
   auth,
   database,
+  getDocumentsFromDeepCollection,
   createUserWithEmailAndPassword,
-  updateProfile,
-  onAuthStateChanged,
   signInWithEmailAndPassword,
-  signOut,
+  getDocumentsFormCollection,
+  writeDocToDeepCollection,
+  onAuthStateChanged,
+  updateProfile,
   writeDocument,
   readDocument,
+  signOut,
 };

@@ -1,8 +1,10 @@
+import { Chip } from '@mui/material';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import { NoteModel } from 'app/models/note-model';
+import { Emoji, EmojiStyle } from 'emoji-picker-react';
 import React from 'react';
 
 interface Props {
@@ -10,27 +12,51 @@ interface Props {
 }
 
 export const Note = ({
-  note: { type, title, desc, emotions, date },
+  note: { title, desc, emotions, date, secondary },
 }: Props): JSX.Element => {
   return (
     <Paper variant="outlined" elevation={0} sx={{ p: 2, borderRadius: '8px' }}>
       <Box
-        component="header"
-        sx={{ display: 'flex', justifyContent: 'space-between' }}
+        sx={{
+          display: 'flex',
+          mb: 1,
+          img: { mr: 1, '&:last-child': { mr: 0 } },
+        }}
       >
-        <Typography variant="caption">{type}</Typography>
-        <Box>
-          {emotions.map(emoji => (
-            <span key={emoji}>{emoji}</span>
-          ))}
-        </Box>
+        {emotions.map(emoji => (
+          <Emoji
+            key={emoji}
+            unified={emoji}
+            emojiStyle={EmojiStyle.APPLE}
+            size={20}
+          />
+        ))}
       </Box>
-      <Typography variant="h5" component="h2">
+      <Typography gutterBottom variant="h5" component="h2">
         {title}
       </Typography>
-      <Typography gutterBottom variant="body1" noWrap>
-        {desc}
-      </Typography>
+      {secondary && secondary.length ? (
+        <Box
+          sx={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            mb: 2,
+            '.MuiChip-root': {
+              mr: 1,
+              '&:last-child': { mr: 0 },
+            },
+          }}
+        >
+          {secondary.map(feel => (
+            <Chip key={feel} variant="outlined" label={feel} />
+          ))}
+        </Box>
+      ) : null}
+      {desc.length ? (
+        <Typography sx={{ mb: 2 }} variant="body1" noWrap>
+          {desc}
+        </Typography>
+      ) : null}
       <Box
         sx={{
           display: 'flex',

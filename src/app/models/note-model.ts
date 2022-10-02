@@ -8,4 +8,5 @@ export interface NoteModel {
   desc: string;
   emotions: string[];
   date: Timestamp;
+  secondary?: string[];
 }
