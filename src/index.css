@@ -117,12 +117,6 @@ main {
   text-decoration: none;
 }
 
-/* .react-calendar__tile--now {
-  border: 1px solid #1976d2 !important;
-  border-radius: 8px;
-  background: none;
+.epr-category-nav {
+  display: none !important;
 }
-
-.react-calendar__tile--now:hover {
-  background: rgba(16, 135, 255, 0.2) !important;
-} */

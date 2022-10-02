@@ -1,4 +1,4 @@
-import { FeelsModel } from 'app/models/feels-model';
+import { FeelsModel } from 'app/models';
 
 export const feelsMock: FeelsModel = {
   primary: ['Злость', 'Страх', 'Грусть', 'Радость', 'Любовь'],

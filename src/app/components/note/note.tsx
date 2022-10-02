@@ -1,11 +1,11 @@
-import { Chip } from '@mui/material';
+import React from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
-import { NoteModel } from 'app/models/note-model';
+import Chip from '@mui/material/Chip';
 import { Emoji, EmojiStyle } from 'emoji-picker-react';
-import React from 'react';
+import { NoteModel } from 'app/models/note-model';
 
 interface Props {
   note: NoteModel;

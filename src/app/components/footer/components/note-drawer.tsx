@@ -1,30 +1,30 @@
 import React, { useEffect, useState } from 'react';
-import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import { observer } from 'mobx-react-lite';
 import { Controller, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useRootStore } from 'app/stores';
+import { LoadingButton } from '@mui/lab';
+import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { EmojiClickData } from 'emoji-picker-react';
+import SwipeableDrawer from '@mui/material/SwipeableDrawer';
+import Box from '@mui/material/Box';
+import Stack from '@mui/material/Stack';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
+import IconButton from '@mui/material/IconButton';
+import InsertEmoticonIcon from '@mui/icons-material/InsertEmoticon';
+import SaveIcon from '@mui/icons-material/Save';
+import { EmojiDialog } from './emoji-dialog';
+import { useTheme } from '@mui/material';
 import {
   InputComponent,
   SelectComponent,
 } from 'app/components/form-components';
-import { LoadingButton } from '@mui/lab';
-import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
-import SaveIcon from '@mui/icons-material/Save';
-import { getNoteModel, NewNoteModel, newNoteSchema } from './assets';
-import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import InsertEmoticonIcon from '@mui/icons-material/InsertEmoticon';
-import { EmojiClickData } from 'emoji-picker-react';
-import Box from '@mui/material/Box';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import Stack from '@mui/material/Stack';
-import TextField from '@mui/material/TextField';
-import { EmojiDialog } from './emoji-dialog';
-import { useTheme } from '@mui/material';
+import { useRootStore } from 'app/stores';
+import { getNoteModel, NewNoteModel, newNoteSchema } from '../assets';
 
-export const DrawerComponent = observer((): JSX.Element => {
+export const NoteDrawer = observer((): JSX.Element => {
   const [secondaryOptions, setSecondaryOptions] = useState<string[]>([]);
   const [emojiDialogOpen, setEmojiDialogOpen] = useState(false);
   const {

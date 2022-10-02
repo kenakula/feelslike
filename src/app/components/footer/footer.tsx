@@ -3,8 +3,6 @@ import HomeIcon from '@mui/icons-material/Home';
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 import AddIcon from '@mui/icons-material/Add';
 import { observer } from 'mobx-react-lite';
-import { LinkComponent } from './link-component';
-import { Container } from '../container/container';
 import Box from '@mui/material/Box';
 import Fab from '@mui/material/Fab';
 import Menu from '@mui/material/Menu';
@@ -14,7 +12,8 @@ import { useTheme } from '@mui/material';
 import { HOME_PAGE_PATH, JOURNAL_PAGE_PATH } from 'app/router';
 import { useRootStore } from 'app/stores';
 import { NoteType } from 'app/types/note-types';
-import { DrawerComponent } from './drawer-component';
+import { LinkComponent, NoteDrawer } from './components';
+import { Container } from '../container/container';
 
 export const Footer = observer(() => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -25,7 +24,7 @@ export const Footer = observer(() => {
   } = useRootStore();
   const menuOpen = Boolean(anchorEl);
 
-  const handleMenuOpenClick = (event: React.MouseEvent<HTMLElement>): void => {
+  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>): void => {
     setAnchorEl(event.currentTarget);
   };
 
@@ -33,7 +32,7 @@ export const Footer = observer(() => {
     setAnchorEl(null);
   };
 
-  const handleDrawerOpen = (type: NoteType): void => {
+  const handleNoteDrawerOpen = (type: NoteType): void => {
     setModalState(true);
     setEditorType(type);
   };
@@ -64,6 +63,9 @@ export const Footer = observer(() => {
               alignItems: 'center',
               a: {
                 mr: 6,
+                '&:last-child': {
+                  mr: 0,
+                },
               },
             }}
           >
@@ -81,7 +83,7 @@ export const Footer = observer(() => {
               color="primary"
               aria-label="add"
               size="large"
-              onClick={handleMenuOpenClick}
+              onClick={handleMenuOpen}
               sx={{
                 position: 'absolute',
                 right: 10,
@@ -96,15 +98,12 @@ export const Footer = observer(() => {
           </Box>
           <Menu
             anchorEl={anchorEl}
-            id="account-menu"
             open={menuOpen}
             onClose={handleMenuClose}
             onClick={handleMenuClose}
             PaperProps={{
-              elevation: 0,
               sx: {
                 overflow: 'visible',
-                filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
                 mt: '-100px',
               },
             }}
@@ -120,17 +119,15 @@ export const Footer = observer(() => {
             <MenuItem
               dense
               color="primary"
-              onClick={() => handleDrawerOpen('feel')}
+              onClick={() => handleNoteDrawerOpen('feel')}
             >
-              <Typography variant="body1" noWrap>
-                Чувство
-              </Typography>
+              <Typography variant="body1">Чувство</Typography>
             </MenuItem>
-            <MenuItem dense onClick={() => handleDrawerOpen('regular')}>
+            <MenuItem dense onClick={() => handleNoteDrawerOpen('regular')}>
               <Typography variant="body1">Запись</Typography>
             </MenuItem>
           </Menu>
-          <DrawerComponent />
+          <NoteDrawer />
         </Container>
       )}
     </Box>

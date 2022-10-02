@@ -13,7 +13,8 @@ import EmojiPicker, {
 } from 'emoji-picker-react';
 import BackspaceIcon from '@mui/icons-material/Backspace';
 import CloseIcon from '@mui/icons-material/Close';
-import { Button, Typography } from '@mui/material';
+import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
 
 interface Props {
   close: () => void;

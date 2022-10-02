@@ -1,7 +1,7 @@
+import React, { ElementType } from 'react';
 import { useTheme } from '@mui/material';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import React, { ElementType } from 'react';
 
 interface Props {
   children?: JSX.Element | JSX.Element[];

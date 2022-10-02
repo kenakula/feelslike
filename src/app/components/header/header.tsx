@@ -2,17 +2,18 @@ import React, { useState } from 'react';
 import Badge from '@mui/material/Badge';
 import Link from '@mui/material/Link';
 import Box from '@mui/material/Box';
+import Avatar from '@mui/material/Avatar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import NotificationsIcon from '@mui/icons-material/Notifications';
+import { useTheme } from '@mui/material';
+import { observer } from 'mobx-react';
 import { NavLink } from 'react-router-dom';
 import { Container } from '../container/container';
 import { HOME_PAGE_PATH } from 'app/router';
-import { Avatar, useTheme } from '@mui/material';
 import { stringToColor } from 'app/utils';
 import { useRootStore } from 'app/stores';
-import { observer } from 'mobx-react';
-import { MenuComponent } from './menu-component';
+import { MenuComponent } from './components';
 
 export const Header = observer((): JSX.Element => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);

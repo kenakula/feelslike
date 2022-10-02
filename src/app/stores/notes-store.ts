@@ -3,8 +3,7 @@ import {
   readDocument,
   writeDocToDeepCollection,
 } from 'app/firebase';
-import { FeelsModel } from 'app/models/feels-model';
-import { NoteModel } from 'app/models/note-model';
+import { FeelsModel, NoteModel } from 'app/models';
 import { BootState } from 'app/types';
 import { DatabaseCollection } from 'app/types/database-collection';
 import { NoteType } from 'app/types/note-types';
