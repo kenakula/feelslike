@@ -9,16 +9,11 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import Skeleton from '@mui/material/Skeleton';
 import { useRootStore } from 'app/stores';
-import { Container, Note, PageHeading } from 'app/components';
 import { observer } from 'mobx-react-lite';
-
-type FilterType = 'feel' | 'regular' | 'all';
-type SortOrder = 'asc' | 'desc';
-
-interface FilterParams {
-  type: FilterType;
-  sortOrder: SortOrder;
-}
+import { Container, Note, PageHeading } from 'app/components';
+import { NoteModel } from 'app/models';
+import { FilterParams, FilterType, SortOrder } from 'app/types';
+import { filterNotes } from './assets';
 
 export const JournalPage = observer((): JSX.Element => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -26,6 +21,7 @@ export const JournalPage = observer((): JSX.Element => {
     type: 'all',
     sortOrder: 'desc',
   });
+  const [filteredNotes, setFilteredNotes] = useState<NoteModel[]>([]);
   const menuOpen = Boolean(anchorEl);
   const {
     notesStore: { notes, getNotes, bootState },
@@ -37,6 +33,15 @@ export const JournalPage = observer((): JSX.Element => {
       getNotes(userData.uid);
     }
   }, [userData, getNotes]);
+
+  useEffect(() => {
+    setFilteredNotes(notes);
+  }, [notes]);
+
+  useEffect(() => {
+    const arr = filterNotes(notes, filterParams);
+    setFilteredNotes(arr);
+  }, [filterParams, notes]);
 
   const handleMenuOpenClick = (event: React.MouseEvent<HTMLElement>): void => {
     setAnchorEl(event.currentTarget);
@@ -51,6 +56,7 @@ export const JournalPage = observer((): JSX.Element => {
       ...prev,
       type: event.target.value as FilterType,
     }));
+    handleMenuClose();
   };
 
   const handleOrderChange = (event: SelectChangeEvent): void => {
@@ -58,6 +64,7 @@ export const JournalPage = observer((): JSX.Element => {
       ...prev,
       sortOrder: event.target.value as SortOrder,
     }));
+    handleMenuClose();
   };
 
   return (
@@ -70,8 +77,8 @@ export const JournalPage = observer((): JSX.Element => {
       {bootState === 'success' ? (
         <>
           <Stack spacing={2}>
-            {notes.length ? (
-              notes.map(note => <Note key={note.id} note={note} />)
+            {filteredNotes.length ? (
+              filteredNotes.map(note => <Note key={note.id} note={note} />)
             ) : (
               <Typography textAlign="center" variant="h5" component="p">
                 У вас еще нет записей
