@@ -7,3 +7,4 @@ export * from './boot-states';
 export * from './auth-states';
 export * from './select-option';
 export * from './notes-filter-types';
+export * from './snackbar-state';

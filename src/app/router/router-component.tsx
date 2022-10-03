@@ -7,6 +7,8 @@ import {
   HOME_PAGE_PATH,
   JOURNAL_PAGE_PATH,
   STATISTICS_PAGE_PATH,
+  SETTINGS_PAGE_PATH,
+  PROFILE_PAGE_PATH,
 } from './routes';
 import {
   HomePage,
@@ -15,6 +17,8 @@ import {
   SignUpPage,
   JournalPage,
   StatisticsPage,
+  SettingsPage,
+  ProfilePage,
 } from 'app/pages';
 import { ErrorBoundary, Footer, Header } from 'app/components';
 import { PrivateRoute } from './private-route';
@@ -48,6 +52,22 @@ export const RouterComponent = (): JSX.Element => {
             element={
               <PrivateRoute>
                 <StatisticsPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path={SETTINGS_PAGE_PATH}
+            element={
+              <PrivateRoute>
+                <SettingsPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path={PROFILE_PAGE_PATH}
+            element={
+              <PrivateRoute>
+                <ProfilePage />
               </PrivateRoute>
             }
           />

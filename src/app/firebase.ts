@@ -18,7 +18,17 @@ import {
   getFirestore,
   query,
   setDoc,
+  updateDoc,
 } from 'firebase/firestore';
+import {
+  deleteObject,
+  getDownloadURL,
+  getStorage,
+  ref,
+  StorageError,
+  uploadBytes,
+  UploadResult,
+} from 'firebase/storage';
 import { DatabaseCollection } from './types/database-collection';
 
 const firebaseConfig = {
@@ -33,6 +43,7 @@ const firebaseConfig = {
 
 const firebaseApp = initializeApp(firebaseConfig);
 const database = getFirestore(firebaseApp);
+const storage = getStorage(firebaseApp);
 const auth = getAuth();
 auth.useDeviceLanguage();
 
@@ -45,6 +56,18 @@ const writeDocument = async (
   return setDoc(ref, data).catch((error: FirestoreError) => {
     console.error(error.message);
   });
+};
+
+const updateDocument = async (
+  collName: DatabaseCollection,
+  docId: string,
+  data: any,
+): Promise<void> => {
+  const reference = doc(database, collName, docId);
+
+  return updateDoc(reference, data).catch(err =>
+    console.error('document update error: ', err),
+  );
 };
 
 const readDocument = async (
@@ -112,8 +135,35 @@ const getDocumentsFromDeepCollection = async <T>(
   return result;
 };
 
+const deleteFile = async (path: string): Promise<void> => {
+  const fileRef = ref(storage, path);
+
+  return deleteObject(fileRef).catch((err: StorageError) => {
+    console.error(err);
+  });
+};
+
+const getFileUrl = async (path: string): Promise<string> => {
+  const fileRef = ref(storage, path);
+  const url = await getDownloadURL(fileRef);
+
+  return url;
+};
+
+const uploadFile = async (
+  path: string,
+  file: File,
+): Promise<UploadResult | void> => {
+  const fileRef = ref(storage, path);
+
+  return uploadBytes(fileRef, file).catch((err: StorageError) => {
+    console.error(err);
+  });
+};
+
 export {
   auth,
+  storage,
   database,
   getDocumentsFromDeepCollection,
   createUserWithEmailAndPassword,
@@ -122,8 +172,12 @@ export {
   writeDocToDeepCollection,
   onAuthStateChanged,
   deleteDeepDocument,
+  updateDocument,
   updateProfile,
   writeDocument,
   readDocument,
+  deleteFile,
+  getFileUrl,
+  uploadFile,
   signOut,
 };

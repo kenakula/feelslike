@@ -15,11 +15,16 @@ import {
   signInWithEmailAndPassword,
   writeDocument,
   readDocument,
+  uploadFile,
+  updateDocument,
+  getFileUrl,
+  deleteFile,
 } from 'app/firebase';
 import { RecoverPasswordEmailModel, SignInModel, UserModel } from 'app/models';
 import { getUserDocumentData } from 'app/utils';
 import { DatabaseCollection } from 'app/types/database-collection';
 import { FirebaseError } from 'firebase/app';
+import { StorageError, UploadResult } from 'firebase/storage';
 
 const googleProvider = new GoogleAuthProvider();
 
@@ -175,6 +180,48 @@ export class AuthStore {
         }
       })
       .catch((error: FirebaseError) => {
+        runInAction(() => {
+          this.error = error.message;
+        });
+      });
+  };
+
+  public deleteUserImage = async (): Promise<void> => {
+    deleteFile(`UserAvatars/${this.userData?.uid}`)
+      .then(() => {
+        if (this.userData) {
+          updateDocument(DatabaseCollection.Users, this.userData.uid, {
+            profileImage: '',
+          }).then(() => {
+            if (this.userData) {
+              this.getUserData(this.userData.uid);
+            }
+          });
+        }
+      })
+      .catch((error: StorageError) => {
+        runInAction(() => {
+          this.error = error.message;
+        });
+      });
+  };
+
+  public uploadUserImage = async (file: File): Promise<void | UploadResult> => {
+    return uploadFile(`UserAvatars/${this.userData?.uid}`, file)
+      .then(async () => {
+        if (this.userData) {
+          const url = await getFileUrl(`UserAvatars/${this.userData?.uid}`);
+
+          updateDocument(DatabaseCollection.Users, this.userData.uid, {
+            profileImage: url,
+          }).then(() => {
+            if (this.userData) {
+              this.getUserData(this.userData.uid);
+            }
+          });
+        }
+      })
+      .catch((error: StorageError) => {
         runInAction(() => {
           this.error = error.message;
         });
