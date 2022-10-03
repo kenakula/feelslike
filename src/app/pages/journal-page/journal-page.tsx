@@ -15,9 +15,12 @@ import { NoteModel } from 'app/models';
 import { FilterParams, FilterType, SortOrder } from 'app/types';
 import { filterNotes } from './assets';
 import { noteTypesOptions } from 'assets/note-type-options';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 
 export const JournalPage = observer((): JSX.Element => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [snackDeleteOpen, setSnackDeleteOpen] = useState(false);
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [filterParams, setFilterParams] = useState<FilterParams>({
     type: 'all',
@@ -168,7 +171,22 @@ export const JournalPage = observer((): JSX.Element => {
       <NoteDetails
         openState={detailsOpen}
         handleClose={() => setDetailsOpen(false)}
+        openSnackbar={() => setSnackDeleteOpen(true)}
       />
+      <Snackbar
+        open={snackDeleteOpen}
+        autoHideDuration={3000}
+        onClose={() => setSnackDeleteOpen(false)}
+        anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
+      >
+        <Alert
+          onClose={() => setSnackDeleteOpen(false)}
+          severity="success"
+          sx={{ width: '100%' }}
+        >
+          Запись удалена
+        </Alert>
+      </Snackbar>
     </Container>
   );
 });

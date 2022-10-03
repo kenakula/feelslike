@@ -11,13 +11,14 @@ import AutorenewIcon from '@mui/icons-material/Autorenew';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import { compareDates, filterNotes } from './assets';
-import { Skeleton, Typography } from '@mui/material';
+import { Alert, Skeleton, Snackbar, Typography } from '@mui/material';
 import { useRootStore } from 'app/stores';
 import { NoteModel } from 'app/models';
 
 export const HomePage = observer((): JSX.Element => {
   const [startDate, setStartDate] = useState(new Date());
   const [detailsOpen, setDetailsOpen] = useState(false);
+  const [snackDeleteOpen, setSnackDeleteOpen] = useState(false);
 
   const {
     notesStore: {
@@ -138,7 +139,22 @@ export const HomePage = observer((): JSX.Element => {
       <NoteDetails
         openState={detailsOpen}
         handleClose={() => setDetailsOpen(false)}
+        openSnackbar={() => setSnackDeleteOpen(true)}
       />
+      <Snackbar
+        open={snackDeleteOpen}
+        autoHideDuration={3000}
+        onClose={() => setSnackDeleteOpen(false)}
+        anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
+      >
+        <Alert
+          onClose={() => setSnackDeleteOpen(false)}
+          severity="success"
+          sx={{ width: '100%' }}
+        >
+          Запись удалена
+        </Alert>
+      </Snackbar>
     </Container>
   );
 });

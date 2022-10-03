@@ -14,7 +14,7 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import SaveIcon from '@mui/icons-material/Save';
 import { EmojiDialog } from './emoji-dialog';
-import { useTheme } from '@mui/material';
+import { Alert, Snackbar, useTheme } from '@mui/material';
 import { SelectComponent } from 'app/components/form-components';
 import { useRootStore } from 'app/stores';
 import {
@@ -30,6 +30,7 @@ import { noteTypesOptions } from 'assets/note-type-options';
 
 export const NoteDrawer = observer((): JSX.Element => {
   const [secondaryOptions, setSecondaryOptions] = useState<string[]>([]);
+  const [snackOpen, setSnackOpen] = useState(false);
   const [questionsValues, setQuestionsValues] = useState<
     Record<string, string>
   >({});
@@ -137,6 +138,7 @@ export const NoteDrawer = observer((): JSX.Element => {
         getNotes(userData.uid);
         reset(defaultValues);
         resetQuizFields();
+        setSnackOpen(true);
       });
     }
   };
@@ -257,6 +259,20 @@ export const NoteDrawer = observer((): JSX.Element => {
           deleteEmoji={backSpaceClick}
           emojies={noteEmojies}
         />
+        <Snackbar
+          open={snackOpen}
+          autoHideDuration={3000}
+          onClose={() => setSnackOpen(false)}
+          anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
+        >
+          <Alert
+            onClose={() => setSnackOpen(false)}
+            severity="success"
+            sx={{ width: '100%' }}
+          >
+            Запись сохранена
+          </Alert>
+        </Snackbar>
       </Box>
     </SwipeableDrawer>
   );

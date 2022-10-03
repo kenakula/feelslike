@@ -14,11 +14,13 @@ import { Button, DialogActions } from '@mui/material';
 interface Props {
   openState: boolean;
   handleClose: () => void;
+  openSnackbar: () => void;
 }
 
 export const NoteDetails = ({
   openState,
   handleClose,
+  openSnackbar,
 }: Props): JSX.Element | null => {
   const {
     notesStore: { selectedNote, deleteNote, getNotes, bootState },
@@ -38,6 +40,7 @@ export const NoteDetails = ({
     }
 
     deleteNote(id, userData.uid).then(() => {
+      openSnackbar();
       getNotes(userData.uid);
       handleClose();
     });
