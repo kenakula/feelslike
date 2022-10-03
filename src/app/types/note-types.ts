@@ -1,1 +1,1 @@
-export type NoteType = 'feel' | 'regular';
+export type NoteType = 'feel' | 'regular' | 'quiz';

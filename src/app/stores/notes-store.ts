@@ -8,6 +8,7 @@ import { BootState } from 'app/types';
 import { DatabaseCollection } from 'app/types/database-collection';
 import { NoteType } from 'app/types/note-types';
 import { makeAutoObservable, runInAction } from 'mobx';
+import { questionsMock } from './mocks/questions-mock';
 
 export class NotesStore {
   public modalOpen = false;
@@ -17,6 +18,7 @@ export class NotesStore {
   public feels: FeelsModel | null = null;
   public editorNoteType: NoteType = 'feel';
   public editorNoteDate: Date = new Date();
+  public quizQuestions: string[] = [];
 
   constructor() {
     makeAutoObservable(this);
@@ -25,6 +27,7 @@ export class NotesStore {
 
   public init = async (): Promise<void> => {
     await this.getFeels();
+    this.quizQuestions = questionsMock;
   };
 
   public getNotes = async (userId: string): Promise<void> => {

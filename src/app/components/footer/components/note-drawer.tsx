@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import { Controller, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -12,20 +12,27 @@ import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import IconButton from '@mui/material/IconButton';
-import InsertEmoticonIcon from '@mui/icons-material/InsertEmoticon';
 import SaveIcon from '@mui/icons-material/Save';
 import { EmojiDialog } from './emoji-dialog';
 import { useTheme } from '@mui/material';
-import {
-  InputComponent,
-  SelectComponent,
-} from 'app/components/form-components';
+import { SelectComponent } from 'app/components/form-components';
 import { useRootStore } from 'app/stores';
-import { getNoteModel, NewNoteModel, newNoteSchema } from '../assets';
+import {
+  getNoteModel,
+  NewNoteModel,
+  newNoteSchema,
+  noteTypesOptions,
+  QuizEntry,
+} from '../assets';
+import { QuizFields } from './quiz-fields';
+import { RegularFields } from './regular-fields';
+import { FeelFields } from './feel-fields';
 
 export const NoteDrawer = observer((): JSX.Element => {
   const [secondaryOptions, setSecondaryOptions] = useState<string[]>([]);
+  const [questionsValues, setQuestionsValues] = useState<
+    Record<string, string>
+  >({});
   const [emojiDialogOpen, setEmojiDialogOpen] = useState(false);
   const {
     notesStore: {
@@ -38,6 +45,7 @@ export const NoteDrawer = observer((): JSX.Element => {
       editorNoteDate,
       saveNote,
       getNotes,
+      quizQuestions,
     },
     authStore: { userData },
   } = useRootStore();
@@ -50,6 +58,7 @@ export const NoteDrawer = observer((): JSX.Element => {
     date: editorNoteDate,
     secondaryFeels: [],
     emojies: [],
+    quiz: [],
   };
 
   const {
@@ -74,12 +83,23 @@ export const NoteDrawer = observer((): JSX.Element => {
     setValue('type', editorNoteType);
   }, [modalOpen, setValue, editorNoteType]);
 
+  const resetQuizFields = useCallback((): void => {
+    const arr = quizQuestions.map(item => [item, '']);
+    const obj: Record<string, string> = Object.fromEntries(arr);
+
+    setQuestionsValues(obj);
+  }, [quizQuestions]);
+
+  useEffect(() => {
+    resetQuizFields();
+  }, [resetQuizFields]);
+
   useEffect(() => {
     setEditorType(noteType);
   }, [noteType, setEditorType]);
 
   useEffect(() => {
-    if (noteType === 'feel' && noteTitle && feels) {
+    if ((noteType === 'feel' || noteType === 'quiz') && noteTitle && feels) {
       const arr = feels.secondary.find(obj => obj.parent === noteTitle);
       setSecondaryOptions(arr ? arr.list : []);
     }
@@ -106,101 +126,59 @@ export const NoteDrawer = observer((): JSX.Element => {
     setModalState(true);
   };
 
+  const setQuizValue = (entries: QuizEntry[]): void => {
+    setValue('quiz', entries);
+  };
+
   const saveForm = (data: NewNoteModel): void => {
     if (userData) {
       const note = getNoteModel(data);
       saveNote(note, userData.uid).then(() => {
         getNotes(userData.uid);
         reset(defaultValues);
+        resetQuizFields();
       });
     }
   };
 
-  const getFeelFields = (): JSX.Element | null =>
-    feels && (
-      <>
-        <Box sx={{ display: 'flex' }}>
-          <SelectComponent<NewNoteModel>
+  const renderTypeFields = (): JSX.Element => {
+    switch (editorNoteType) {
+      case 'quiz':
+        return (
+          <QuizFields
             formControl={control}
-            id="primary-feel-select"
-            name="title"
-            label="Выберите чувство"
-            variant="outlined"
-            color="primary"
-            error={!!errors.title}
-            errorMessage="Введите чувство"
-            options={feels.primary.map(feel => ({
-              value: feel,
-              label: feel,
-            }))}
-            small
-            styles={{ mr: 1 }}
+            errors={errors}
+            feels={feels}
+            emojies={noteEmojies}
+            openEmojiDialog={() => setEmojiDialogOpen(true)}
+            secondaryOptions={secondaryOptions}
+            setValues={setQuizValue}
+            questionsValues={questionsValues}
+            setQuestionsValues={setQuestionsValues}
           />
-          <IconButton
-            color={noteEmojies.length ? 'primary' : undefined}
-            onClick={() => setEmojiDialogOpen(true)}
-          >
-            <InsertEmoticonIcon />
-          </IconButton>
-        </Box>
-        <SelectComponent<NewNoteModel>
-          formControl={control}
-          id="secondary-feel-select"
-          name="secondaryFeels"
-          label="Выберите чувство"
-          variant="outlined"
-          color="primary"
-          multiple
-          options={secondaryOptions.map(feel => ({
-            value: feel,
-            label: feel,
-          }))}
-          small
-        />
-        <InputComponent<NewNoteModel>
-          formControl={control}
-          name="desc"
-          label="Дополните"
-          fullwidth
-          type="text"
-          multiline={4}
-          small
-        />
-      </>
-    );
-
-  const getRegularFields = (): JSX.Element => (
-    <>
-      <Box sx={{ display: 'flex' }}>
-        <InputComponent<NewNoteModel>
-          formControl={control}
-          name="title"
-          label="Введите короткий заголовок"
-          fullwidth
-          type="text"
-          error={!!errors.title}
-          errorMessage="Введите заголовок"
-          small
-          styles={{ mr: 1 }}
-        />
-        <IconButton
-          color={noteEmojies.length ? 'primary' : undefined}
-          onClick={() => setEmojiDialogOpen(true)}
-        >
-          <InsertEmoticonIcon />
-        </IconButton>
-      </Box>
-      <InputComponent<NewNoteModel>
-        formControl={control}
-        name="desc"
-        label="Введите текст"
-        fullwidth
-        type="text"
-        multiline={4}
-        small
-      />
-    </>
-  );
+        );
+      case 'feel':
+        return (
+          <FeelFields
+            formControl={control}
+            errors={errors}
+            feels={feels}
+            emojies={noteEmojies}
+            openEmojiDialog={() => setEmojiDialogOpen(true)}
+            secondaryOptions={secondaryOptions}
+          />
+        );
+      default:
+        return (
+          <RegularFields
+            formControl={control}
+            errors={errors}
+            emojies={noteEmojies}
+            openEmojiDialog={() => setEmojiDialogOpen(true)}
+          />
+        );
+    }
+  };
 
   return (
     <SwipeableDrawer
@@ -229,7 +207,11 @@ export const NoteDrawer = observer((): JSX.Element => {
       <Typography variant="h5" component="h2" textAlign="center" sx={{ mb: 4 }}>
         Создайте новую запись
       </Typography>
-      <Box component="form" onSubmit={handleSubmit(saveForm)}>
+      <Box
+        component="form"
+        onSubmit={handleSubmit(saveForm)}
+        autoComplete="off"
+      >
         <Stack spacing={2}>
           <SelectComponent<NewNoteModel>
             formControl={control}
@@ -239,10 +221,7 @@ export const NoteDrawer = observer((): JSX.Element => {
             variant="outlined"
             color="primary"
             small
-            options={[
-              { value: 'feel', label: 'Чувства' },
-              { value: 'regular', label: 'Обычная запись' },
-            ]}
+            options={noteTypesOptions}
           />
           <Controller
             control={control}
@@ -258,7 +237,7 @@ export const NoteDrawer = observer((): JSX.Element => {
               </LocalizationProvider>
             )}
           />
-          {editorNoteType === 'regular' ? getRegularFields() : getFeelFields()}
+          {feels ? renderTypeFields() : null}
           <LoadingButton
             type="submit"
             fullWidth

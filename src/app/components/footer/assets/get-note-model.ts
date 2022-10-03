@@ -10,6 +10,7 @@ export const getNoteModel = ({
   date,
   emojies,
   secondaryFeels,
+  quiz,
 }: NewNoteModel): NoteModel => {
   const note: NoteModel = {
     id: nanoid(),
@@ -19,6 +20,7 @@ export const getNoteModel = ({
     date: Timestamp.fromDate(date),
     emotions: emojies,
     secondary: secondaryFeels,
+    quiz,
   };
 
   return note;

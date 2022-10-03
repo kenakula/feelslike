@@ -6,32 +6,43 @@ import Typography from '@mui/material/Typography';
 import Chip from '@mui/material/Chip';
 import { Emoji, EmojiStyle } from 'emoji-picker-react';
 import { NoteModel } from 'app/models/note-model';
+import { MapNotesTypes } from './assets';
 
 interface Props {
   note: NoteModel;
 }
 
 export const Note = ({
-  note: { title, desc, emotions, date, secondary },
+  note: { title, desc, emotions, date, secondary, type },
 }: Props): JSX.Element => {
   return (
     <Paper variant="outlined" elevation={0} sx={{ p: 2, borderRadius: '8px' }}>
       <Box
         sx={{
           display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
           mb: 1,
-          img: { mr: 1, '&:last-child': { mr: 0 } },
         }}
       >
-        {emotions.map((emoji, index) => (
-          <Emoji
-            // eslint-disable-next-line react/no-array-index-key
-            key={`${emoji}-${index}`}
-            unified={emoji}
-            emojiStyle={EmojiStyle.APPLE}
-            size={20}
-          />
-        ))}
+        <Box
+          sx={{
+            display: 'flex',
+            mr: 1,
+            img: { mr: 1, '&:last-child': { mr: 0 } },
+          }}
+        >
+          {emotions.map((emoji, index) => (
+            <Emoji
+              // eslint-disable-next-line react/no-array-index-key
+              key={`${emoji}-${index}`}
+              unified={emoji}
+              emojiStyle={EmojiStyle.APPLE}
+              size={20}
+            />
+          ))}
+        </Box>
+        <Typography variant="caption">{MapNotesTypes[type]}</Typography>
       </Box>
       <Typography gutterBottom variant="h5" component="h2">
         {title}

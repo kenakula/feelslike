@@ -1,3 +1,4 @@
+import { QuizEntry } from 'app/components/footer/assets';
 import { NoteType } from 'app/types/note-types';
 import { Timestamp } from 'firebase/firestore';
 
@@ -9,4 +10,5 @@ export interface NoteModel {
   emotions: string[];
   date: Timestamp;
   secondary?: string[];
+  quiz?: QuizEntry[];
 }

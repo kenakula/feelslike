@@ -121,10 +121,13 @@ export const Footer = observer(() => {
               color="primary"
               onClick={() => handleNoteDrawerOpen('feel')}
             >
-              <Typography variant="body1">Чувство</Typography>
+              <Typography variant="body1">Про чувства</Typography>
             </MenuItem>
             <MenuItem dense onClick={() => handleNoteDrawerOpen('regular')}>
-              <Typography variant="body1">Запись</Typography>
+              <Typography variant="body1">Запись дневника</Typography>
+            </MenuItem>
+            <MenuItem dense onClick={() => handleNoteDrawerOpen('quiz')}>
+              <Typography variant="body1">Опрос</Typography>
             </MenuItem>
           </Menu>
           <NoteDrawer />
