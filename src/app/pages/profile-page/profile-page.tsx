@@ -1,30 +1,18 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import React, { useState } from 'react';
 import Box from '@mui/material/Box';
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import UploadIcon from '@mui/icons-material/Upload';
+import Skeleton from '@mui/material/Skeleton';
+import Typography from '@mui/material/Typography';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
+import Stack from '@mui/system/Stack';
 import { observer } from 'mobx-react-lite';
 import { Container, PageHeading } from 'app/components';
 import { useRootStore } from 'app/stores';
 import { SnackBarStateProps } from 'app/types';
-import { stringToColor } from 'app/utils';
-import Avatar from '@mui/material/Avatar';
-import IconButton from '@mui/material/IconButton';
-import {
-  Alert,
-  Skeleton,
-  Snackbar,
-  styled,
-  Tooltip,
-  Typography,
-} from '@mui/material';
-import Stack from '@mui/system/Stack';
+import { UserAvatar } from './components';
 
-const FileInput = styled('input')({
-  display: 'none',
-});
-
-const MAX_IMAGE_SIZE = 2e6;
+const MAX_IMAGE_SIZE = 4e6;
 
 export const ProfilePage = observer((): JSX.Element => {
   const [imageProcessing, setImageProcessing] = useState(false);
@@ -114,74 +102,30 @@ export const ProfilePage = observer((): JSX.Element => {
       });
   };
 
-  const renderUserAvatar = (
-    profileImage: string,
-    displayName: string,
-  ): JSX.Element =>
-    imageProcessing ? (
-      <Skeleton width={200} height={200} variant="circular" />
-    ) : (
-      <Box sx={{ position: 'relative' }}>
-        <Avatar
-          sx={{
-            width: 200,
-            height: 200,
-            backgroundColor: stringToColor(displayName),
-          }}
-          src={profileImage}
-        />
-        {profileImage.length ? (
-          <Tooltip title="Удалить аватар">
-            <IconButton
-              sx={{ position: 'absolute', right: -8, top: -8 }}
-              color="error"
-              onClick={handleDeleteAvatar}
-            >
-              <DeleteForeverIcon fontSize="small" />
-            </IconButton>
-          </Tooltip>
-        ) : null}
-        <label htmlFor="contained-button-file">
-          <FileInput
-            accept="image/*"
-            id="contained-button-file"
-            type="file"
-            onChange={handleUploadAvatar}
-          />
-          <IconButton
-            sx={{
-              position: 'absolute',
-              right: -8,
-              bottom: -8,
-            }}
-            color="primary"
-            aria-label="Загрузить аватар"
-            component="span"
-          >
-            <UploadIcon fontSize="small" />
-          </IconButton>
-        </label>
-      </Box>
-    );
-
   const renderContent = (): JSX.Element | null => {
     if (!userData) {
       return null;
     }
 
-    const { profileImage, displayName, email } = userData;
+    const { profileImage, displayName } = userData;
 
     return (
       <>
         <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
-          {renderUserAvatar(profileImage, displayName)}
+          {imageProcessing ? (
+            <Skeleton width={200} height={200} variant="circular" />
+          ) : (
+            <UserAvatar
+              displayName={displayName}
+              profileImage={profileImage}
+              handleDelete={handleDeleteAvatar}
+              handleUpload={handleUploadAvatar}
+            />
+          )}
         </Box>
         <Stack spacing={2}>
           <Typography textAlign="center" variant="h6" component="h2">
             {displayName}
-          </Typography>
-          <Typography textAlign="center" variant="body1">
-            {email}
           </Typography>
         </Stack>
       </>

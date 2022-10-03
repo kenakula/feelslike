@@ -186,18 +186,28 @@ export class AuthStore {
       });
   };
 
+  public updateUserInfo = async (data: Partial<UserModel>): Promise<void> => {
+    if (!this.userData) {
+      return;
+    }
+
+    updateDocument(DatabaseCollection.Users, this.userData.uid, data)
+      .then(() => {
+        if (this.userData) {
+          this.getUserData(this.userData.uid);
+        }
+      })
+      .catch((error: StorageError) => {
+        runInAction(() => {
+          this.error = error.message;
+        });
+      });
+  };
+
   public deleteUserImage = async (): Promise<void> => {
     deleteFile(`UserAvatars/${this.userData?.uid}`)
       .then(() => {
-        if (this.userData) {
-          updateDocument(DatabaseCollection.Users, this.userData.uid, {
-            profileImage: '',
-          }).then(() => {
-            if (this.userData) {
-              this.getUserData(this.userData.uid);
-            }
-          });
-        }
+        this.updateUserInfo({ profileImage: '' });
       })
       .catch((error: StorageError) => {
         runInAction(() => {
@@ -208,18 +218,10 @@ export class AuthStore {
 
   public uploadUserImage = async (file: File): Promise<void | UploadResult> => {
     return uploadFile(`UserAvatars/${this.userData?.uid}`, file)
-      .then(async () => {
-        if (this.userData) {
-          const url = await getFileUrl(`UserAvatars/${this.userData?.uid}`);
-
-          updateDocument(DatabaseCollection.Users, this.userData.uid, {
-            profileImage: url,
-          }).then(() => {
-            if (this.userData) {
-              this.getUserData(this.userData.uid);
-            }
-          });
-        }
+      .then(() => {
+        getFileUrl(`UserAvatars/${this.userData?.uid}`).then(url => {
+          this.updateUserInfo({ profileImage: url });
+        });
       })
       .catch((error: StorageError) => {
         runInAction(() => {
