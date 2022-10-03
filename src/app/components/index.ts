@@ -10,3 +10,4 @@ export * from './loader/loader';
 export * from './note/note';
 export * from './page-heading/page-heading';
 export * from './technical-issues/technical-issues';
+export * from './note-details/note-details';

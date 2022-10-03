@@ -10,10 +10,12 @@ import { MapNotesTypes } from './assets';
 
 interface Props {
   note: NoteModel;
+  openDetails: () => void;
 }
 
 export const Note = ({
   note: { title, desc, emotions, date, secondary, type },
+  openDetails,
 }: Props): JSX.Element => {
   return (
     <Paper variant="outlined" elevation={0} sx={{ p: 2, borderRadius: '8px' }}>
@@ -60,7 +62,7 @@ export const Note = ({
           }}
         >
           {secondary.map(feel => (
-            <Chip key={feel} variant="outlined" label={feel} />
+            <Chip size="small" key={feel} variant="outlined" label={feel} />
           ))}
         </Box>
       ) : null}
@@ -76,7 +78,7 @@ export const Note = ({
           alignItems: 'center',
         }}
       >
-        <Button size="small" variant="outlined">
+        <Button size="small" variant="outlined" onClick={() => openDetails()}>
           Подробнее
         </Button>
         <Typography variant="caption">

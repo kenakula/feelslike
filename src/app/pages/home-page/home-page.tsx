@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Note, PageHeading } from 'app/components';
+import { Container, Note, NoteDetails, PageHeading } from 'app/components';
 import { observer } from 'mobx-react-lite';
 import Stack from '@mui/material/Stack';
 import Calendar, {
@@ -13,12 +13,21 @@ import Tooltip from '@mui/material/Tooltip';
 import { compareDates, filterNotes } from './assets';
 import { Skeleton, Typography } from '@mui/material';
 import { useRootStore } from 'app/stores';
+import { NoteModel } from 'app/models';
 
 export const HomePage = observer((): JSX.Element => {
   const [startDate, setStartDate] = useState(new Date());
+  const [detailsOpen, setDetailsOpen] = useState(false);
 
   const {
-    notesStore: { notes, bootState, editorNoteDate, setEditorDate, getNotes },
+    notesStore: {
+      notes,
+      bootState,
+      editorNoteDate,
+      setEditorDate,
+      getNotes,
+      setSelectedNote,
+    },
     authStore: { userData },
   } = useRootStore();
 
@@ -38,6 +47,11 @@ export const HomePage = observer((): JSX.Element => {
       getNotes(userData.uid);
     }
   }, [userData, getNotes]);
+
+  const selectNote = (note: NoteModel): void => {
+    setSelectedNote(note);
+    setDetailsOpen(true);
+  };
 
   return (
     <Container sx={{ pt: 5 }}>
@@ -86,7 +100,11 @@ export const HomePage = observer((): JSX.Element => {
           <Stack spacing={2} sx={{ mb: 2 }}>
             {filterNotes(notes, editorNoteDate).length ? (
               filterNotes(notes, editorNoteDate).map(note => (
-                <Note key={note.id} note={note} />
+                <Note
+                  key={note.id}
+                  note={note}
+                  openDetails={() => selectNote(note)}
+                />
               ))
             ) : (
               <Typography variant="h6" component="p" textAlign="center">
@@ -117,6 +135,10 @@ export const HomePage = observer((): JSX.Element => {
           />
         </Box>
       )}
+      <NoteDetails
+        openState={detailsOpen}
+        handleClose={() => setDetailsOpen(false)}
+      />
     </Container>
   );
 });

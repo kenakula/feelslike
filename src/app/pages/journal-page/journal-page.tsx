@@ -10,13 +10,15 @@ import MenuItem from '@mui/material/MenuItem';
 import Skeleton from '@mui/material/Skeleton';
 import { useRootStore } from 'app/stores';
 import { observer } from 'mobx-react-lite';
-import { Container, Note, PageHeading } from 'app/components';
+import { Container, Note, NoteDetails, PageHeading } from 'app/components';
 import { NoteModel } from 'app/models';
 import { FilterParams, FilterType, SortOrder } from 'app/types';
 import { filterNotes } from './assets';
+import { noteTypesOptions } from 'assets/note-type-options';
 
 export const JournalPage = observer((): JSX.Element => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [detailsOpen, setDetailsOpen] = useState(false);
   const [filterParams, setFilterParams] = useState<FilterParams>({
     type: 'all',
     sortOrder: 'desc',
@@ -24,7 +26,7 @@ export const JournalPage = observer((): JSX.Element => {
   const [filteredNotes, setFilteredNotes] = useState<NoteModel[]>([]);
   const menuOpen = Boolean(anchorEl);
   const {
-    notesStore: { notes, getNotes, bootState },
+    notesStore: { notes, getNotes, bootState, setSelectedNote },
     authStore: { userData },
   } = useRootStore();
 
@@ -67,6 +69,11 @@ export const JournalPage = observer((): JSX.Element => {
     handleMenuClose();
   };
 
+  const selectNote = (note: NoteModel): void => {
+    setSelectedNote(note);
+    setDetailsOpen(true);
+  };
+
   return (
     <Container sx={{ pt: 5 }}>
       <PageHeading title="Журнал">
@@ -78,7 +85,13 @@ export const JournalPage = observer((): JSX.Element => {
         <>
           <Stack spacing={2}>
             {filteredNotes.length ? (
-              filteredNotes.map(note => <Note key={note.id} note={note} />)
+              filteredNotes.map(note => (
+                <Note
+                  key={note.id}
+                  note={note}
+                  openDetails={() => selectNote(note)}
+                />
+              ))
             ) : (
               <Typography textAlign="center" variant="h5" component="p">
                 У вас еще нет записей
@@ -115,8 +128,11 @@ export const JournalPage = observer((): JSX.Element => {
                   sx={{ mb: 1 }}
                 >
                   <MenuItem value="all">Все</MenuItem>
-                  <MenuItem value="feel">Чувства</MenuItem>
-                  <MenuItem value="regular">Обычные</MenuItem>
+                  {noteTypesOptions.map(option => (
+                    <MenuItem key={option.value} value={option.value}>
+                      {option.label}
+                    </MenuItem>
+                  ))}
                 </Select>
               </Box>
               <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -149,6 +165,10 @@ export const JournalPage = observer((): JSX.Element => {
           />
         </>
       )}
+      <NoteDetails
+        openState={detailsOpen}
+        handleClose={() => setDetailsOpen(false)}
+      />
     </Container>
   );
 });

@@ -9,6 +9,7 @@ import {
 } from 'firebase/auth';
 import {
   collection,
+  deleteDoc,
   doc,
   DocumentData,
   FirestoreError,
@@ -53,6 +54,18 @@ const readDocument = async (
   const reference = doc(database, collName, docId);
   return getDoc(reference).catch((err: FirestoreError) => {
     console.error('error when getting document', err);
+  });
+};
+
+const deleteDeepDocument = async (
+  collName: DatabaseCollection,
+  pathSegements: string[],
+  docId: string,
+): Promise<void> => {
+  const reference = doc(database, collName, ...pathSegements, docId);
+
+  return deleteDoc(reference).catch((err: FirestoreError) => {
+    console.error('error when deleting document', err);
   });
 };
 
@@ -108,6 +121,7 @@ export {
   getDocumentsFormCollection,
   writeDocToDeepCollection,
   onAuthStateChanged,
+  deleteDeepDocument,
   updateProfile,
   writeDocument,
   readDocument,
