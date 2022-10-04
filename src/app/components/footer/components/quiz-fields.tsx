@@ -112,14 +112,6 @@ export const QuizFields = ({
         }))}
         small
       />
-      {/* {questions.map(question => (
-        <TextField
-          size="small"
-          label={question}
-          key={question}
-          onChange={e => handleChange(e, question)}
-        />
-      ))} */}
       {renderFields()}
     </>
   );

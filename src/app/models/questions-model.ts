@@ -1,3 +1,3 @@
-export interface QuestionModel {
+export interface QuestionsModel {
   list: string[];
 }

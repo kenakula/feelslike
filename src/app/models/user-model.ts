@@ -4,4 +4,5 @@ export interface UserModel {
   displayName: string;
   profileImage: string;
   phoneNumber: string;
+  questions: string[];
 }

@@ -4,7 +4,7 @@ import {
   readDocument,
   writeDocToDeepCollection,
 } from 'app/firebase';
-import { FeelsModel, NoteModel, QuestionModel } from 'app/models';
+import { FeelsModel, NoteModel } from 'app/models';
 import { BootState } from 'app/types';
 import { DatabaseCollection } from 'app/types/database-collection';
 import { NoteType } from 'app/types/note-types';
@@ -18,7 +18,6 @@ export class NotesStore {
   public feels: FeelsModel | null = null;
   public editorNoteType: NoteType = 'feel';
   public editorNoteDate: Date = new Date();
-  public quizQuestions: string[] = [];
   public selectedNote: NoteModel | null = null;
 
   constructor() {
@@ -28,7 +27,6 @@ export class NotesStore {
 
   public init = async (): Promise<void> => {
     await this.getFeels();
-    await this.getQuizQuestions();
   };
 
   public getNotes = async (userId: string): Promise<void> => {
@@ -57,17 +55,6 @@ export class NotesStore {
       if (value) {
         runInAction(() => {
           this.feels = value.data() as FeelsModel;
-        });
-      }
-    });
-  };
-
-  public getQuizQuestions = async (): Promise<void> => {
-    readDocument(DatabaseCollection.Assets, 'Questions').then(value => {
-      if (value) {
-        const questions = value.data() as QuestionModel;
-        runInAction(() => {
-          this.quizQuestions = questions.list;
         });
       }
     });

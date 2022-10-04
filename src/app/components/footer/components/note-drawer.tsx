@@ -46,7 +46,6 @@ export const NoteDrawer = observer((): JSX.Element => {
       editorNoteDate,
       saveNote,
       getNotes,
-      quizQuestions,
     },
     authStore: { userData },
   } = useRootStore();
@@ -85,11 +84,16 @@ export const NoteDrawer = observer((): JSX.Element => {
   }, [modalOpen, setValue, editorNoteType]);
 
   const resetQuizFields = useCallback((): void => {
+    if (!userData) {
+      return;
+    }
+
+    const quizQuestions = userData.questions;
     const arr = quizQuestions.map(item => [item, '']);
     const obj: Record<string, string> = Object.fromEntries(arr);
 
     setQuestionsValues(obj);
-  }, [quizQuestions]);
+  }, [userData]);
 
   useEffect(() => {
     resetQuizFields();

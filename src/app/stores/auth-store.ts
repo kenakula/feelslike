@@ -7,8 +7,6 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
   sendPasswordResetEmail,
-  updateEmail,
-  updatePassword,
 } from 'firebase/auth';
 import { makeAutoObservable, runInAction } from 'mobx';
 import {
@@ -22,7 +20,12 @@ import {
   getFileUrl,
   deleteFile,
 } from 'app/firebase';
-import { RecoverPasswordEmailModel, SignInModel, UserModel } from 'app/models';
+import {
+  QuestionsModel,
+  RecoverPasswordEmailModel,
+  SignInModel,
+  UserModel,
+} from 'app/models';
 import { getUserDocumentData } from 'app/utils';
 import { DatabaseCollection } from 'app/types/database-collection';
 import { FirebaseError } from 'firebase/app';
@@ -36,9 +39,12 @@ export class AuthStore {
   public error: string | null = null;
   public currentUser: User | null = null;
   public userData: UserModel | null = null;
+  public defaultQuestions: QuestionsModel = { list: [] };
 
   constructor(private readonly auth: Auth) {
     makeAutoObservable(this);
+
+    this.getDefaultQuizQuestions();
   }
 
   public setError = (message: string): void => {
@@ -63,7 +69,10 @@ export class AuthStore {
 
     return createUserWithEmailAndPassword(this.auth, email, password)
       .then(credentials => {
-        const userData = getUserDocumentData(credentials);
+        const userData = getUserDocumentData(
+          credentials,
+          this.defaultQuestions.list,
+        );
         runInAction(() => {
           this.userData = userData;
         });
@@ -121,7 +130,10 @@ export class AuthStore {
                 this.userData = document.data();
               });
             } else {
-              const userData = getUserDocumentData(credentials);
+              const userData = getUserDocumentData(
+                credentials,
+                this.defaultQuestions.list,
+              );
               writeDocument(DatabaseCollection.Users, userData, userData.uid);
               runInAction(() => {
                 this.userData = userData;
@@ -192,6 +204,17 @@ export class AuthStore {
           this.error = error.message;
         });
       });
+  };
+
+  public getDefaultQuizQuestions = async (): Promise<void> => {
+    readDocument(DatabaseCollection.Assets, 'Questions').then(value => {
+      if (value) {
+        const questions = value.data() as QuestionsModel;
+        runInAction(() => {
+          this.defaultQuestions = questions;
+        });
+      }
+    });
   };
 
   public updateUserInfo = async (data: Partial<UserModel>): Promise<void> => {

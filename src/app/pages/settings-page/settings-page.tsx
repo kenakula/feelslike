@@ -12,6 +12,7 @@ import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import { isGoogleAccount } from './assets';
 import { EmailForm, PasswordForm } from './components';
+import { QuestionsForm } from './components/questions-form';
 
 export const SettingsPage = observer((): JSX.Element => {
   const [snackbarState, setSnackbarState] = useState<SnackBarStateProps>({
@@ -20,7 +21,7 @@ export const SettingsPage = observer((): JSX.Element => {
     alert: 'success',
   });
   const {
-    authStore: { currentUser, setError, error: authError },
+    authStore: { currentUser, setError, error: authError, userData },
   } = useRootStore();
 
   const handleSnackbarClose = (): void => {
@@ -47,6 +48,13 @@ export const SettingsPage = observer((): JSX.Element => {
             currentUser={currentUser}
           />
         </>
+      )}
+      {currentUser && userData && (
+        <QuestionsForm
+          questions={userData.questions}
+          setSnackbarState={setSnackbarState}
+          setError={setError}
+        />
       )}
       <Snackbar
         open={snackbarState.isOpen}
