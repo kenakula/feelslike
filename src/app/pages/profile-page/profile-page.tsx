@@ -107,7 +107,7 @@ export const ProfilePage = observer((): JSX.Element => {
       return null;
     }
 
-    const { profileImage, displayName } = userData;
+    const { profileImage, displayName, email } = userData;
 
     return (
       <>
@@ -124,8 +124,11 @@ export const ProfilePage = observer((): JSX.Element => {
           )}
         </Box>
         <Stack spacing={2}>
-          <Typography textAlign="center" variant="h6" component="h2">
+          <Typography textAlign="center" variant="h6" component="p">
             {displayName}
+          </Typography>
+          <Typography textAlign="center" variant="body1">
+            {email}
           </Typography>
         </Stack>
       </>

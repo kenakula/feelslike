@@ -7,6 +7,8 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
   sendPasswordResetEmail,
+  updateEmail,
+  updatePassword,
 } from 'firebase/auth';
 import { makeAutoObservable, runInAction } from 'mobx';
 import {
@@ -38,6 +40,12 @@ export class AuthStore {
   constructor(private readonly auth: Auth) {
     makeAutoObservable(this);
   }
+
+  public setError = (message: string): void => {
+    runInAction(() => {
+      this.error = message;
+    });
+  };
 
   public resetState = (): void => {
     runInAction(() => {

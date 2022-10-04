@@ -52,8 +52,8 @@ const writeDocument = async (
   data: any,
   docId: string,
 ): Promise<void> => {
-  const ref = doc(database, collName, docId);
-  return setDoc(ref, data).catch((error: FirestoreError) => {
+  const reference = doc(database, collName, docId);
+  return setDoc(reference, data).catch((error: FirestoreError) => {
     console.error(error.message);
   });
 };

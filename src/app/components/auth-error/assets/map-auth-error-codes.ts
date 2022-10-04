@@ -7,4 +7,6 @@ export const MapAuthErrorCodes: Record<string, string> = {
   'auth/email-already-in-use': 'Такой адрес почты уже используется',
   'auth/network-request-failed': 'Ошибка подключения. Попробуйте позже',
   'auth/popup-closed-by-user': 'Авторизация прервана. Попробуйте снова',
+  'auth/requires-recent-login':
+    'Авторизационные данные устарели. Перелогинтесь.',
 };
