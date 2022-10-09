@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import HomeIcon from '@mui/icons-material/Home';
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
+import QueryStatsIcon from '@mui/icons-material/QueryStats';
 import AddIcon from '@mui/icons-material/Add';
 import { observer } from 'mobx-react-lite';
 import Box from '@mui/material/Box';
@@ -9,7 +10,11 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material';
-import { HOME_PAGE_PATH, JOURNAL_PAGE_PATH } from 'app/router';
+import {
+  HOME_PAGE_PATH,
+  JOURNAL_PAGE_PATH,
+  STATISTICS_PAGE_PATH,
+} from 'app/router';
 import { useRootStore } from 'app/stores';
 import { NoteType } from 'app/types/note-types';
 import { LinkComponent, NoteDrawer } from './components';
@@ -19,8 +24,8 @@ export const Footer = observer(() => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const theme = useTheme();
   const {
-    authStore: { authState },
-    notesStore: { bootState, setModalState, setEditorType },
+    authStore: { authState, bootState },
+    notesStore: { setModalState, setEditorType },
   } = useRootStore();
   const menuOpen = Boolean(anchorEl);
 
@@ -77,6 +82,11 @@ export const Footer = observer(() => {
             <LinkComponent
               path={JOURNAL_PAGE_PATH}
               icon={<LibraryBooksIcon />}
+              label="Журнал"
+            />
+            <LinkComponent
+              path={STATISTICS_PAGE_PATH}
+              icon={<QueryStatsIcon />}
               label="Журнал"
             />
             <Fab

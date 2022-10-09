@@ -8,15 +8,21 @@ import Typography from '@mui/material/Typography';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import Skeleton from '@mui/material/Skeleton';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 import { useRootStore } from 'app/stores';
 import { observer } from 'mobx-react-lite';
-import { Container, Note, NoteDetails, PageHeading } from 'app/components';
+import {
+  Container,
+  Note,
+  NoteDetails,
+  NothingFound,
+  PageHeading,
+} from 'app/components';
 import { NoteModel } from 'app/models';
 import { FilterParams, FilterType, SortOrder } from 'app/types';
 import { filterNotes } from './assets';
 import { noteTypesOptions } from 'assets/note-type-options';
-import Snackbar from '@mui/material/Snackbar';
-import Alert from '@mui/material/Alert';
 
 export const JournalPage = observer((): JSX.Element => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -96,9 +102,7 @@ export const JournalPage = observer((): JSX.Element => {
                 />
               ))
             ) : (
-              <Typography textAlign="center" variant="h5" component="p">
-                У вас еще нет записей
-              </Typography>
+              <NothingFound />
             )}
           </Stack>
           <Popover

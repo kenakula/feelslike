@@ -7,6 +7,8 @@ import { FormErrors, NewNoteModel, QuizEntry } from '../assets';
 import { Control, FieldErrorsImpl } from 'react-hook-form';
 import { FeelsModel } from 'app/models';
 import TextField from '@mui/material/TextField';
+import Stack from '@mui/material/Stack';
+import { Divider } from '@mui/material';
 
 interface Props {
   formControl: Control<NewNoteModel, any>;
@@ -112,6 +114,9 @@ export const QuizFields = ({
         }))}
         small
       />
+      <Divider color="primary" textAlign="center">
+        Ответьте на вопросы
+      </Divider>
       {renderFields()}
     </>
   );

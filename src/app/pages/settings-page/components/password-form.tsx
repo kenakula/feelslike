@@ -59,7 +59,7 @@ export const PasswordForm = ({
       onSubmit={handlePasswordSubmit(setNewPassword)}
     >
       <Typography sx={{ mb: 1, display: 'block', width: '100%' }} variant="h6">
-        Сменить почту:
+        Сменить пароль:
       </Typography>
       <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
         <InputComponent

@@ -196,6 +196,7 @@ export const NoteDrawer = observer((): JSX.Element => {
         sx: {
           padding: '40px 16px 20px',
           borderRadius: '20px 20px 0 0',
+          maxHeight: '600px',
           '&::before': {
             content: '""',
             position: 'absolute',
@@ -238,6 +239,7 @@ export const NoteDrawer = observer((): JSX.Element => {
                   label="Выберите дату"
                   inputFormat="DD/MM/YYYY"
                   {...field}
+                  maxDate={new Date()}
                   renderInput={params => <TextField size="small" {...params} />}
                 />
               </LocalizationProvider>

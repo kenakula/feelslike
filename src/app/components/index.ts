@@ -11,3 +11,4 @@ export * from './note/note';
 export * from './page-heading/page-heading';
 export * from './technical-issues/technical-issues';
 export * from './note-details/note-details';
+export * from './nothing-found/nothing-found';
