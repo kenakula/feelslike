@@ -20,9 +20,9 @@ import {
   PageHeading,
 } from 'app/components';
 import { NoteModel } from 'app/models';
-import { FilterParams, FilterType, SortOrder } from 'app/types';
+import { FilterParams, FilterType, SortOrder } from 'app/shared/types';
 import { filterNotes } from './assets';
-import { noteTypesOptions } from 'assets/note-type-options';
+import { noteTypesOptions } from 'app/shared/note-type-options';
 
 export const JournalPage = observer((): JSX.Element => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);

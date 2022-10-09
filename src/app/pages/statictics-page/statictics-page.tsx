@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import Box from '@mui/material/Box';
-import { Container, Loader, NothingFound, PageHeading } from 'app/components';
-import { useRootStore } from 'app/stores';
 import { observer } from 'mobx-react-lite';
+import { useRootStore } from 'app/stores';
+import { Container, Loader, NothingFound, PageHeading } from 'app/components';
 import { BarChart, PieChart } from './components';
 
 export const StatisticsPage = observer((): JSX.Element => {

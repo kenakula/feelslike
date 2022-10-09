@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { SnackBarStateProps } from 'app/types';
+import { SnackBarStateProps } from 'app/shared/types';
 import { AuthError, User, updatePassword } from 'firebase/auth';
 import { useForm } from 'react-hook-form';
 import { PasswordModel, passwordSchema } from '../assets';

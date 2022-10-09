@@ -1,4 +1,10 @@
 import React, { useEffect, useState } from 'react';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
 import {
   Chart as ChartJS,
   ArcElement,
@@ -10,20 +16,13 @@ import {
 } from 'chart.js';
 import { Pie } from 'react-chartjs-2';
 import {
-  ChartProps,
   getFeelsNotesCount,
   COLORS,
   periodSelectOptions,
   filterNotesByTime,
 } from '../assets';
+import { ChartProps, TimePeriod } from 'app/shared/types';
 import { FeelsModel, NoteModel } from 'app/models';
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
-import { TimePeriod } from 'app/types';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
 
 ChartJS.register(
   ArcElement,

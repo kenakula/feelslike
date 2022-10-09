@@ -4,11 +4,11 @@ import {
   readDocument,
   writeDocToDeepCollection,
 } from 'app/firebase';
-import { FeelsModel, NoteModel } from 'app/models';
-import { BootState } from 'app/types';
-import { DatabaseCollection } from 'app/types/database-collection';
-import { NoteType } from 'app/types/note-types';
 import { makeAutoObservable, runInAction } from 'mobx';
+import { BootState } from 'app/shared/types';
+import { FeelsModel, NoteModel } from 'app/models';
+import { DatabaseCollection } from 'app/shared/types/database-collection';
+import { NoteType } from 'app/shared/types/note-types';
 
 export class NotesStore {
   public modalOpen = false;

@@ -14,7 +14,7 @@ import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
 import { observer } from 'mobx-react-lite';
 import { QuestionsModel } from 'app/models';
-import { SnackBarStateProps } from 'app/types';
+import { SnackBarStateProps } from 'app/shared/types';
 import { useRootStore } from 'app/stores';
 
 interface Props {

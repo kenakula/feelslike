@@ -16,7 +16,7 @@ import {
   STATISTICS_PAGE_PATH,
 } from 'app/router';
 import { useRootStore } from 'app/stores';
-import { NoteType } from 'app/types/note-types';
+import { NoteType } from 'app/shared/types/note-types';
 import { LinkComponent, NoteDrawer } from './components';
 import { Container } from '../container/container';
 

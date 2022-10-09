@@ -6,7 +6,7 @@ import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import UploadIcon from '@mui/icons-material/Upload';
-import { stringToColor } from 'app/utils';
+import { stringToColor } from 'app/shared/utils';
 import React from 'react';
 
 const FileInput = styled('input')({

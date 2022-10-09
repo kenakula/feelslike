@@ -1,5 +1,5 @@
 import { NoteModel } from 'app/models';
-import { FilterParams } from 'app/types';
+import { FilterParams } from 'app/shared/types';
 
 export const filterNotes = (
   arr: NoteModel[],

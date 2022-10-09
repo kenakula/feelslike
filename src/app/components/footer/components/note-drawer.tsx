@@ -26,7 +26,7 @@ import {
 import { QuizFields } from './quiz-fields';
 import { RegularFields } from './regular-fields';
 import { FeelFields } from './feel-fields';
-import { noteTypesOptions } from 'assets/note-type-options';
+import { noteTypesOptions } from 'app/shared/note-type-options';
 
 export const NoteDrawer = observer((): JSX.Element => {
   const [secondaryOptions, setSecondaryOptions] = useState<string[]>([]);

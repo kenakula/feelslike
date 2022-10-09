@@ -1,4 +1,5 @@
-import { AuthState, BootState } from 'app/types';
+import { StorageError, UploadResult } from 'firebase/storage';
+import { FirebaseError } from 'firebase/app';
 import {
   Auth,
   User,
@@ -26,10 +27,9 @@ import {
   SignInModel,
   UserModel,
 } from 'app/models';
-import { getUserDocumentData } from 'app/utils';
-import { DatabaseCollection } from 'app/types/database-collection';
-import { FirebaseError } from 'firebase/app';
-import { StorageError, UploadResult } from 'firebase/storage';
+import { getUserDocumentData } from 'app/shared/utils';
+
+import { AuthState, BootState, DatabaseCollection } from 'app/shared/types';
 
 const googleProvider = new GoogleAuthProvider();
 

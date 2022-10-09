@@ -29,7 +29,7 @@ import {
   uploadBytes,
   UploadResult,
 } from 'firebase/storage';
-import { DatabaseCollection } from './types/database-collection';
+import { DatabaseCollection } from './shared/types';
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_API_KEY,

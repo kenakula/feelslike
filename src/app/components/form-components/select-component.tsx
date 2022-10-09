@@ -8,7 +8,7 @@ import {
   Checkbox,
 } from '@mui/material';
 import { SxProps } from '@mui/system';
-import { ColorTypes, MuiVariantType, SelectOption } from 'app/types';
+import { ColorTypes, MuiVariantType, SelectOption } from 'app/shared/types';
 import { Control, Controller, FieldValues, Path } from 'react-hook-form';
 
 interface Props<T extends FieldValues> {

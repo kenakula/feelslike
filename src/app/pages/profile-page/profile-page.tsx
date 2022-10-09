@@ -9,7 +9,7 @@ import Stack from '@mui/system/Stack';
 import { observer } from 'mobx-react-lite';
 import { Container, PageHeading } from 'app/components';
 import { useRootStore } from 'app/stores';
-import { SnackBarStateProps } from 'app/types';
+import { SnackBarStateProps } from 'app/shared/types';
 import { UserAvatar } from './components';
 
 const MAX_IMAGE_SIZE = 4e6;

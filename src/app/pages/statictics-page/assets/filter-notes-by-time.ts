@@ -1,5 +1,5 @@
 import { NoteModel } from 'app/models';
-import { TimePeriod } from 'app/types';
+import { TimePeriod } from 'app/shared/types';
 
 const MapPeriod: Record<TimePeriod, number> = {
   week: 7,

@@ -1,5 +1,5 @@
 import { QuizEntry } from 'app/components/footer/assets';
-import { NoteType } from 'app/types/note-types';
+import { NoteType } from 'app/shared/types/note-types';
 import { Timestamp } from 'firebase/firestore';
 
 export interface NoteModel {

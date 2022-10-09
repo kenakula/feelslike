@@ -1,4 +1,4 @@
-import { SelectOption, TimePeriod } from 'app/types';
+import { SelectOption, TimePeriod } from 'app/shared/types';
 
 export const periodSelectOptions: SelectOption<TimePeriod>[] = [
   {

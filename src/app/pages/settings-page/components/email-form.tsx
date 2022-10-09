@@ -1,7 +1,7 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Box, Typography, Button } from '@mui/material';
 import { InputComponent } from 'app/components';
-import { SnackBarStateProps } from 'app/types';
+import { SnackBarStateProps } from 'app/shared/types';
 import { updateEmail, AuthError, User } from 'firebase/auth';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';

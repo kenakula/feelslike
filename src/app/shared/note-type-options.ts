@@ -1,4 +1,4 @@
-import { NoteType, SelectOption } from 'app/types';
+import { NoteType, SelectOption } from './types';
 
 export const noteTypesOptions: SelectOption<NoteType>[] = [
   { value: 'feel', label: 'Про чувства' },

@@ -1,4 +1,4 @@
-import { NoteType } from 'app/types/note-types';
+import { NoteType } from 'app/shared/types/note-types';
 
 export interface QuizEntry {
   question: string;

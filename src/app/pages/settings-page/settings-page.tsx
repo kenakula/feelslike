@@ -7,7 +7,7 @@ import {
   PageHeading,
 } from 'app/components';
 import { useRootStore } from 'app/stores';
-import { SnackBarStateProps } from 'app/types';
+import { SnackBarStateProps } from 'app/shared/types';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import { isGoogleAccount } from './assets';

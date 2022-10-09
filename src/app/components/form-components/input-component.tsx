@@ -2,7 +2,7 @@ import React from 'react';
 import TextField from '@mui/material/TextField';
 import { SxProps } from '@mui/material';
 import { Control, Controller, FieldValues, Path } from 'react-hook-form';
-import { ColorTypes, InputTypes, MuiVariantType } from 'app/types';
+import { ColorTypes, InputTypes, MuiVariantType } from 'app/shared/types';
 
 interface Props<T extends FieldValues> {
   formControl: Control<T, any>;

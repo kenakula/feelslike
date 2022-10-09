@@ -9,7 +9,7 @@ import { observer } from 'mobx-react';
 import { NavLink } from 'react-router-dom';
 import { Container } from '../container/container';
 import { HOME_PAGE_PATH } from 'app/router';
-import { stringToColor } from 'app/utils';
+import { stringToColor } from 'app/shared/utils';
 import { useRootStore } from 'app/stores';
 import { MenuComponent } from './components';
 

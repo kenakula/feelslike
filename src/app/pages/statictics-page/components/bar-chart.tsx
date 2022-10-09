@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Typography from '@mui/material/Typography';
+import TextField from '@mui/material/TextField';
 import { Bar } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -8,17 +9,14 @@ import {
   BarElement,
   LinearScale,
 } from 'chart.js';
-import { ChartProps, MONTHS } from '../assets';
-import { NoteModel } from 'app/models';
 import { observer } from 'mobx-react-lite';
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
-import Select from '@mui/material/Select';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
-import TextField from '@mui/material/TextField';
 import moment, { Moment } from 'moment';
+import { NoteModel } from 'app/models';
+import { MONTHS } from '../assets';
+import { ChartProps } from 'app/shared/types';
 
 ChartJS.register(Tooltip, CategoryScale, LinearScale, BarElement);
 
@@ -32,7 +30,7 @@ export const BarChart = observer(({ notes }: Props): JSX.Element => {
   });
   const [selectedDate, setSelectedDate] = useState<Moment>(moment(new Date()));
 
-  const countNotes = (): void => {
+  const countNotes = useCallback((): void => {
     const currentYear = selectedDate.year();
     const monthsMap = new Map<number, number>();
 
@@ -60,17 +58,13 @@ export const BarChart = observer(({ notes }: Props): JSX.Element => {
         },
       ],
     });
-  };
+  }, [selectedDate, notes]);
 
   useEffect(() => {
     if (notes) {
       countNotes();
     }
-  }, [notes]);
-
-  useEffect(() => {
-    countNotes();
-  }, [selectedDate]);
+  }, [notes, selectedDate, countNotes]);
 
   const handleYearChange = (value: Moment | null): void => {
     if (value) {
@@ -95,7 +89,7 @@ export const BarChart = observer(({ notes }: Props): JSX.Element => {
           value={selectedDate}
           label="Выберите год"
           renderInput={params => (
-            <TextField sx={{ mb: 2 }} size="small" {...params} />
+            <TextField fullWidth sx={{ mb: 2 }} size="small" {...params} />
           )}
         />
       </LocalizationProvider>

@@ -3,9 +3,9 @@ import React, { useEffect, useState } from 'react';
 import useVH from 'react-viewport-height';
 import { RouterComponent } from './router';
 import { Box } from '@mui/material';
-import { useThemeStore } from './utils';
+import { useThemeStore } from './shared/utils';
 import { auth, onAuthStateChanged } from './firebase';
-import { BootState } from './types';
+import { BootState } from './shared/types';
 import { Loader, TechnicalIssues } from './components';
 import { useRootStore } from './stores';
 
