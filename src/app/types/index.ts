@@ -8,3 +8,5 @@ export * from './auth-states';
 export * from './select-option';
 export * from './notes-filter-types';
 export * from './snackbar-state';
+export * from './time-period';
+export * from './note-types';

@@ -16,7 +16,7 @@ interface Props<T extends FieldValues> {
   name: Path<T>;
   label: string;
   id: string;
-  options: SelectOption[];
+  options: SelectOption<string>[];
   error?: boolean;
   errorMessage?: string;
   variant?: MuiVariantType;
@@ -74,7 +74,7 @@ export const SelectComponent = <T extends FieldValues>({
               sx: { maxHeight: '250px' },
             }}
           >
-            {options.map((option: SelectOption) => (
+            {options.map((option: SelectOption<string>) => (
               <MenuItem key={option.label} value={option.value}>
                 {multiple ? (
                   <Checkbox checked={field.value.indexOf(option.value) > -1} />
