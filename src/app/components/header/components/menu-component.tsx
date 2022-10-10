@@ -9,7 +9,6 @@ import React, { useEffect, useState } from 'react';
 import Typography from '@mui/material/Typography';
 import { NavLink, useLocation } from 'react-router-dom';
 import { PROFILE_PAGE_PATH, SETTINGS_PAGE_PATH } from 'app/router';
-import { useTheme } from '@mui/material';
 
 interface Props {
   anchorEl: HTMLElement | null;
@@ -26,11 +25,12 @@ export const MenuComponent = ({
 }: Props): JSX.Element => {
   const [currentPath, setCurrentPath] = useState('/');
   const { pathname } = useLocation();
-  const theme = useTheme();
 
   useEffect(() => {
     setCurrentPath(pathname);
   }, [pathname]);
+
+  const isCurrentLink = (path: string): boolean => path === currentPath;
 
   return (
     <Menu
@@ -68,38 +68,24 @@ export const MenuComponent = ({
       transformOrigin={{ horizontal: 'right', vertical: 'top' }}
       anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
     >
-      <MenuItem
-        dense
-        component={NavLink}
-        to={PROFILE_PAGE_PATH}
-        sx={{
-          background:
-            PROFILE_PAGE_PATH === currentPath
-              ? theme.palette.grey[200]
-              : '#ffffff',
-        }}
-      >
+      <MenuItem dense component={NavLink} to={PROFILE_PAGE_PATH}>
         <ListItemIcon>
-          <AccessibilityNewIcon fontSize="small" />
+          <AccessibilityNewIcon
+            fontSize="small"
+            color={isCurrentLink(PROFILE_PAGE_PATH) ? 'primary' : 'inherit'}
+          />
         </ListItemIcon>
         <Typography variant="body2" noWrap>
           Профиль
         </Typography>
       </MenuItem>
       <Divider />
-      <MenuItem
-        dense
-        component={NavLink}
-        to={SETTINGS_PAGE_PATH}
-        sx={{
-          background:
-            SETTINGS_PAGE_PATH === currentPath
-              ? theme.palette.grey[200]
-              : '#ffffff',
-        }}
-      >
+      <MenuItem dense component={NavLink} to={SETTINGS_PAGE_PATH}>
         <ListItemIcon>
-          <Settings fontSize="small" />
+          <Settings
+            fontSize="small"
+            color={isCurrentLink(SETTINGS_PAGE_PATH) ? 'primary' : 'inherit'}
+          />
         </ListItemIcon>
         <Typography variant="body2">Настройки</Typography>
       </MenuItem>

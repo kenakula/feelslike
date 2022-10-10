@@ -13,6 +13,7 @@ import BackspaceIcon from '@mui/icons-material/Backspace';
 import CloseIcon from '@mui/icons-material/Close';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
+import { useThemeStore } from 'app/shared/utils';
 
 interface Props {
   close: () => void;
@@ -29,6 +30,8 @@ export const EmojiDialog = ({
   emojies,
   deleteEmoji,
 }: Props): JSX.Element => {
+  const { mode } = useThemeStore();
+
   return (
     <Dialog onClose={close} open={openState}>
       <DialogTitle
@@ -79,7 +82,7 @@ export const EmojiDialog = ({
       </Box>
       <EmojiPicker
         onEmojiClick={onClick}
-        theme={Theme.AUTO}
+        theme={mode === 'dark' ? Theme.DARK : Theme.LIGHT}
         previewConfig={{
           showPreview: false,
         }}

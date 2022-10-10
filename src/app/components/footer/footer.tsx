@@ -9,7 +9,6 @@ import Fab from '@mui/material/Fab';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Typography from '@mui/material/Typography';
-import { useTheme } from '@mui/material';
 import {
   HOME_PAGE_PATH,
   JOURNAL_PAGE_PATH,
@@ -19,10 +18,11 @@ import { useRootStore } from 'app/stores';
 import { NoteType } from 'app/shared/types/note-types';
 import { LinkComponent, NoteDrawer } from './components';
 import { Container } from '../container/container';
+import { useThemeStore } from 'app/shared/utils';
 
 export const Footer = observer(() => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const theme = useTheme();
+  const { theme } = useThemeStore();
   const {
     authStore: { authState, bootState },
     notesStore: { setModalState, setEditorType },
@@ -52,8 +52,8 @@ export const Footer = observer(() => {
         left: 0,
         top: 'auto',
         width: '100%',
-        borderTop: `1px solid ${theme.palette.grey[300]}`,
-        background: theme.palette.background.default,
+        borderTop: `1px solid ${theme && theme.palette.grey[300]}`,
+        background: theme && theme.palette.background.default,
       }}
     >
       {authState === 'Authorized' && (

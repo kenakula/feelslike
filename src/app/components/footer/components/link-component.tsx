@@ -34,7 +34,7 @@ export const LinkComponent = ({ path, label, icon }: Props): JSX.Element => {
           height: 40,
           border: `1px solid ${theme.palette.grey[300]}`,
           borderRadius: '8px',
-          color: isActiveLink ? theme.palette.primary.main : '#212121',
+          color: isActiveLink ? theme.palette.primary.main : 'inherit',
         }}
       >
         {icon}

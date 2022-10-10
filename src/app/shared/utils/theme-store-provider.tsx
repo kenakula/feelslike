@@ -2,10 +2,10 @@ import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { ThemeProvider } from '@emotion/react';
 import { createTheme, CssBaseline } from '@mui/material';
 import { Theme } from '@mui/system';
-import { ColorMode, LocalStorageKeys } from '../types';
+import { ColorModeType, LocalStorageKeys } from '../types';
 
 type ContextProps = {
-  mode: ColorMode;
+  mode: ColorModeType;
   toggleColorMode: () => void;
   theme: Theme;
 };
@@ -21,13 +21,14 @@ export function useThemeStore(): Partial<ContextProps> {
 }
 
 export const ThemeStoreProvider = ({ children }: Props): JSX.Element => {
-  const [mode, setMode] = useState<ColorMode>(ColorMode.Light);
+  const [mode, setMode] = useState<ColorModeType>('light');
 
   useEffect(() => {
     const storedTheme = localStorage.getItem(LocalStorageKeys.Theme);
 
     if (storedTheme) {
-      setMode(storedTheme as ColorMode);
+      document.documentElement.setAttribute('theme', storedTheme);
+      setMode(storedTheme as ColorModeType);
     }
   }, []);
 
@@ -44,7 +45,7 @@ export const ThemeStoreProvider = ({ children }: Props): JSX.Element => {
         palette: {
           mode,
           background: {
-            default: mode === ColorMode.Dark ? '#212738' : '#FDFFFC',
+            default: mode === 'dark' ? '#212738' : '#FDFFFC',
           },
         },
       }),
@@ -53,11 +54,11 @@ export const ThemeStoreProvider = ({ children }: Props): JSX.Element => {
   );
 
   const toggleColorMode = (): void => {
-    setMode((prev: ColorMode) => {
-      const newMode =
-        prev === ColorMode.Light ? ColorMode.Dark : ColorMode.Light;
+    setMode((prev: ColorModeType) => {
+      const newMode = prev === 'light' ? 'dark' : 'light';
 
       localStorage.setItem(LocalStorageKeys.Theme, newMode);
+      document.documentElement.setAttribute('theme', newMode);
 
       return newMode;
     });
