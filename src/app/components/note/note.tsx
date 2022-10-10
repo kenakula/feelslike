@@ -27,6 +27,7 @@ export const Note = ({
           mb: 1,
         }}
       >
+        <Typography variant="caption">{MapNotesTypes[type]}</Typography>
         <Box
           sx={{
             display: 'flex',
@@ -44,7 +45,6 @@ export const Note = ({
             />
           ))}
         </Box>
-        <Typography variant="caption">{MapNotesTypes[type]}</Typography>
       </Box>
       <Typography gutterBottom variant="h5" component="h2">
         {title}

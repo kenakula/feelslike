@@ -60,7 +60,7 @@ export const FeelFields = ({
         formControl={formControl}
         id="secondary-feel-select"
         name="secondaryFeels"
-        label="Выберите дополнительное чувство"
+        label="Выберите дополнительное"
         variant="outlined"
         color="primary"
         multiple

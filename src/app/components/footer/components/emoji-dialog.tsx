@@ -4,11 +4,9 @@ import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import IconButton from '@mui/material/IconButton';
 import EmojiPicker, {
-  Categories,
   Emoji,
   EmojiClickData,
   EmojiStyle,
-  SuggestionMode,
   Theme,
 } from 'emoji-picker-react';
 import BackspaceIcon from '@mui/icons-material/Backspace';
@@ -50,23 +48,24 @@ export const EmojiDialog = ({
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          mb: 2,
           px: 2,
         }}
       >
-        <Box sx={{ mr: 1, display: 'flex', flexWrap: 'wrap' }}>
+        <Box
+          sx={{ mr: 1, display: 'flex', flexWrap: 'wrap', minHeight: '38px' }}
+        >
           {emojies.length
             ? emojies.map((emoji, index) => (
                 <Box
                   // eslint-disable-next-line react/no-array-index-key
                   key={`${emoji}-${index}`}
                   component="span"
-                  sx={{ mr: 1, display: 'flex' }}
+                  sx={{ mr: 1, display: 'flex', alignItems: 'center' }}
                 >
                   <Emoji
                     unified={emoji}
                     emojiStyle={EmojiStyle.APPLE}
-                    size={30}
+                    size={25}
                   />
                 </Box>
               ))
@@ -80,30 +79,22 @@ export const EmojiDialog = ({
       </Box>
       <EmojiPicker
         onEmojiClick={onClick}
-        autoFocusSearch={false}
         theme={Theme.AUTO}
-        lazyLoadEmojis
         previewConfig={{
-          defaultCaption: 'Выберите наиболее подходящее эмоджи',
           showPreview: false,
         }}
-        suggestedEmojisMode={SuggestionMode.FREQUENT}
-        skinTonesDisabled
         searchPlaceHolder="Поиск"
-        emojiStyle={EmojiStyle.APPLE}
-        categories={[
-          {
-            name: 'Smiles & Emotions',
-            category: Categories.SMILEYS_PEOPLE,
-          },
-          {
-            name: 'Animals',
-            category: Categories.ANIMALS_NATURE,
-          },
-        ]}
+        skinTonesDisabled
+        width={300}
+        height={400}
       />
       <Box sx={{ px: 2, py: 2, display: 'flex', justifyContent: 'center' }}>
-        <Button variant="contained" color="primary" onClick={close}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={close}
+          size="small"
+        >
           Сохранить
         </Button>
       </Box>

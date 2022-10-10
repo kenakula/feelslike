@@ -196,7 +196,6 @@ export const NoteDrawer = observer((): JSX.Element => {
         sx: {
           padding: '40px 16px 20px',
           borderRadius: '20px 20px 0 0',
-          maxHeight: '600px',
           '&::before': {
             content: '""',
             position: 'absolute',
@@ -211,74 +210,83 @@ export const NoteDrawer = observer((): JSX.Element => {
         },
       }}
     >
-      <Typography variant="h5" component="h2" textAlign="center" sx={{ mb: 4 }}>
-        Создайте новую запись
-      </Typography>
-      <Box
-        component="form"
-        onSubmit={handleSubmit(saveForm)}
-        autoComplete="off"
-      >
-        <Stack spacing={2}>
-          <SelectComponent<NewNoteModel>
-            formControl={control}
-            id="type-select"
-            name="type"
-            label="Выберите тип записи"
-            variant="outlined"
-            color="primary"
-            small
-            options={noteTypesOptions}
-          />
-          <Controller
-            control={control}
-            name="date"
-            render={({ field }) => (
-              <LocalizationProvider dateAdapter={AdapterMoment}>
-                <MobileDatePicker
-                  label="Выберите дату"
-                  inputFormat="DD/MM/YYYY"
-                  {...field}
-                  maxDate={new Date()}
-                  renderInput={params => <TextField size="small" {...params} />}
-                />
-              </LocalizationProvider>
-            )}
-          />
-          {feels ? renderTypeFields() : null}
-          <LoadingButton
-            type="submit"
-            fullWidth
-            variant="contained"
-            startIcon={<SaveIcon />}
-            loadingPosition="start"
-            loading={processing}
-            size="small"
-          >
-            Сохранить
-          </LoadingButton>
-        </Stack>
-        <EmojiDialog
-          openState={emojiDialogOpen}
-          close={() => setEmojiDialogOpen(false)}
-          onClick={onEmojiClick}
-          deleteEmoji={backSpaceClick}
-          emojies={noteEmojies}
-        />
-        <Snackbar
-          open={snackOpen}
-          autoHideDuration={3000}
-          onClose={() => setSnackOpen(false)}
-          anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
+      <Box sx={{ maxHeight: '80vh', overflowY: 'auto' }}>
+        <Typography
+          variant="h5"
+          component="h2"
+          textAlign="center"
+          sx={{ mb: 4 }}
         >
-          <Alert
+          Создайте новую запись
+        </Typography>
+        <Box
+          component="form"
+          onSubmit={handleSubmit(saveForm)}
+          autoComplete="off"
+        >
+          <Stack spacing={2}>
+            <SelectComponent<NewNoteModel>
+              formControl={control}
+              id="type-select"
+              name="type"
+              label="Выберите тип записи"
+              variant="outlined"
+              color="primary"
+              small
+              options={noteTypesOptions}
+            />
+            <Controller
+              control={control}
+              name="date"
+              render={({ field }) => (
+                <LocalizationProvider dateAdapter={AdapterMoment}>
+                  <MobileDatePicker
+                    label="Выберите дату"
+                    inputFormat="DD/MM/YYYY"
+                    {...field}
+                    maxDate={new Date()}
+                    renderInput={params => (
+                      <TextField size="small" {...params} />
+                    )}
+                  />
+                </LocalizationProvider>
+              )}
+            />
+            {feels ? renderTypeFields() : null}
+            <LoadingButton
+              type="submit"
+              fullWidth
+              variant="contained"
+              startIcon={<SaveIcon />}
+              loadingPosition="start"
+              loading={processing}
+              size="small"
+            >
+              Сохранить
+            </LoadingButton>
+          </Stack>
+          <EmojiDialog
+            openState={emojiDialogOpen}
+            close={() => setEmojiDialogOpen(false)}
+            onClick={onEmojiClick}
+            deleteEmoji={backSpaceClick}
+            emojies={noteEmojies}
+          />
+          <Snackbar
+            open={snackOpen}
+            autoHideDuration={3000}
             onClose={() => setSnackOpen(false)}
-            severity="success"
-            sx={{ width: '100%' }}
+            anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
           >
-            Запись сохранена
-          </Alert>
-        </Snackbar>
+            <Alert
+              onClose={() => setSnackOpen(false)}
+              severity="success"
+              sx={{ width: '100%' }}
+            >
+              Запись сохранена
+            </Alert>
+          </Snackbar>
+        </Box>
       </Box>
     </SwipeableDrawer>
   );

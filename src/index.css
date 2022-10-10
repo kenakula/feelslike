@@ -116,7 +116,3 @@ main {
 .react-calendar__month-view__weekdays__weekday abbr {
   text-decoration: none;
 }
-
-.epr-category-nav {
-  display: none !important;
-}

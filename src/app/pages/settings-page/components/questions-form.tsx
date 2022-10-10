@@ -44,7 +44,7 @@ export const QuestionsForm = observer(
       setNewQuestion(event.target.value);
     };
 
-    const updateQuestions = (arr: string[]): void => {
+    const updateQuestions = (arr: string[], deleted = false): void => {
       const model = { list: arr } as QuestionsModel;
       setProcessing(true);
 
@@ -53,9 +53,9 @@ export const QuestionsForm = observer(
           setProcessing(false);
           setSnackbarState(prev => ({
             ...prev,
-            message: 'Вопрос добавлен',
+            message: deleted ? 'Вопрос удален' : 'Вопрос добавлен',
             isOpen: true,
-            alert: 'success',
+            alert: deleted ? 'warning' : 'success',
           }));
         })
         .catch(() => {
@@ -72,7 +72,7 @@ export const QuestionsForm = observer(
     const deleteQuestion = (question: string): void => {
       const newArr = list.filter(item => item !== question);
       setList(newArr);
-      updateQuestions(newArr);
+      updateQuestions(newArr, true);
     };
 
     const addQuestion = (): void => {

@@ -7,7 +7,6 @@ import { FormErrors, NewNoteModel, QuizEntry } from '../assets';
 import { Control, FieldErrorsImpl } from 'react-hook-form';
 import { FeelsModel } from 'app/models';
 import TextField from '@mui/material/TextField';
-import Stack from '@mui/material/Stack';
 import { Divider } from '@mui/material';
 
 interface Props {
@@ -104,7 +103,7 @@ export const QuizFields = ({
         formControl={formControl}
         id="secondary-feel-select"
         name="secondaryFeels"
-        label="Выберите дополнительное чувство"
+        label="Выберите дополнительное"
         variant="outlined"
         color="primary"
         multiple

@@ -160,7 +160,7 @@
     "import/order": 0,
     "no-return-await": 0,
     "quotes": 1,
-    "import/named": 1,
+    "import/named": 0,
     "function-paren-newline": 0,
     "prefer-destructuring": 0,
     "no-extra-boolean-cast": 0,
