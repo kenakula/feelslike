@@ -25,6 +25,7 @@ import { filterNotes } from './assets';
 import { noteTypesOptions } from 'app/shared/note-type-options';
 
 export const JournalPage = observer((): JSX.Element => {
+  const [selectedNote, setSelectedNote] = useState<NoteModel | null>(null);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [snackDeleteOpen, setSnackDeleteOpen] = useState(false);
   const [detailsOpen, setDetailsOpen] = useState(false);
@@ -35,7 +36,7 @@ export const JournalPage = observer((): JSX.Element => {
   const [filteredNotes, setFilteredNotes] = useState<NoteModel[]>([]);
   const menuOpen = Boolean(anchorEl);
   const {
-    notesStore: { notes, getNotes, bootState, setSelectedNote },
+    notesStore: { notes, getNotes, bootState },
     authStore: { userData },
   } = useRootStore();
 
@@ -173,6 +174,7 @@ export const JournalPage = observer((): JSX.Element => {
         </>
       )}
       <NoteDetails
+        note={selectedNote}
         openState={detailsOpen}
         handleClose={() => setDetailsOpen(false)}
         openSnackbar={() => setSnackDeleteOpen(true)}

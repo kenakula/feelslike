@@ -10,29 +10,31 @@ import IconButton from '@mui/material/IconButton';
 import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
 import { Button, DialogActions } from '@mui/material';
+import { NoteModel } from 'app/models';
 
 interface Props {
   openState: boolean;
+  note: NoteModel | null;
   handleClose: () => void;
   openSnackbar: () => void;
 }
 
 export const NoteDetails = ({
+  note,
   openState,
   handleClose,
   openSnackbar,
 }: Props): JSX.Element | null => {
   const {
-    notesStore: { selectedNote, deleteNote, getNotes, bootState },
+    notesStore: { deleteNote, getNotes, bootState },
     authStore: { userData },
   } = useRootStore();
 
-  if (!selectedNote) {
+  if (!note) {
     return null;
   }
 
-  const { title, emotions, desc, date, type, secondary, quiz, id } =
-    selectedNote;
+  const { title, emotions, desc, date, type, secondary, quiz, id } = note;
 
   const handleDelete = (): void => {
     if (!userData) {
@@ -155,6 +157,7 @@ export const NoteDetails = ({
           variant="contained"
           onClick={handleDelete}
           disabled={bootState === 'loading'}
+          size="small"
         >
           Удалить
         </Button>

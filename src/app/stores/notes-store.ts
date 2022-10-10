@@ -1,14 +1,22 @@
 import {
+  collection,
+  database,
   deleteDeepDocument,
+  getDocumentsByQuery,
   getDocumentsFromDeepCollection,
+  query,
   readDocument,
+  where,
   writeDocToDeepCollection,
 } from 'app/firebase';
 import { makeAutoObservable, runInAction } from 'mobx';
-import { BootState } from 'app/shared/types';
+import {
+  BootState,
+  DatabaseCollection,
+  DatabaseSubSollection,
+  NoteType,
+} from 'app/shared/types';
 import { FeelsModel, NoteModel } from 'app/models';
-import { DatabaseCollection } from 'app/shared/types/database-collection';
-import { NoteType } from 'app/shared/types/note-types';
 
 export class NotesStore {
   public modalOpen = false;
@@ -18,7 +26,6 @@ export class NotesStore {
   public feels: FeelsModel | null = null;
   public editorNoteType: NoteType = 'feel';
   public editorNoteDate: Date = new Date();
-  public selectedNote: NoteModel | null = null;
 
   constructor() {
     makeAutoObservable(this);
@@ -29,17 +36,64 @@ export class NotesStore {
     await this.getFeels();
   };
 
+  public getNotesByMonth = async (
+    userId: string,
+    currentDate: Date,
+  ): Promise<void> => {
+    this.bootState = 'loading';
+
+    const pastMonth = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth() - 1,
+    );
+
+    const nextMonth = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth() + 2,
+      currentDate.getDate() - 1,
+    );
+
+    const colRef = collection(
+      database,
+      DatabaseCollection.Users,
+      userId,
+      DatabaseSubSollection.Journal,
+    );
+
+    const notesQuery = query(
+      colRef,
+      where('date', '>', pastMonth),
+      where('date', '<', nextMonth),
+    );
+
+    getDocumentsByQuery<NoteModel>(notesQuery)
+      .then(result => {
+        runInAction(() => {
+          this.notes = result;
+          this.bootState = 'success';
+          this.processing = false;
+        });
+      })
+      .catch(() => {
+        runInAction(() => {
+          this.bootState = 'error';
+          this.processing = false;
+        });
+      });
+  };
+
   public getNotes = async (userId: string): Promise<void> => {
     this.bootState = 'loading';
 
     getDocumentsFromDeepCollection<NoteModel>(DatabaseCollection.Users, [
       userId,
-      'Journal',
+      DatabaseSubSollection.Journal,
     ])
       .then(value => {
         runInAction(() => {
           this.notes = value;
           this.bootState = 'success';
+          this.processing = false;
         });
       })
       .catch(() => {
@@ -105,10 +159,6 @@ export class NotesStore {
           this.processing = false;
         });
       });
-  };
-
-  public setSelectedNote = (value: NoteModel | null): void => {
-    this.selectedNote = value;
   };
 
   public setModalState = (value: boolean): void => {

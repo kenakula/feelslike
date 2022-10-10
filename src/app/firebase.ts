@@ -16,9 +16,11 @@ import {
   getDoc,
   getDocs,
   getFirestore,
+  Query,
   query,
   setDoc,
   updateDoc,
+  where,
 } from 'firebase/firestore';
 import {
   deleteObject,
@@ -107,6 +109,17 @@ const getDocumentsFormCollection = async <T>(
   return result;
 };
 
+const getDocumentsByQuery = async <T>(q: Query<DocumentData>): Promise<T[]> => {
+  const result: T[] = [];
+  const snapShot = await getDocs(q);
+
+  snapShot.forEach((document: DocumentData) => {
+    result.push(document.data());
+  });
+
+  return result;
+};
+
 const writeDocToDeepCollection = async (
   collName: DatabaseCollection,
   pathSegements: string[],
@@ -170,6 +183,7 @@ export {
   signInWithEmailAndPassword,
   getDocumentsFormCollection,
   writeDocToDeepCollection,
+  getDocumentsByQuery,
   onAuthStateChanged,
   deleteDeepDocument,
   updateDocument,
@@ -179,5 +193,8 @@ export {
   deleteFile,
   getFileUrl,
   uploadFile,
+  collection,
   signOut,
+  query,
+  where,
 };

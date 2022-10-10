@@ -1,21 +1,30 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Note, NoteDetails, PageHeading } from 'app/components';
 import { observer } from 'mobx-react-lite';
 import Stack from '@mui/material/Stack';
 import Calendar, {
   CalendarTileProperties,
   ViewCallbackProperties,
 } from 'react-calendar';
+import moment from 'moment';
 import Box from '@mui/material/Box';
 import AutorenewIcon from '@mui/icons-material/Autorenew';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import { compareDates, filterNotes } from './assets';
-import { Alert, Skeleton, Snackbar, Typography } from '@mui/material';
+import { Alert, Snackbar } from '@mui/material';
+import {
+  Container,
+  Note,
+  NoteDetails,
+  NothingFound,
+  PageHeading,
+} from 'app/components';
 import { useRootStore } from 'app/stores';
 import { NoteModel } from 'app/models';
+import { PageSkeleton } from './components';
 
 export const HomePage = observer((): JSX.Element => {
+  const [selectedNote, setSelectedNote] = useState<NoteModel | null>(null);
   const [startDate, setStartDate] = useState(new Date());
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [snackDeleteOpen, setSnackDeleteOpen] = useState(false);
@@ -26,8 +35,7 @@ export const HomePage = observer((): JSX.Element => {
       bootState,
       editorNoteDate,
       setEditorDate,
-      getNotes,
-      setSelectedNote,
+      getNotesByMonth,
     },
     authStore: { userData },
   } = useRootStore();
@@ -35,28 +43,39 @@ export const HomePage = observer((): JSX.Element => {
   const onResetClick = (): void => {
     setEditorDate(new Date());
     setStartDate(new Date());
+
+    if (userData) {
+      getNotesByMonth(userData.uid, new Date());
+    }
   };
 
   const onActiveStartDateChange = ({
     activeStartDate,
   }: ViewCallbackProperties): void => {
+    const isSameMonth = moment(startDate).isSame(activeStartDate, 'month');
+
+    if (!isSameMonth) {
+      if (userData) {
+        getNotesByMonth(userData.uid, activeStartDate);
+      }
+    }
+
     setStartDate(activeStartDate);
   };
 
   useEffect(() => {
     if (userData) {
-      getNotes(userData.uid);
+      getNotesByMonth(userData.uid, new Date());
     }
-  }, [userData, getNotes]);
+  }, [userData, getNotesByMonth]);
 
   const selectNote = (note: NoteModel): void => {
     setSelectedNote(note);
     setDetailsOpen(true);
   };
 
-  return (
-    <Container sx={{ pt: 5 }}>
-      <h1 className="visually-hidden">Главная страница</h1>
+  const renderContent = (): JSX.Element => (
+    <Box>
       <Box sx={{ mb: 5 }}>
         <PageHeading title="Оставьте запись" component="h2">
           <Tooltip title="Вернуться к текущей дате">
@@ -71,72 +90,49 @@ export const HomePage = observer((): JSX.Element => {
             </Box>
           </Tooltip>
         </PageHeading>
-        {bootState === 'success' ? (
-          <Calendar
-            onChange={setEditorDate}
-            value={editorNoteDate}
-            maxDate={new Date()}
-            activeStartDate={startDate}
-            onActiveStartDateChange={onActiveStartDateChange}
-            tileClassName={({ date }: CalendarTileProperties) => {
-              const hasNotes = notes.some(note =>
-                compareDates(date, note.date.toDate()),
-              );
-              return hasNotes ? 'has-notes' : null;
-            }}
-          />
-        ) : (
-          <Skeleton
-            variant="rectangular"
-            sx={{ width: '100%', height: '336px', borderRadius: '8px' }}
-          />
-        )}
+        <Calendar
+          onChange={setEditorDate}
+          value={editorNoteDate}
+          maxDate={new Date()}
+          activeStartDate={startDate}
+          onActiveStartDateChange={onActiveStartDateChange}
+          tileClassName={({ date }: CalendarTileProperties) => {
+            const hasNotes = notes.some(note =>
+              compareDates(date, note.date.toDate()),
+            );
+            return hasNotes ? 'has-notes' : null;
+          }}
+        />
       </Box>
-      {bootState === 'success' ? (
-        <Box>
-          <PageHeading
-            title={`Записи ${editorNoteDate.toLocaleDateString()}`}
-            component="h2"
-          />
-          <Stack spacing={2} sx={{ mb: 2 }}>
-            {filterNotes(notes, editorNoteDate).length ? (
-              filterNotes(notes, editorNoteDate).map(note => (
-                <Note
-                  key={note.id}
-                  note={note}
-                  openDetails={() => selectNote(note)}
-                />
-              ))
-            ) : (
-              <Typography variant="h6" component="p" textAlign="center">
-                В этот день не было записей
-              </Typography>
-            )}
-          </Stack>
-        </Box>
-      ) : (
-        <Box>
-          <Skeleton
-            variant="rectangular"
-            sx={{
-              width: '100%',
-              height: '47px',
-              borderRadius: '0 8px 8px 0',
-              mb: 5,
-              marginLeft: '-16px',
-            }}
-          />
-          <Skeleton
-            variant="rectangular"
-            sx={{
-              width: '100%',
-              height: '150px',
-              borderRadius: '8px',
-            }}
-          />
-        </Box>
-      )}
+      <Box>
+        <PageHeading
+          title={`Записи ${editorNoteDate.toLocaleDateString()}`}
+          component="h2"
+        />
+        <Stack spacing={2} sx={{ mb: 2 }}>
+          {filterNotes(notes, editorNoteDate).length ? (
+            filterNotes(notes, editorNoteDate).map(note => (
+              <Note
+                key={note.id}
+                note={note}
+                openDetails={() => selectNote(note)}
+              />
+            ))
+          ) : (
+            <NothingFound />
+          )}
+        </Stack>
+      </Box>
+    </Box>
+  );
+
+  return (
+    <Container sx={{ pt: 5 }}>
+      <h1 className="visually-hidden">Главная страница</h1>
+      {bootState === 'success' ? renderContent() : <PageSkeleton />}
+      {/* modals */}
       <NoteDetails
+        note={selectedNote}
         openState={detailsOpen}
         handleClose={() => setDetailsOpen(false)}
         openSnackbar={() => setSnackDeleteOpen(true)}
