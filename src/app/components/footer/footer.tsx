@@ -87,7 +87,7 @@ export const Footer = observer(() => {
             <LinkComponent
               path={STATISTICS_PAGE_PATH}
               icon={<QueryStatsIcon />}
-              label="Журнал"
+              label="Статистика"
             />
             <Fab
               color="primary"

@@ -13,10 +13,26 @@ import { makeAutoObservable, runInAction } from 'mobx';
 import {
   BootState,
   DatabaseCollection,
-  DatabaseSubSollection,
+  DatabaseSubCollection,
+  FilterParams,
   NoteType,
 } from 'app/shared/types';
 import { FeelsModel, NoteModel } from 'app/models';
+import {
+  CollectionReference,
+  DocumentData,
+  getDocs,
+  limit,
+  orderBy,
+  QueryDocumentSnapshot,
+  startAfter,
+} from 'firebase/firestore';
+import { noteTypesOptions } from 'app/shared';
+
+const DEFAULT_FILTER: FilterParams = {
+  type: 'all',
+  order: 'desc',
+};
 
 export class NotesStore {
   public modalOpen = false;
@@ -26,6 +42,9 @@ export class NotesStore {
   public feels: FeelsModel | null = null;
   public editorNoteType: NoteType = 'feel';
   public editorNoteDate: Date = new Date();
+  public notesCursor: QueryDocumentSnapshot<DocumentData> | null = null;
+  public hasMoreNotes = true;
+  public journalFilter = DEFAULT_FILTER;
 
   constructor() {
     makeAutoObservable(this);
@@ -34,6 +53,24 @@ export class NotesStore {
 
   public init = async (): Promise<void> => {
     await this.getFeels();
+  };
+
+  public setJournalFilter = (data: Partial<FilterParams>): void => {
+    this.journalFilter = {
+      ...this.journalFilter,
+      ...data,
+    };
+  };
+
+  public filterJournalNotes = (userId: string): void => {
+    runInAction(() => {
+      this.notes = [];
+      this.hasMoreNotes = true;
+      this.notesCursor = null;
+      this.processing = false;
+    });
+
+    this.getNotesFirstBatch(userId);
   };
 
   public getNotesByMonth = async (
@@ -57,7 +94,7 @@ export class NotesStore {
       database,
       DatabaseCollection.Users,
       userId,
-      DatabaseSubSollection.Journal,
+      DatabaseSubCollection.Journal,
     );
 
     const notesQuery = query(
@@ -82,12 +119,110 @@ export class NotesStore {
       });
   };
 
+  public hasMore = async (
+    collRef: CollectionReference<DocumentData>,
+  ): Promise<void> => {
+    const noteType =
+      this.journalFilter.type === 'all'
+        ? noteTypesOptions.map(type => type.value)
+        : [this.journalFilter.type];
+    const q = query(
+      collRef,
+      where('type', 'in', noteType),
+      orderBy('date', this.journalFilter.order),
+    );
+    const snapshot = await getDocs(q);
+
+    runInAction(() => {
+      this.hasMoreNotes = snapshot.docs.length > this.notes.length;
+    });
+  };
+
+  public getNotesFirstBatch = async (userId: string): Promise<void> => {
+    this.bootState = 'loading';
+    this.notes = [];
+    const noteType =
+      this.journalFilter.type === 'all'
+        ? noteTypesOptions.map(type => type.value)
+        : [this.journalFilter.type];
+
+    const collRef = collection(
+      database,
+      DatabaseCollection.Users,
+      userId,
+      DatabaseSubCollection.Journal,
+    );
+    const queryFirst = query(
+      collRef,
+      where('type', 'in', noteType),
+      orderBy('date', this.journalFilter.order),
+      limit(5),
+    );
+
+    getDocs(queryFirst).then(snapshot => {
+      const lastVisible = snapshot.docs[snapshot.docs.length - 1];
+      const result: NoteModel[] = [];
+
+      snapshot.forEach(s => {
+        result.push(s.data() as NoteModel);
+      });
+
+      runInAction(() => {
+        this.bootState = 'success';
+        this.notesCursor = lastVisible;
+        this.notes = result;
+      });
+
+      this.hasMore(collRef);
+    });
+  };
+
+  public getNotesNextBatch = async (userId: string): Promise<void> => {
+    this.processing = true;
+    const noteType =
+      this.journalFilter.type === 'all'
+        ? noteTypesOptions.map(type => type.value)
+        : [this.journalFilter.type];
+
+    const collRef = collection(
+      database,
+      DatabaseCollection.Users,
+      userId,
+      DatabaseSubCollection.Journal,
+    );
+
+    const queryNext = query(
+      collRef,
+      where('type', 'in', noteType),
+      orderBy('date', this.journalFilter.order),
+      startAfter(this.notesCursor),
+      limit(5),
+    );
+
+    getDocs(queryNext).then(snapshot => {
+      const lastVisible = snapshot.docs[snapshot.docs.length - 1];
+      const result: NoteModel[] = [];
+
+      snapshot.forEach(s => {
+        result.push(s.data() as NoteModel);
+      });
+
+      runInAction(() => {
+        this.processing = false;
+        this.notesCursor = lastVisible;
+        this.notes = this.notes.concat(result);
+      });
+
+      this.hasMore(collRef);
+    });
+  };
+
   public getNotes = async (userId: string): Promise<void> => {
     this.bootState = 'loading';
 
     getDocumentsFromDeepCollection<NoteModel>(DatabaseCollection.Users, [
       userId,
-      DatabaseSubSollection.Journal,
+      DatabaseSubCollection.Journal,
     ])
       .then(value => {
         runInAction(() => {

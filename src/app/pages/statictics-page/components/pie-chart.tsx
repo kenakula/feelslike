@@ -15,14 +15,10 @@ import {
   LinearScale,
 } from 'chart.js';
 import { Pie } from 'react-chartjs-2';
-import {
-  getFeelsNotesCount,
-  COLORS,
-  periodSelectOptions,
-  filterNotesByTime,
-} from '../assets';
+import { getFeelsNotesCount, COLORS, filterNotesByTime } from '../assets';
 import { ChartProps, TimePeriod } from 'app/shared/types';
 import { FeelsModel, NoteModel } from 'app/models';
+import { periodTypeOptions } from 'app/shared';
 
 ChartJS.register(
   ArcElement,
@@ -90,7 +86,7 @@ export const PieChart = ({ notes, feels }: Props): JSX.Element => {
           onChange={handleChange}
           size="small"
         >
-          {periodSelectOptions.map(option => (
+          {periodTypeOptions.map(option => (
             <MenuItem key={option.value} value={option.value}>
               {option.label}
             </MenuItem>

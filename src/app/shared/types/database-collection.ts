@@ -4,7 +4,7 @@ export enum DatabaseCollection {
   Assets = 'Assets',
 }
 
-export enum DatabaseSubSollection {
+export enum DatabaseSubCollection {
   Feels = 'Feels',
   Journal = 'Journal',
 }

@@ -51,6 +51,7 @@ export const App = (): JSX.Element => {
   return (
     <Box
       className="page"
+      id="scrollableContainer"
       sx={{ backgroundColor: theme ? theme.palette.background : '#FDFFFC' }}
     >
       {renderContent()}

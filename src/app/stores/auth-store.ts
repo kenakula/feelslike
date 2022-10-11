@@ -40,6 +40,7 @@ export class AuthStore {
   public currentUser: User | null = null;
   public userData: UserModel | null = null;
   public defaultQuestions: QuestionsModel = { list: [] };
+  public userId = '';
 
   constructor(private readonly auth: Auth) {
     makeAutoObservable(this);
@@ -180,12 +181,14 @@ export class AuthStore {
       runInAction(() => {
         this.authState = 'Authorized';
         this.bootState = 'success';
+        this.userId = data.uid;
       });
     } else {
       runInAction(() => {
         this.authState = 'NotAuthorized';
         this.bootState = 'none';
         this.userData = null;
+        this.userId = '';
       });
     }
   };

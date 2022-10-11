@@ -1,82 +1,51 @@
 import React, { useEffect, useState } from 'react';
-import Stack from '@mui/material/Stack';
-import IconButton from '@mui/material/IconButton';
-import TuneIcon from '@mui/icons-material/Tune';
-import Popover from '@mui/material/Popover';
 import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
-import Skeleton from '@mui/material/Skeleton';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
+import IconButton from '@mui/material/IconButton';
+import TuneIcon from '@mui/icons-material/Tune';
+import { ReactComponent as JoyImage } from 'assets/img/joyride.svg';
 import { useRootStore } from 'app/stores';
 import { observer } from 'mobx-react-lite';
+import InfiniteScroll from 'react-infinite-scroll-component';
 import {
   Container,
-  Note,
+  Loader,
   NoteDetails,
   NothingFound,
   PageHeading,
 } from 'app/components';
 import { NoteModel } from 'app/models';
-import { FilterParams, FilterType, SortOrder } from 'app/shared/types';
-import { filterNotes } from './assets';
-import { noteTypesOptions } from 'app/shared/note-type-options';
+import { FilterComponent, NotesList, PageSkeleton } from './components';
 
 export const JournalPage = observer((): JSX.Element => {
   const [selectedNote, setSelectedNote] = useState<NoteModel | null>(null);
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [snackDeleteOpen, setSnackDeleteOpen] = useState(false);
   const [detailsOpen, setDetailsOpen] = useState(false);
-  const [filterParams, setFilterParams] = useState<FilterParams>({
-    type: 'all',
-    sortOrder: 'desc',
-  });
-  const [filteredNotes, setFilteredNotes] = useState<NoteModel[]>([]);
-  const menuOpen = Boolean(anchorEl);
+  const [filterOpen, setFilterOpen] = useState(false);
   const {
-    notesStore: { notes, getNotes, bootState },
+    notesStore: {
+      notes,
+      bootState,
+      getNotesFirstBatch,
+      getNotesNextBatch,
+      hasMoreNotes,
+    },
     authStore: { userData },
   } = useRootStore();
 
   useEffect(() => {
     if (userData) {
-      getNotes(userData.uid);
+      getNotesFirstBatch(userData.uid);
     }
-  }, [userData, getNotes]);
+  }, [userData, getNotesFirstBatch]);
 
-  useEffect(() => {
-    setFilteredNotes(notes);
-  }, [notes]);
-
-  useEffect(() => {
-    const arr = filterNotes(notes, filterParams);
-    setFilteredNotes(arr);
-  }, [filterParams, notes]);
-
-  const handleMenuOpenClick = (event: React.MouseEvent<HTMLElement>): void => {
-    setAnchorEl(event.currentTarget);
+  const handleFilterOpen = (): void => {
+    setFilterOpen(true);
   };
 
-  const handleMenuClose = (): void => {
-    setAnchorEl(null);
-  };
-
-  const handleTypeChange = (event: SelectChangeEvent): void => {
-    setFilterParams(prev => ({
-      ...prev,
-      type: event.target.value as FilterType,
-    }));
-    handleMenuClose();
-  };
-
-  const handleOrderChange = (event: SelectChangeEvent): void => {
-    setFilterParams(prev => ({
-      ...prev,
-      sortOrder: event.target.value as SortOrder,
-    }));
-    handleMenuClose();
+  const handleFilterClose = (): void => {
+    setFilterOpen(false);
   };
 
   const selectNote = (note: NoteModel): void => {
@@ -84,95 +53,58 @@ export const JournalPage = observer((): JSX.Element => {
     setDetailsOpen(true);
   };
 
+  const onLoadMore = (): void => {
+    if (userData) {
+      getNotesNextBatch(userData.uid);
+    }
+  };
+
   return (
     <Container sx={{ pt: 5 }}>
-      <PageHeading title="Журнал">
-        <IconButton onClick={handleMenuOpenClick} color="inherit">
-          <TuneIcon />
-        </IconButton>
-      </PageHeading>
       {bootState === 'success' ? (
         <>
-          <Stack spacing={2}>
-            {filteredNotes.length ? (
-              filteredNotes.map(note => (
-                <Note
-                  key={note.id}
-                  note={note}
-                  openDetails={() => selectNote(note)}
-                />
-              ))
-            ) : (
-              <NothingFound />
-            )}
-          </Stack>
-          <Popover
-            anchorEl={anchorEl}
-            open={menuOpen}
-            onClose={handleMenuClose}
-            sx={{ mt: 2, width: '100%' }}
-            anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'right',
-            }}
-            transformOrigin={{
-              vertical: 'top',
-              horizontal: 'right',
-            }}
-            PaperProps={{
-              sx: {
-                mt: 1.5,
-                width: '100%',
-              },
-            }}
-          >
-            <Box sx={{ p: 2, width: '100%' }}>
-              <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <Typography sx={{ mr: 2 }}>Тип записи:</Typography>
-                <Select
-                  value={filterParams.type}
-                  onChange={handleTypeChange}
-                  size="small"
-                  sx={{ mb: 1 }}
+          <PageHeading title="Журнал">
+            <IconButton onClick={handleFilterOpen} color="primary">
+              <TuneIcon />
+            </IconButton>
+          </PageHeading>
+          {notes.length ? (
+            <InfiniteScroll
+              hasMore={hasMoreNotes}
+              dataLength={notes.length}
+              next={onLoadMore}
+              loader={
+                <Box sx={{ position: 'relative', height: 50 }}>
+                  <Loader />
+                </Box>
+              }
+              scrollableTarget="scrollableContainer"
+              endMessage={
+                <Box
+                  sx={{
+                    width: '100%',
+                    maxWidth: '150px',
+                    margin: '0 auto',
+                    svg: {
+                      maxWidth: '100%',
+                      height: 'auto',
+                    },
+                  }}
                 >
-                  <MenuItem value="all">Все</MenuItem>
-                  {noteTypesOptions.map(option => (
-                    <MenuItem key={option.value} value={option.value}>
-                      {option.label}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </Box>
-              <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <Typography sx={{ mr: 2 }}>Сначала:</Typography>
-                <Select
-                  value={filterParams.sortOrder}
-                  onChange={handleOrderChange}
-                  size="small"
-                >
-                  <MenuItem value="asc">старые</MenuItem>
-                  <MenuItem value="desc">свежие</MenuItem>
-                </Select>
-              </Box>
-            </Box>
-          </Popover>
+                  <JoyImage />
+                </Box>
+              }
+            >
+              <NotesList notes={notes} selectNote={selectNote} />
+            </InfiniteScroll>
+          ) : (
+            <NothingFound />
+          )}
         </>
       ) : (
-        <>
-          <Skeleton
-            variant="rectangular"
-            sx={{ width: '100%', height: '150px', borderRadius: '8px', mb: 2 }}
-          />
-          <Skeleton
-            variant="rectangular"
-            sx={{ width: '100%', height: '150px', borderRadius: '8px', mb: 2 }}
-          />
-          <Skeleton
-            variant="rectangular"
-            sx={{ width: '100%', height: '150px', borderRadius: '8px', mb: 2 }}
-          />
-        </>
+        <PageSkeleton />
       )}
+      <FilterComponent openState={filterOpen} handleClose={handleFilterClose} />
       <NoteDetails
         note={selectedNote}
         openState={detailsOpen}

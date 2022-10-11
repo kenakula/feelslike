@@ -74,6 +74,21 @@ export const HomePage = observer((): JSX.Element => {
     setDetailsOpen(true);
   };
 
+  const renderNotes = (list: NoteModel[]): JSX.Element =>
+    list.length ? (
+      <>
+        {list.reverse().map(note => (
+          <Note
+            key={note.id}
+            note={note}
+            openDetails={() => selectNote(note)}
+          />
+        ))}
+      </>
+    ) : (
+      <NothingFound />
+    );
+
   const renderContent = (): JSX.Element => (
     <Box>
       <Box sx={{ mb: 5 }}>
@@ -110,17 +125,7 @@ export const HomePage = observer((): JSX.Element => {
           component="h2"
         />
         <Stack spacing={2} sx={{ mb: 2 }}>
-          {filterNotes(notes, editorNoteDate).length ? (
-            filterNotes(notes, editorNoteDate).map(note => (
-              <Note
-                key={note.id}
-                note={note}
-                openDetails={() => selectNote(note)}
-              />
-            ))
-          ) : (
-            <NothingFound />
-          )}
+          {renderNotes(filterNotes(notes, editorNoteDate))}
         </Stack>
       </Box>
     </Box>

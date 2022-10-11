@@ -1,6 +1,6 @@
 import { SelectOption, TimePeriod } from 'app/shared/types';
 
-export const periodSelectOptions: SelectOption<TimePeriod>[] = [
+export const periodTypeOptions: SelectOption<TimePeriod>[] = [
   {
     label: 'За всё время',
     value: 'all',
