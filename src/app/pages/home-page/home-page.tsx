@@ -132,7 +132,7 @@ export const HomePage = observer((): JSX.Element => {
   );
 
   return (
-    <Container sx={{ pt: 5 }}>
+    <Container sx={{ pt: 2 }}>
       <h1 className="visually-hidden">Главная страница</h1>
       {bootState === 'success' ? renderContent() : <PageSkeleton />}
       {/* modals */}
