@@ -7,6 +7,7 @@ import Chip from '@mui/material/Chip';
 import { Emoji, EmojiStyle } from 'emoji-picker-react';
 import { NoteModel } from 'app/models/note-model';
 import { MapNotesTypes } from './assets';
+import moment from 'moment';
 
 interface Props {
   note: NoteModel;
@@ -17,6 +18,9 @@ export const Note = ({
   note: { title, desc, emotions, date, secondary, type },
   openDetails,
 }: Props): JSX.Element => {
+  const getDateTimeString = (dateObj: Date): string =>
+    moment(dateObj).format('D MMM YYYY');
+
   return (
     <Paper variant="outlined" elevation={0} sx={{ p: 2, borderRadius: '8px' }}>
       <Box
@@ -82,7 +86,7 @@ export const Note = ({
           Подробнее
         </Button>
         <Typography variant="caption">
-          {date.toDate().toLocaleDateString()}
+          {getDateTimeString(date.toDate())}
         </Typography>
       </Box>
     </Paper>

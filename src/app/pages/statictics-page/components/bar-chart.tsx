@@ -15,8 +15,8 @@ import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import moment, { Moment } from 'moment';
 import { NoteModel } from 'app/models';
-import { MONTHS } from '../assets';
 import { ChartProps } from 'app/shared/types';
+import { MONTHS } from 'app/shared/assets';
 
 ChartJS.register(Tooltip, CategoryScale, LinearScale, BarElement);
 
