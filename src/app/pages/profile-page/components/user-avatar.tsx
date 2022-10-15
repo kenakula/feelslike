@@ -15,14 +15,14 @@ const FileInput = styled('input')({
 
 interface Props {
   profileImage: string;
-  displayName: string;
+  email: string;
   handleDelete: () => void;
   handleUpload: (evt: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export const UserAvatar = ({
   profileImage,
-  displayName,
+  email,
   handleDelete,
   handleUpload,
 }: Props): JSX.Element => {
@@ -32,7 +32,7 @@ export const UserAvatar = ({
         sx={{
           width: 200,
           height: 200,
-          backgroundColor: stringToColor(displayName),
+          backgroundColor: stringToColor(email),
         }}
         src={profileImage}
       />

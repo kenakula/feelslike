@@ -146,7 +146,7 @@ export const Header = observer((): JSX.Element => {
                 sx={{
                   width: 30,
                   height: 30,
-                  backgroundColor: stringToColor(userData.displayName),
+                  backgroundColor: stringToColor(userData.email),
                   fontSize: 18,
                 }}
                 src={userData.profileImage}

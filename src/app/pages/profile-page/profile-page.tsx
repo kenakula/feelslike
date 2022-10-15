@@ -7,10 +7,13 @@ import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import Stack from '@mui/system/Stack';
 import { observer } from 'mobx-react-lite';
-import { Container, PageHeading } from 'app/components';
+import { Container } from 'app/components';
 import { useRootStore } from 'app/stores';
 import { SnackBarStateProps } from 'app/shared/types';
 import { UserAvatar } from './components';
+import { useTheme } from '@emotion/react';
+import { blue } from '@mui/material/colors';
+import { Table, TableCell, TableRow } from '@mui/material';
 
 const MAX_IMAGE_SIZE = 4e6;
 
@@ -107,37 +110,47 @@ export const ProfilePage = observer((): JSX.Element => {
       return null;
     }
 
-    const { profileImage, displayName, email } = userData;
+    const { profileImage, email } = userData;
 
     return (
       <>
-        <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            mb: 3,
+            mx: -16,
+            py: 5,
+            background: blue[50],
+          }}
+        >
           {imageProcessing ? (
             <Skeleton width={200} height={200} variant="circular" />
           ) : (
             <UserAvatar
-              displayName={displayName}
+              email={email}
               profileImage={profileImage}
               handleDelete={handleDeleteAvatar}
               handleUpload={handleUploadAvatar}
             />
           )}
         </Box>
-        <Stack spacing={2}>
-          <Typography textAlign="center" variant="h6" component="p">
-            {displayName}
-          </Typography>
-          <Typography textAlign="center" variant="body1">
-            {email}
-          </Typography>
-        </Stack>
+        <Table>
+          <TableRow>
+            <TableCell>
+              <Typography variant="h6" component="p">
+                Почта
+              </Typography>
+            </TableCell>
+            <TableCell>{email}</TableCell>
+          </TableRow>
+        </Table>
       </>
     );
   };
 
   return (
-    <Container sx={{ pt: 5 }}>
-      <PageHeading title="Ваш профиль" />
+    <Container>
       {renderContent()}
       <Snackbar
         open={snackbarState.isOpen}

@@ -28,7 +28,6 @@ import {
   UserModel,
 } from 'app/models';
 import { getUserDocumentData } from 'app/shared/utils';
-
 import { AuthState, BootState, DatabaseCollection } from 'app/shared/types';
 
 const googleProvider = new GoogleAuthProvider();
