@@ -210,7 +210,15 @@ export const NoteDrawer = observer((): JSX.Element => {
         },
       }}
     >
-      <Box sx={{ maxHeight: '80vh', overflowY: 'auto' }}>
+      <Box
+        sx={{
+          maxHeight: '80vh',
+          overflowY: 'auto',
+          msOverflowStyle: 'none',
+          scrollbarWidth: 'none',
+          '&::-webkit-scrollbar': { display: 'none' },
+        }}
+      >
         <Typography
           variant="h5"
           component="h2"

@@ -8,6 +8,7 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
   sendPasswordResetEmail,
+  updateEmail,
 } from 'firebase/auth';
 import { makeAutoObservable, runInAction } from 'mobx';
 import {
@@ -261,5 +262,15 @@ export class AuthStore {
           this.error = error.message;
         });
       });
+  };
+
+  public updateUserEmail = async (email: string): Promise<void | null> => {
+    if (!this.currentUser) {
+      return null;
+    }
+
+    return updateEmail(this.currentUser, email).then(() => {
+      this.updateUserInfo({ email });
+    });
   };
 }

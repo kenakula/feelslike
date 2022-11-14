@@ -5,27 +5,51 @@ import Skeleton from '@mui/material/Skeleton';
 import Typography from '@mui/material/Typography';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
-import Stack from '@mui/system/Stack';
+import * as yup from 'yup';
 import { observer } from 'mobx-react-lite';
-import { Container } from 'app/components';
+import { Container, InputComponent } from 'app/components';
 import { useRootStore } from 'app/stores';
 import { SnackBarStateProps } from 'app/shared/types';
 import { UserAvatar } from './components';
-import { useTheme } from '@emotion/react';
 import { blue } from '@mui/material/colors';
-import { Table, TableCell, TableRow } from '@mui/material';
+import { Button, Table, TableCell, TableRow } from '@mui/material';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { AuthError } from 'firebase/auth';
 
 const MAX_IMAGE_SIZE = 4e6;
 
+interface EmailFormModel {
+  email: string;
+}
+const emailSchema = yup.object({
+  email: yup
+    .string()
+    .email('Почта введена неправильно')
+    .required('Это обязательное поле'),
+});
+
 export const ProfilePage = observer((): JSX.Element => {
   const [imageProcessing, setImageProcessing] = useState(false);
+  const [processing, setProcessing] = useState(false);
   const [snackbarState, setSnackbarState] = useState<SnackBarStateProps>({
     isOpen: false,
     message: 'Аватар успешно загружен',
     alert: 'success',
   });
+
   const {
-    authStore: { userData, uploadUserImage, deleteUserImage },
+    control,
+    formState: { errors },
+    handleSubmit,
+    reset,
+  } = useForm<EmailFormModel>({
+    defaultValues: { email: '' },
+    resolver: yupResolver(emailSchema),
+  });
+
+  const {
+    authStore: { userData, uploadUserImage, deleteUserImage, updateUserEmail },
   } = useRootStore();
 
   const handleSnackbarClose = (): void => {
@@ -105,6 +129,30 @@ export const ProfilePage = observer((): JSX.Element => {
       });
   };
 
+  const handleEmailSubmit = ({ email }: EmailFormModel): void => {
+    setProcessing(true);
+    updateUserEmail(email)
+      .then(() => {
+        setProcessing(false);
+        setSnackbarState(prev => ({
+          ...prev,
+          isOpen: true,
+          alert: 'success',
+          message: 'Почта обновлена',
+        }));
+        reset();
+      })
+      .catch((err: AuthError) => {
+        setProcessing(false);
+        setSnackbarState(prev => ({
+          ...prev,
+          isOpen: true,
+          alert: 'error',
+          message: err.message,
+        }));
+      });
+  };
+
   const renderContent = (): JSX.Element | null => {
     if (!userData) {
       return null;
@@ -136,15 +184,52 @@ export const ProfilePage = observer((): JSX.Element => {
           )}
         </Box>
         <Table>
-          <TableRow>
-            <TableCell>
-              <Typography variant="h6" component="p">
-                Почта
-              </Typography>
-            </TableCell>
-            <TableCell>{email}</TableCell>
-          </TableRow>
+          <tbody>
+            <TableRow>
+              <TableCell>
+                <Typography variant="h6" component="p">
+                  Почта
+                </Typography>
+              </TableCell>
+              <TableCell>{email}</TableCell>
+            </TableRow>
+          </tbody>
         </Table>
+        <Box sx={{ py: 2 }}>
+          <Typography
+            variant="h6"
+            component="h2"
+            textAlign="center"
+            sx={{ mb: 1 }}
+          >
+            Сменить почту
+          </Typography>
+          <Box
+            sx={{ display: 'flex' }}
+            component="form"
+            onSubmit={handleSubmit(handleEmailSubmit)}
+          >
+            <InputComponent<EmailFormModel>
+              formControl={control}
+              name="email"
+              label="Почта"
+              fullwidth
+              type="email"
+              error={!!errors.email}
+              errorMessage="Введите корректно почту."
+              styles={{ mr: 1 }}
+              small
+            />
+            <Button
+              size="small"
+              variant="outlined"
+              type="submit"
+              disabled={processing}
+            >
+              OK
+            </Button>
+          </Box>
+        </Box>
       </>
     );
   };
